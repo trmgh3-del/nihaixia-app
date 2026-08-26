@@ -32,6 +32,7 @@ export const store = reactive({
   ai: { ...DEF_AI },
   chats: [], // [{role,content,ts}]
   readerItem: null, // 阅读页数据交接
+  sizhenReport: null, // 四诊历史报告详情交接
   meta: null
 })
 

@@ -41,6 +41,10 @@
       "style": { "navigationBarTitleText": "四诊合参" }
     },
     {
+      "path": "pages/diagnosis/report",
+      "style": { "navigationBarTitleText": "历史辨证报告" }
+    },
+    {
       "path": "pages/health/health",
       "style": { "navigationBarTitleText": "健康自测" }
     },
