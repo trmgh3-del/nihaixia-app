@@ -28,6 +28,7 @@
       <view class="calc-note">默认使用系统时间；开启子初换日后，23:00 起按次日干支计算。真太阳时按东八区标准经度作学习性修正。</view>
       <view class="calc-line">日干支：{{ dayGz }}　时干支：{{ hourGz }}</view>
       <view class="calc-line">纳甲依据：{{ dayGan }}日 · {{ hourName }}时 · {{ najiaMeta || '暂无开穴' }}</view>
+      <view class="snapshot-row"><view class="snapshot-btn" @tap="copyCalculation">复制计算过程</view></view>
       <view class="snapshot-row"><view class="snapshot-btn" @tap="useSystemTime">使用当前时间</view><view class="snapshot-btn" @tap="tick">重新计算</view></view>
     </view>
 
@@ -217,6 +218,10 @@ export default {
   onHide() { clearInterval(this._timer) },
   onUnload() { clearInterval(this._timer) },
   methods: {
+    copyCalculation() {
+      const text = `子午流注纳甲法\n日干支：${this.dayGz}\n时干支：${this.hourGz}\n日干：${this.dayGan}（${this.dayType}日）\n时辰：${this.hourName}时\n开穴：${this.najiaPoint || '当前闭穴'}\n依据：${this.najiaMeta || '纳支法原穴代用'}\n仅供学习参考。`
+      uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '计算过程已复制', icon: 'none' }) })
+    },
     goLinggui() { uni.navigateTo({ url: '/pages/study/linggui' }) },
     getCalcDate() {
       if (!this.manualDate || !this.manualTime) return new Date()

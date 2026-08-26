@@ -37,6 +37,7 @@
       <view class="calc-line">{{ calcDetails.divisor === 9 ? '阳日除9' : '阴日除6' }}，余数：{{ calcDetails.remainder }} → {{ openPoint }}</view>
       <view class="calc-setting"><text>余数5流派：</text><view v-for="o in ['照海', '内关']" :key="o" class="setting-chip" :class="{ on: rem5Mode === o }" @tap="setRem5(o)">{{ o }}</view></view>
       <view class="calc-note">余数5在不同典籍有不同取法；本设置仅影响余数5，不代表临床处方。</view>
+      <view class="snapshot-row"><view class="snapshot-btn" @tap="copyCalculation">复制计算过程</view></view>
     </view>
 
     <!-- 八脉交会穴表 -->
@@ -173,6 +174,11 @@ export default {
   onHide() { clearInterval(this._timer) },
   onUnload() { clearInterval(this._timer) },
   methods: {
+    copyCalculation() {
+      const c = this.calcDetails
+      const text = `灵龟八法计算\n日干支：${this.dayGz}\n时干支：${this.hourGz}\n日干${c.dayGan}+日支${c.dayZhi}+时干${c.hourGan}+时支${c.hourZhi}=${c.sum}\n${c.divisor === 9 ? '阳日除9' : '阴日除6'}，余数${c.remainder}\n开穴：${this.openPoint}（配${this.pairPoint}）\n仅供学习参考。`
+      uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '计算过程已复制', icon: 'none' }) })
+    },
     setRem5(value) { this.rem5Mode = value; this.tick() },
     getCalcDate() {
       if (!this.manualDate || !this.manualTime) return new Date()
