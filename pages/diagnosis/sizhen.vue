@@ -15,6 +15,8 @@
         <view class="basic-row"><input v-model="basic.age" type="number" placeholder="年龄" class="basic-input" /></view>
         <view class="sub-lab">病程</view>
         <view class="opts"><view v-for="o in durationOptions" :key="o" class="opt sm" :class="{ on: basic.duration === o }" @tap="basic.duration = o">{{ o }}</view></view>
+        <view class="sub-lab">问诊类型</view>
+        <view class="opts"><view v-for="o in caseTypes" :key="o" class="opt sm" :class="{ on: basic.caseType === o }" @tap="basic.caseType = o">{{ o }}</view></view>
         <view class="sub-lab">性别</view>
         <view class="opts"><view v-for="o in ['未说明', '男', '女']" :key="o" class="opt sm" :class="{ on: basic.sex === o }" @tap="basic.sex = o">{{ o }}</view></view>
         <view class="sub-lab">特殊情况</view>
@@ -125,6 +127,11 @@
         <view class="opts"><view v-for="o in pulseSources" :key="o" class="opt sm" :class="{ on: pulseSource === o }" @tap="pulseSource = o">{{ o }}</view></view>
         <view class="basic-hint">非医师自行触摸的脉象仅供参考，不能作为处方依据。</view>
       </view>
+      <view class="grp card">
+        <view class="g-t serif">⟡ 复合脉象（可选）</view>
+        <view class="opts"><view v-for="o in complexPulses" :key="o.k" class="opt sm" :class="{ on: pick['复合脉'] === o.k }" @tap="setPick('复合脉', o.k)">{{ o.k }}</view></view>
+        <view class="basic-hint">复合脉象必须结合症状、舌象判断，不能单凭脉象定方。</view>
+      </view>
       <view class="nav-row">
         <view class="nav-btn" @tap="step = 2">‹ 上一步</view>
         <view class="nav-btn main" @tap="analyze">⟡ 生成辨证报告</view>
@@ -140,6 +147,13 @@
           <text :class="'risk-' + result.risk.level">风险：{{ result.risk.label }}</text>
         </view>
         <view class="r-risk" v-if="result.risk.reasons.length">⚠ {{ result.risk.reasons.join('；') }}</view>
+        <view class="r-sec">
+          <view class="rs-t">七步辨证摘要</view>
+          <view class="r-line" v-for="x in result.sevenSteps" :key="x.k"><text class="step-label">{{ x.k }}</text>{{ x.v }}</view>
+        </view>
+        <view class="r-sec" v-if="result.combination">
+          <view class="rs-t">脉舌/合病鉴别</view><view class="r-line">{{ result.combination }}</view>
+        </view>
         <view class="r-sec">
           <view class="rs-t">基本信息</view>
           <view class="r-line">{{ basicSummary }}</view>
@@ -258,12 +272,19 @@ const STEP_FIELDS = [
   ['望色', '舌质', '舌苔', '望神'],
   ['声音', '呼吸'],
   TEN_Q.map(q => q.k),
-  ['脉位', '脉率', '脉形', '脉力']
+  ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] } })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '' })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
+const CASE_TYPES = ['急性外感/感冒', '慢性内伤', '妇科问题', '消化问题', '心肺症状', '不确定']
+const COMPLEX_PULSES = [
+  { k: '浮缓', mer: '太阳', reason: '太阳中风，体虚有汗' }, { k: '浮紧', mer: '太阳', reason: '太阳伤寒，体实无汗' },
+  { k: '沉迟', mer: '太阴', reason: '里寒湿、脾阳不足' }, { k: '沉微', mer: '少阴', reason: '阳虚、病由太阴入少阴' },
+  { k: '弦数', mer: '少阳', reason: '少阳郁热，需防阳明化热' }, { k: '弦缓', mer: '少阳', reason: '少阳兼太阴虚' },
+  { k: '微细欲绝', mer: '少阴', reason: '阳气衰微，属于高风险脉象' }, { k: '结代', mer: '少阴', reason: '心动悸、脉结代，需医师复核' }
+]
 const MERIDIANS = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
 
 export default {
@@ -272,7 +293,9 @@ export default {
       step: 0,
       stepNames: ['望诊', '闻诊', '问诊', '切诊', '报告'],
       pick: {},
-      basic: { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false },
+      basic: { age: '', sex: '未说明', duration: '', caseType: '不确定', pregnant: false, chronic: false },
+      caseTypes: CASE_TYPES,
+      complexPulses: COMPLEX_PULSES,
       redFlags: [],
       redFlagOptions: RED_FLAGS,
       durationOptions: DURATIONS,
@@ -291,7 +314,7 @@ export default {
     stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } },
     basicSummary() {
       const b = this.basic
-      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
+      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '类型：' + (b.caseType || '不确定'), '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
     }
   },
   onLoad() {
@@ -318,7 +341,7 @@ export default {
       // 只允许返回已走过的步骤；报告必须先完成辨证，避免出现空白报告。
       if (i <= this.step) this.step = i
     },
-    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false }; this.redFlags = []; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
+    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
     toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
     analyze() {
       if (!Object.keys(this.pick).some(k => this.pick[k])) {
@@ -413,6 +436,8 @@ export default {
         '脉力': { '有力': ['阳明', 1, '脉有力'], '无力': ['少阴', 2, '脉无力'], '微': ['少阴', 3, '脉微'] }
       }
       Object.keys(rules).forEach(k => { const rule = rules[k][p[k]]; if (rule) addScore(rule[0], rule[1], rule[2]) })
+      const complexPulse = COMPLEX_PULSES.find(x => x.k === p['复合脉'])
+      if (complexPulse) { addScore(complexPulse.mer, 3, complexPulse.k); if (complexPulse.k === '微细欲绝') patterns.push('微细欲绝为高风险脉象') }
       mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: reasons[name].slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
       const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
@@ -422,6 +447,12 @@ export default {
       if (p['口渴'] === '渴喜冷饮' && ['白腻', '薄白'].includes(p['舌苔'])) conflicts.push('口渴喜冷饮但舌苔偏寒湿，寒热线索并见')
       if (p['脉率'] === '迟' && p['舌苔'] === '黄') conflicts.push('脉迟但苔黄，寒热线索并见')
       if (p['睡眠'] === '但欲寐' && p['脉力'] === '有力') conflicts.push('但欲寐与脉有力需复核')
+      const tongueCold = ['淡白', '紫暗'].includes(p['舌质']) || ['白腻', '薄白'].includes(p['舌苔'])
+      const tongueHeat = ['红', '绛'].includes(p['舌质']) || ['黄', '黄腻', '燥'].some(v => (p['舌苔'] || '').includes(v))
+      if (p['脉率'] === '数' && tongueCold) conflicts.push('脉数但舌偏淡白/白腻，需鉴别真寒假热（以舌为重要参考）')
+      if (p['脉位'] === '沉' && tongueHeat) conflicts.push('脉沉但舌红/苔黄，需鉴别真热假寒')
+      if (p['脉位'] === '浮' && ['白腻', '黄腻'].includes(p['舌苔'])) conflicts.push('脉浮但苔腻，需排除里证为主')
+      const combo = tongueCold && tongueHeat ? '寒热错杂：舌象同时见寒热线索，需结合病程、口渴与二便复核' : (p['复合脉'] ? (complexPulse ? complexPulse.reason : '') : '')
       const riskReasons = [...conflicts]
       if (this.redFlags.length) riskReasons.push('红旗症状：' + this.redFlags.join('、'))
       if (['失神', '假神'].includes(p['望神'])) riskReasons.push('神志异常')
@@ -445,6 +476,18 @@ export default {
       // 去重
       if (conflicts.length) patterns.unshift('输入复核：' + conflicts.join('；'))
       if (!scores.length) patterns.unshift('当前信息不足，暂不能形成明确六经倾向，请补充寒热、汗、二便、胃口及脉象。')
+      const mainMer = scores[0] && scores[0].name
+      const has表 = [...bg].includes('表') || p['脉位'] === '浮'
+      const has里 = [...bg].includes('里') || p['脉位'] === '沉'
+      const sevenSteps = [
+        { k: '定表里', v: has表 && has里 ? '表里同病线索' : has表 ? '偏表' : has里 ? '偏里' : '证据不足' },
+        { k: '分阴阳', v: bg.has('寒热错杂') ? '寒热错杂' : bg.has('阳') ? '偏阳' : bg.has('阴') ? '偏阴' : '证据不足' },
+        { k: '辨寒热', v: bg.has('寒热错杂') ? '寒热并见，需鉴别真寒假热/真热假寒' : bg.has('热') ? '偏热' : bg.has('寒') ? '偏寒' : '证据不足' },
+        { k: '判虚实', v: bg.has('实') && bg.has('虚') ? '虚实夹杂' : bg.has('实') ? '偏实' : bg.has('虚') ? '偏虚' : '证据不足' },
+        { k: '定六经', v: mainMer || '暂不明确' },
+        { k: '合病传变', v: scores.length > 1 ? '可能合病/并病：' + scores.slice(0, 3).map(x => x.name).join('、') : '暂未发现明确合病依据' },
+        { k: '方证复核', v: risk.level === 'high' ? '高风险，停止方剂推荐' : formulas.length ? '需结合方证、禁忌和医师面诊复核' : '暂无明确方证' }
+      ]
       this.result = {
         bagang: [...bg],
         meridians: scores.length ? scores.map(x => x.name) : [...mer],
@@ -453,7 +496,9 @@ export default {
         scores,
         selected,
         completeness,
-        risk
+        risk,
+        sevenSteps,
+        combination: combo
       }
       this.clearDraft()
       this.step = 4
@@ -533,6 +578,7 @@ export default {
 .r-risk { color: #9A2E1F; background: #F5E8E8; padding: 14rpx 18rpx; border-radius: 10rpx; font-size: 21rpx; line-height: 1.7; margin-bottom: 20rpx; }
 .r-score { display: flex; align-items: center; gap: 14rpx; margin-bottom: 10rpx; }
 .score-reason { font-size: 20rpx; color: var(--ink2); }
+.step-label { display: inline-block; min-width: 120rpx; color: var(--brand); font-weight: 700; }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
 .saved-reports { margin-top: 22rpx; padding: 24rpx 28rpx; }
 .saved-item { display: flex; justify-content: space-between; border-top: 1rpx solid var(--line); padding: 14rpx 0; font-size: 20rpx; color: var(--ink2); }
