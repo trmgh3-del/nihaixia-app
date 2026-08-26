@@ -30,7 +30,7 @@
         <view class="sub-lab">红旗症状（如有请立即就医）</view>
         <view class="opts"><view v-for="o in redFlagOptions" :key="o" class="opt sm danger-opt" :class="{ on: redFlags.includes(o) }" @tap="toggleRedFlag(o)">{{ o }}</view></view>
         <view class="basic-hint">基本信息仅用于风险提示，不会替代四诊判断；涉及孕期、儿童、高龄、慢性病或正在用药，请优先咨询执业医师。</view>
-        <view class="snapshot-row"><view class="snapshot-btn" @tap="saveSnapshot">保存快照</view><view class="snapshot-btn" v-if="snapshots.length" @tap="restoreSnapshot">恢复最近快照</view></view>
+        <view class="snapshot-row"><view class="snapshot-btn" @tap="saveSnapshot">保存快照</view><view class="snapshot-btn" v-if="snapshots.length" @tap="restoreSnapshot">恢复最近快照</view><view class="snapshot-btn danger" v-if="snapshots.length" @tap="clearSnapshots">清空快照</view></view>
         <view class="snapshot-list" v-if="snapshots.length"><view class="snapshot-item" v-for="(s, i) in snapshots" :key="s.ts"><text>{{ formatReportTime(s.ts) }}</text><text class="snapshot-action" @tap="restoreSnapshotAt(i)">恢复</text><text class="snapshot-action danger" @tap="removeSnapshot(i)">删除</text></view></view>
       </view>
       <view class="grp card">
@@ -393,6 +393,13 @@ export default {
       const next = this.snapshots.slice(); next.splice(index, 1); this.snapshots = next
       try { uni.setStorageSync('nx_sizhen_snapshots', next) } catch (e) {}
     },
+    clearSnapshots() {
+      uni.showModal({ title: '清空快照', content: '将删除全部四诊快照，但不会删除历史报告。确定继续吗？', success: r => {
+        if (!r.confirm) return
+        this.snapshots = []
+        try { uni.removeStorageSync('nx_sizhen_snapshots') } catch (e) {}
+      } })
+    },
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
     isPicked(k, v) { return MULTI_FIELDS.includes(k) ? (Array.isArray(this.pick[k]) && this.pick[k].includes(v)) : this.pick[k] === v },
     toggleOption(k, v) {
@@ -492,7 +499,7 @@ export default {
 .snapshot-item { display: flex; align-items: center; gap: 18rpx; padding: 10rpx 0; border-bottom: 1rpx solid var(--line); font-size: 19rpx; color: var(--ink2); }
 .snapshot-item > text:first-child { flex: 1; }
 .snapshot-action { color: var(--brand); }
-.snapshot-action.danger { color: #833B3B; }
+.snapshot-action.danger, .snapshot-btn.danger { color: #833B3B; }
 .danger-opt { color: #9A2E1F; border-color: rgba(154,46,31,.2); }
 .danger-opt.on { background: #9A2E1F; color: #fff; }
 .basic-row .basic-input { margin-bottom: 2rpx; }
