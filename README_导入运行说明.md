@@ -120,6 +120,7 @@ node --experimental-default-type=module tools/test_sizhen_safety.mjs # 方剂安
 node --experimental-default-type=module tools/test_sizhen_runtime.mjs # 编译规则运行时回归检查
 python3 tools/check_upstream_sync.py                   # 检查上游 main 是否有新提交
 python3 tools/report_sizhen_coverage.py                # 查看知识条目到规则的引用覆盖率
+python3 tools/report_rule_review.py                    # 输出规则专家审核队列
 python3 tools/validate_case_dataset.py                 # 验证 1257 条结构化医案字段
 python3 tools/test_acupoint_dataset.py                 # 验证穴位库与辨证联动数据
 python3 tools/test_zangxiang_dataset.py                # 验证藏象基础数据

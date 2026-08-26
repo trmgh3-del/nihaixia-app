@@ -205,6 +205,9 @@ REFERENCES = {
 }
 for rule in rules:
     rule['reference'] = REFERENCES.get(rule['id'], rule.get('reference', []))
+    rule.setdefault('expertStatus', 'pending')
+    rule.setdefault('reviewNotes', '')
+    rule.setdefault('lastReviewedAt', '')
 
 rule_source_ids = {sid for rule in rules for sid in rule.get('sourceIds', []) if sid}
 context_items = [item for item in items if item.get('id') not in rule_source_ids]

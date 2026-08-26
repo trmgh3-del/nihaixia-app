@@ -27,7 +27,10 @@
         "寒热=恶寒"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-wind",
@@ -60,7 +63,10 @@
       "exclude": [
         "汗=无汗",
         "脉形=紧"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-cold",
@@ -92,7 +98,10 @@
       ],
       "exclude": [
         "汗=有汗自汗"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-meridian",
@@ -123,7 +132,10 @@
       ],
       "exclude": [
         "寒热=恶寒"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-fu",
@@ -154,7 +166,10 @@
       ],
       "exclude": [
         "大便=溏泄"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-outline",
@@ -186,7 +201,10 @@
       ],
       "exclude": [
         "寒热=但热不寒"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-cold",
@@ -219,7 +237,10 @@
       "exclude": [
         "大便=便秘",
         "口渴=渴喜冷饮"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-cold",
@@ -255,7 +276,10 @@
       "exclude": [
         "脉率=数",
         "舌质=红"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-yangxu",
@@ -285,7 +309,10 @@
         "脉力=微"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-coldheat",
@@ -318,7 +345,10 @@
       ],
       "exclude": [
         "舌苔=黄"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "hebing-taiyang-shaoyang",
@@ -343,7 +373,10 @@
         "脉形=弦"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "hebing-shaoyang-yangming",
@@ -368,7 +401,10 @@
         "大便=便秘"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "hebing-shaoyang-taiyin",
@@ -393,7 +429,10 @@
         "大便=溏泄"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "bing-taiyang-shaoyin",
@@ -417,7 +456,10 @@
         "脉位=沉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "bing-taiyin-shaoyin",
@@ -443,7 +485,10 @@
         "手足温度=手脚冰凉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-rehua",
@@ -475,7 +520,10 @@
         "睡眠=彻夜不眠"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-wet",
@@ -496,7 +544,10 @@
         "舌苔=白腻"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-dry",
@@ -517,7 +568,10 @@
         "舌苔=燥裂"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-tongue",
@@ -538,7 +592,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-taiyin-wet",
@@ -559,7 +616,10 @@
         "舌苔=白腻"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-yangming-dry",
@@ -580,7 +640,10 @@
         "舌苔=燥裂"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-shaoyin-cold",
@@ -601,7 +664,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-shaoyin-hot",
@@ -624,7 +690,10 @@
         "睡眠=彻夜不眠"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "true-cold-false-hot",
@@ -650,7 +719,10 @@
         "小便=清长"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "true-hot-false-cold",
@@ -678,7 +750,10 @@
         "小便=短赤"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "hebing-taiyang-yangming",
@@ -705,7 +780,10 @@
         "口渴=渴喜冷饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "bing-shaoyin-jueyin",
@@ -731,7 +809,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "transmission-taiyin-shaoyin",
@@ -754,7 +835,10 @@
         "睡眠=但欲寐"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "rule-no-mahuang-with-sweat",
@@ -773,7 +857,10 @@
         "汗=有汗自汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "rule-no-guizhi-without-sweat",
@@ -792,7 +879,10 @@
         "汗=无汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "rule-shaoyang-three禁",
@@ -811,7 +901,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "rule-shaoyin-no-sweat",
@@ -832,7 +925,10 @@
         "脉形=细"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "wen-deficiency",
@@ -851,7 +947,10 @@
         "呼吸=呼吸微弱"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "wen-excess",
@@ -870,7 +969,10 @@
         "呼吸=呼吸气粗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-chest",
@@ -897,7 +999,10 @@
         "口渴=口苦咽干"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-no-thirst",
@@ -926,7 +1031,10 @@
         "胃口=差/食少"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-lower-urine",
@@ -956,7 +1064,10 @@
         "手足温度=手脚冰凉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-chong",
@@ -986,7 +1097,10 @@
         "疼痛=气上撞心/心中疼热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-ge",
@@ -1013,7 +1127,10 @@
         "汗=无汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-body",
@@ -1040,7 +1157,10 @@
         "寒热=恶寒"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-four",
@@ -1072,7 +1192,10 @@
       "reference": [
         "脉位=浮"
       ],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-urine",
@@ -1098,7 +1221,10 @@
         "口渴=渴喜冷饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-mouth",
@@ -1125,7 +1251,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-dizziness",
@@ -1152,7 +1281,10 @@
         "脉形=弦"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-abdomen",
@@ -1179,7 +1311,10 @@
         "胃口=差/食少"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-white",
@@ -1200,7 +1335,10 @@
         "口渴=不渴"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-sleep",
@@ -1232,7 +1370,10 @@
         "脉力=微"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-urine",
@@ -1262,7 +1403,10 @@
         "手足温度=手脚冰凉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-heart",
@@ -1292,7 +1436,10 @@
         "脉力=无力"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-thirst",
@@ -1320,7 +1467,10 @@
         "胃口=饥而不欲食"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-float-tight",
@@ -1339,7 +1489,10 @@
         "复合脉=浮紧"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-sunken-late",
@@ -1358,7 +1511,10 @@
         "复合脉=沉迟"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-sunken-weak",
@@ -1377,7 +1533,10 @@
         "复合脉=沉微"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-string-fast",
@@ -1396,7 +1555,10 @@
         "复合脉=弦数"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-weak-fine",
@@ -1415,7 +1577,10 @@
         "复合脉=微细欲绝"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-knotted",
@@ -1434,7 +1599,10 @@
         "复合脉=结代"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "cold-false-hot",
@@ -1460,7 +1628,10 @@
         "口渴=渴不欲饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "hot-false-cold",
@@ -1486,7 +1657,10 @@
         "口渴=渴喜冷饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-fever",
@@ -1511,7 +1685,10 @@
         "寒热=恶风"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyang-neck",
@@ -1536,7 +1713,10 @@
         "头身=头痛项强"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-sweat",
@@ -1560,7 +1740,10 @@
         "汗=大汗不止"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "yangming-hard",
@@ -1584,7 +1767,10 @@
         "大便=便秘"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-string",
@@ -1609,7 +1795,10 @@
         "脉形=弦"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyang-throat",
@@ -1634,7 +1823,10 @@
         "口渴=口苦咽干"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-abdomen-full",
@@ -1659,7 +1851,10 @@
         "胸腹=腹满"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-not-thirsty",
@@ -1684,7 +1879,10 @@
         "口渴=不渴"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-food",
@@ -1709,7 +1907,10 @@
         "胃口=差/食少"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-deep",
@@ -1737,7 +1938,10 @@
         "脉位=沉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-late",
@@ -1765,7 +1969,10 @@
         "脉率=迟"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-cold-ext",
@@ -1795,7 +2002,10 @@
         "手足温度=手脚冰凉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-cold-hot",
@@ -1823,7 +2033,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-heart",
@@ -1849,7 +2062,10 @@
         "疼痛=气上撞心/心中疼热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jueyin-extreme",
@@ -1877,7 +2093,10 @@
         "舌质=红"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "bagang-excess",
@@ -1898,7 +2117,10 @@
         "脉力=有力"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "bagang-deficiency",
@@ -1919,7 +2141,10 @@
         "脉力=无力"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-float-slow",
@@ -1942,7 +2167,10 @@
         "汗=有汗自汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-float-tight-combo",
@@ -1965,7 +2193,10 @@
         "汗=无汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-string-slow",
@@ -1986,7 +2217,10 @@
         "脉率=迟"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-red-white",
@@ -2007,7 +2241,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-pale-white",
@@ -2028,7 +2265,10 @@
         "舌苔=薄白"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "tongue-yellow-dry",
@@ -2049,7 +2289,10 @@
         "舌苔=燥裂"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "transmission-warning",
@@ -2070,7 +2313,10 @@
         "睡眠=但欲寐"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-check-sweat",
@@ -2089,7 +2335,10 @@
         "汗=有汗自汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-check-shaoyang",
@@ -2108,7 +2357,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "kai-taiyang",
@@ -2127,7 +2379,10 @@
         "脉位=浮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shu-shaoyang",
@@ -2146,7 +2401,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "he-yangming",
@@ -2165,7 +2423,10 @@
         "寒热=但热不寒"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-yangming-diff",
@@ -2186,7 +2447,10 @@
         "口渴=不渴"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-yangming-hot",
@@ -2207,7 +2471,10 @@
         "口渴=渴喜冷饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "taiyin-shaoyin-border",
@@ -2230,7 +2497,10 @@
       "reference": [
         "脉位=沉"
       ],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jue-re-progress",
@@ -2249,7 +2519,10 @@
         "厥热胜复=厥多热少（病进）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jue-re-recover",
@@ -2268,7 +2541,10 @@
         "厥热胜复=热多厥少（病退）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jue-re-stable",
@@ -2287,7 +2563,10 @@
         "厥热胜复=厥热相等（病稳）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "transmission-warning-solar",
@@ -2308,7 +2587,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "mistreat-lizhong",
@@ -2327,7 +2609,10 @@
         "misTreatment=表证误下·利不止"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "mistreat-siyin",
@@ -2346,7 +2631,10 @@
         "misTreatment=少阴误汗·亡阳"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "misc-chibi",
@@ -2365,7 +2653,10 @@
         "miscDisease=胸痹"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "misc-tan-yin",
@@ -2384,7 +2675,10 @@
         "miscDisease=痰饮咳嗽"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "misc-xulao",
@@ -2403,7 +2697,10 @@
         "miscDisease=虚劳"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "misc-xiaoke",
@@ -2422,7 +2719,10 @@
         "miscDisease=消渴"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "misc-lijie",
@@ -2441,7 +2741,10 @@
         "miscDisease=历节"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-reheat-outline",
@@ -2471,7 +2774,10 @@
       "exclude": [
         "脉率=迟",
         "舌苔=白腻"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "shaoyin-cold-hot-diff",
@@ -2494,7 +2800,10 @@
         "舌质=红"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "quick-flow-solar",
@@ -2517,7 +2826,10 @@
       "reference": [],
       "exclude": [
         "脉位=沉"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "quick-flow-shaoyin",
@@ -2540,7 +2852,10 @@
       "reference": [],
       "exclude": [
         "脉位=浮"
-      ]
+      ],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "quick-flow-yangming",
@@ -2559,7 +2874,10 @@
         "寒热=但热不寒"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "kaihe-sanyin",
@@ -2578,7 +2896,10 @@
         "手足温度=手脚冰凉"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "transmission-solar-yangming",
@@ -2601,7 +2922,10 @@
         "大便=便秘"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "transmission-mistreat",
@@ -2620,7 +2944,10 @@
         "misTreatment=表证误下·利不止"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-tongue-float-thick",
@@ -2641,7 +2968,10 @@
         "舌苔=白腻"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-tongue-deep-red",
@@ -2664,7 +2994,10 @@
         "舌苔=黄"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-combo-floating-slow",
@@ -2683,7 +3016,10 @@
         "复合脉=浮缓"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-combo-deep-late",
@@ -2702,7 +3038,10 @@
         "复合脉=沉迟"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "pulse-combo-fine",
@@ -2721,7 +3060,10 @@
         "复合脉=微细欲绝"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jingui-qi-bi",
@@ -2743,7 +3085,10 @@
         "miscDisease=胸痹"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jingui-cough",
@@ -2765,7 +3110,10 @@
         "miscDisease=痰饮咳嗽"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jingui-deficiency",
@@ -2787,7 +3135,10 @@
         "miscDisease=虚劳"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jingui-joint",
@@ -2811,7 +3162,10 @@
         "疼痛=冷痛"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "jingui-pain",
@@ -2835,7 +3189,10 @@
         "疼痛=胸痛彻背"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "clinical-no-attack",
@@ -2860,7 +3217,10 @@
         "大便=便秘"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "clinical-shaoyang-single",
@@ -2881,7 +3241,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "clinical-yangming-stop",
@@ -2902,7 +3265,10 @@
         "寒热=但热不寒"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "clinical-liver-spleen",
@@ -2923,7 +3289,10 @@
         "胃口=差/食少"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "clinical-warm-phlegm",
@@ -2944,7 +3313,10 @@
         "舌苔=白腻"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "lung-phlegm",
@@ -2972,7 +3344,10 @@
         "胸腹=胸腹胀满"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "spleen-wet",
@@ -3000,7 +3375,10 @@
         "头身=身重困倦"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "heart-pain-itch",
@@ -3028,7 +3406,10 @@
         "舌质=红"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "lower-jiao",
@@ -3056,7 +3437,10 @@
         "小便=不利/癃闭"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "upper-middle",
@@ -3084,7 +3468,10 @@
         "胃口=食入即吐"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "fire-spasm",
@@ -3112,7 +3499,10 @@
         "脉率=数"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "time-taiyang",
@@ -3131,7 +3521,10 @@
         "symptomTime=中午（巳至未）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "time-yangming",
@@ -3150,7 +3543,10 @@
         "symptomTime=黄昏（申至戌）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "time-shaoyang",
@@ -3169,7 +3565,10 @@
         "symptomTime=清晨（寅至辰）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "time-sanyin",
@@ -3188,7 +3587,10 @@
         "symptomTime=深夜（子至寅）"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-gui-zhi-source",
@@ -3213,7 +3615,10 @@
         "汗=有汗自汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-ma-huang-source",
@@ -3238,7 +3643,10 @@
         "汗=无汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-ge-gen-source",
@@ -3263,7 +3671,10 @@
         "头身=头痛项强"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-da-qing-long-source",
@@ -3290,7 +3701,10 @@
         "口渴=渴喜冷饮"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-xiao-qing-long-source",
@@ -3317,7 +3731,10 @@
         "汗=无汗"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     },
     {
       "id": "formula-xiao-chai-hu-source",
@@ -3342,7 +3759,10 @@
         "寒热=往来寒热"
       ],
       "reference": [],
-      "exclude": []
+      "exclude": [],
+      "expertStatus": "pending",
+      "reviewNotes": "",
+      "lastReviewedAt": ""
     }
   ],
   "knowledgeItems": [
