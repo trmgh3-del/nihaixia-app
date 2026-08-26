@@ -12,7 +12,7 @@ rows = []
 for case in data.get('cases', []):
     annotations = case.get('expertAnnotations', [])
     engine = case.get('engineResult')
-    if not engine:
+    if not engine or not any(engine.get(k) for k in ('primaryMeridian', 'formulaDirection', 'risk')):
         rows.append((case.get('id'), None)); continue
     def majority(key):
         vals = [a.get(key) for a in annotations if a.get(key) not in ('', [], None)]
@@ -26,3 +26,15 @@ if not completed:
     raise SystemExit(2)
 for key in ('primaryMeridian', 'formulaDirection', 'risk'):
     print(f'{key}: {sum(x[key] for x in completed) / len(completed):.1%}')
+# 风险安全性单独统计：高风险漏报比普通一致率更重要。
+expert_high = 0; engine_high = 0; true_positive = 0
+for case in data.get('cases', []):
+    ann = case.get('expertAnnotations', []); eng = case.get('engineResult') or {}
+    gold = majority_value = Counter(str(a.get('risk')) for a in ann if a.get('risk')).most_common(1)
+    gold_high = bool(gold and gold[0][0] in ('高风险', 'high'))
+    sys_high = eng.get('risk') in ('高风险', 'high')
+    expert_high += int(gold_high); engine_high += int(sys_high); true_positive += int(gold_high and sys_high)
+if expert_high:
+    print(f'high-risk recall: {true_positive / expert_high:.1%}')
+if engine_high:
+    print(f'high-risk precision: {true_positive / engine_high:.1%}')
