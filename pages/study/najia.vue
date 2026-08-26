@@ -18,6 +18,17 @@
       </view>
     </view>
 
+    <view class="time-settings card">
+      <view class="calc-title serif">计算时间设置</view>
+      <view class="setting-line"><text>日期</text><input type="date" v-model="manualDate" /></view>
+      <view class="setting-line"><text>时间</text><input type="time" v-model="manualTime" /></view>
+      <view class="setting-line"><text>时区</text><picker :range="timezoneOptions" @change="timezone = timezoneOptions[$event.detail.value]; tick()"><view class="setting-value">{{ timezone }} ›</view></picker></view>
+      <view class="setting-line"><text>子初换日</text><switch :checked="ziChuChange" @change="ziChuChange = $event.detail.value; tick()" color="#9A2E1F" /></view>
+      <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
+      <view class="calc-note">默认使用系统时间；开启子初换日后，23:00 起按次日干支计算。真太阳时按东八区标准经度作学习性修正。</view>
+      <view class="snapshot-row"><view class="snapshot-btn" @tap="useSystemTime">使用当前时间</view><view class="snapshot-btn" @tap="tick">重新计算</view></view>
+    </view>
+
     <!-- 纳支法补泻开穴 -->
     <view class="buxie">
       <view class="bx-head">
@@ -160,7 +171,7 @@ export default {
     return {
       dayGanIdx: 0, hourIdx: 0, nowHour: 0,
       najiaPoint: '', najiaMeta: '', najiaOpen: false,
-      liveClock: '', fullDay: [], najiaTable: []
+      liveClock: '', fullDay: [], najiaTable: [], manualDate: '', manualTime: '', timezone: 'Asia/Shanghai (UTC+8)', timezoneOptions: ['Asia/Shanghai (UTC+8)', 'Asia/Tokyo (UTC+9)', 'UTC (UTC+0)'], ziChuChange: false, useSolarTime: false
     }
   },
   computed: {
@@ -197,8 +208,21 @@ export default {
   onUnload() { clearInterval(this._timer) },
   methods: {
     goLinggui() { uni.navigateTo({ url: '/pages/study/linggui' }) },
-    calcDayGan() {
-      const d = new Date()
+    getCalcDate() {
+      if (!this.manualDate || !this.manualTime) return new Date()
+      const m = this.timezone.match(/UTC([+-]\\d+)/); const offset = m ? Number(m[1]) : 8
+      const [y, mo, day] = this.manualDate.split('-').map(Number); const [h, min] = this.manualTime.split(':').map(Number)
+      const localOffset = new Date().getTimezoneOffset() * 60000
+      let d = new Date(Date.UTC(y, mo - 1, day, h, min) - offset * 3600000 + localOffset)
+      if (this.useSolarTime) d = new Date(d.getTime() + 4 * 60000)
+      return d
+    },
+    useSystemTime() {
+      const d = new Date(); const p = n => (n < 10 ? '0' + n : n)
+      this.manualDate = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; this.manualTime = `${p(d.getHours())}:${p(d.getMinutes())}`; this.tick()
+    },
+    calcDayGan(date = new Date()) {
+      const d = date
       const y = d.getFullYear(), m = d.getMonth() + 1, day = d.getDate()
       const a = Math.floor((14 - m) / 12)
       const y2 = y + 4800 - a
@@ -211,10 +235,11 @@ export default {
       return Math.floor((h + 1) / 2)
     },
     tick() {
-      const d = new Date()
+      const d = this.getCalcDate()
       const p = n => (n < 10 ? '0' + n : n)
       this.liveClock = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
-      this.dayGanIdx = this.calcDayGan()
+      const dayForGan = this.ziChuChange && d.getHours() >= 23 ? new Date(d.getTime() + 24 * 3600000) : d
+      this.dayGanIdx = this.calcDayGan(dayForGan)
       this.nowHour = d.getHours()
       this.hourIdx = this.getHourIdx(this.nowHour)
       this.calcNajia()
@@ -278,6 +303,14 @@ export default {
 
 <style scoped>
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 80rpx; }
+.time-settings { margin: 20rpx 32rpx 0; padding: 22rpx 26rpx; }
+.setting-line { display: flex; align-items: center; justify-content: space-between; padding: 10rpx 0; border-bottom: 1rpx solid var(--line); color: var(--ink); font-size: 21rpx; }
+.setting-line input { text-align: right; color: var(--ink); font-size: 21rpx; }
+.setting-value { color: var(--brand); }
+.calc-title { color: var(--brand); font-size: 26rpx; font-weight: 800; margin-bottom: 10rpx; }
+.calc-note { color: var(--ink2); font-size: 18rpx; margin-top: 8rpx; line-height: 1.6; }
+.snapshot-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
+.snapshot-btn { flex: 1; text-align: center; border: 1rpx solid var(--line); border-radius: 24rpx; padding: 9rpx 0; color: var(--brand); font-size: 20rpx; }
 
 /* 纳甲法开穴卡 */
 .open-now { margin: 26rpx 32rpx; background: linear-gradient(150deg, var(--hero1), var(--hero2)); border-radius: 26rpx; padding: 32rpx 32rpx 28rpx; position: relative; overflow: hidden; }
