@@ -50,7 +50,7 @@
     <!-- 计算依据 -->
     <view class="basis card">
       <view class="bs-t serif">◈ 灵龟八法计算法</view>
-      <view class="bs-li">● <text class="bs-k">日干支+时干支</text> → 各取洛书数 → 求和 → 阳日 mod 9 / 阴日 mod 6</view>
+      <view class="bs-li">● <text class="bs-k">日干支+时干支</text> → 按干支代数表取数 → 求和 → 阳日 mod 9 / 阴日 mod 6</view>
       <view class="bs-li">● <text class="bs-k">取穴歌</text>：坎一联申脉，照海坤二五，震三属外关，巽四临泣数，乾六是公孙，兑七后溪府，艮八系内关，离九列缺主</view>
       <view class="bs-li">● <text class="bs-k">配穴法</text>：公孙配内关（胃心胸）、后溪配申脉（颈项耳肩）、临泣配外关（目锐眦耳后）、列缺配照海（肺系咽喉）</view>
       <view class="bs-li">● <text class="bs-k">文献</text>：《针灸大成》卷五 + 《子午流注说难》</view>
@@ -85,13 +85,11 @@ const BAGUA = [
   { n: 9, tri: '离', pt: '列缺', mer: '肺经', conf: '任脉', pair: '照海' }
 ]
 
-/* 日干→洛书数（灵龟法） */
-const GAN_NUM = { '甲': 1, '乙': 2, '丙': 3, '丁': 4, '戊': 5, '己': 6, '庚': 7, '辛': 8, '壬': 9, '癸': 10 }
-/* 日支→洛书数 */
-const ZHI_NUM = { '子': 1, '丑': 2, '寅': 3, '卯': 4, '辰': 5, '巳': 6, '午': 7, '未': 8, '申': 9, '酉': 10, '戌': 11, '亥': 12 }
-
-/* 时干→洛书数（同日干） */
-/* 时支→洛书数（同时支） */
+/* 灵龟八法干支代数：日干、日支与时干、时支使用不同的代数表。 */
+function dayGanNum(gan) { return ['甲', '己'].includes(gan) ? 10 : ['乙', '庚'].includes(gan) ? 9 : ['丁', '壬'].includes(gan) ? 8 : 7 }
+function dayZhiNum(zhi) { return ['辰', '戌', '丑', '未'].includes(zhi) ? 10 : ['申', '酉'].includes(zhi) ? 9 : ['寅', '卯'].includes(zhi) ? 8 : 7 }
+function hourGanNum(gan) { return ['甲', '己'].includes(gan) ? 9 : ['乙', '庚'].includes(gan) ? 8 : ['丙', '辛'].includes(gan) ? 7 : ['丁', '壬'].includes(gan) ? 6 : 5 }
+function hourZhiNum(zhi) { return ['子', '午'].includes(zhi) ? 9 : ['丑', '未'].includes(zhi) ? 8 : ['寅', '申'].includes(zhi) ? 7 : ['卯', '酉'].includes(zhi) ? 6 : ['辰', '戌'].includes(zhi) ? 5 : 4 }
 
 function calcDayGanZhi(date) {
   const y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate()
@@ -112,7 +110,7 @@ function calcHourGanZhi(dayGanIdx, hour) {
 }
 
 function calcLingGui(dayGan, dayZhi, hourGan, hourZhi, isYangDay) {
-  const sum = GAN_NUM[dayGan] + ZHI_NUM[dayZhi] + GAN_NUM[hourGan] + ZHI_NUM[hourZhi]
+  const sum = dayGanNum(dayGan) + dayZhiNum(dayZhi) + hourGanNum(hourGan) + hourZhiNum(hourZhi)
   let num
   if (isYangDay) {
     num = sum % 9
