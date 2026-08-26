@@ -120,6 +120,7 @@ node --experimental-default-type=module tools/test_sizhen_runtime.mjs # 编译�
 python3 tools/check_upstream_sync.py                   # 检查上游 main 是否有新提交
 python3 tools/report_sizhen_coverage.py                # 查看知识条目到规则的引用覆盖率
 python3 tools/validate_case_dataset.py                 # 验证 1257 条结构化医案字段
+python3 tools/validate_expert_blind.py tools/expert_blind_cases.schema.json # 验证专家盲测数据格式
 python3 tools/final_audit.py
 # HBuilderX 真机验收请按 tools/HBUILDERX_TEST_CHECKLIST.md 执行                           # 逐行审计（应为 0 缺失）
 ```
