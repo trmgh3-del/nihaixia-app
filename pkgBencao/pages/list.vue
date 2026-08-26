@@ -21,6 +21,10 @@
         <text class="l-a">›</text>
       </view>
     </view>
+    <view class="catbar" v-if="g !== 'intro' && categories.length">
+      <view class="cat-chip" :class="{ on: category === '' }" @tap="category = ''">药类不限</view>
+      <view v-for="c in categories" :key="c" class="cat-chip" :class="{ on: category === c }" @tap="category = category === c ? '' : c">{{ c }}</view>
+    </view>
     <view class="xwbar" v-if="g !== 'intro'">
       <view class="xw-chip" :class="{ on: xw === '' }" @tap="xw = ''">性味不限</view>
       <view v-for="x in xws" :key="x" class="xw-chip" :class="{ on: xw === x }" @tap="xw = xw === x ? '' : x">{{ x }}</view>
@@ -51,7 +55,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', g: '', jing: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
+    return { q: '', g: '', jing: '', category: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
   },
   computed: {
     theme() { return store.theme },
@@ -60,9 +64,11 @@ export default {
       for (const h of this.herbs) for (const j of (h.meridians || [])) if (j && !seen.includes(j)) seen.push(j)
       return seen.slice(0, 16)
     },
+    categories() { return [...new Set(this.herbs.map(h => h.category || h.g).filter(Boolean))].slice(0, 18) },
     shown() {
       let list = this.herbs
       if (this.g) list = list.filter(h => h.g === this.g)
+      if (this.category) list = list.filter(h => (h.category || h.g) === this.category)
       if (this.jing) list = list.filter(h => (h.meridians || []).includes(this.jing))
       if (this.xw) {
         const xw = this.xw
@@ -103,6 +109,9 @@ export default {
 .tabs { display: flex; background: var(--card); padding: 0 20rpx 20rpx; gap: 10rpx; flex-shrink: 0; }
 .tab { text-align: center; font-size: 22rpx; padding: 12rpx 0; border-radius: 28rpx; background: var(--zebra-bg); color: var(--ink2); flex: 1; }
 .tab.on { background: var(--brand); color: #fff; font-weight: 700; }
+.catbar { display: flex; flex-wrap: wrap; padding: 4rpx 24rpx 14rpx; background: var(--card); flex-shrink: 0; }
+.cat-chip { font-size: 20rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 24rpx; padding: 7rpx 18rpx; margin: 0 10rpx 8rpx 0; }
+.cat-chip.on { background: var(--gold); color: #fff; }
 .jingbar { display: flex; flex-wrap: wrap; padding: 4rpx 24rpx 14rpx; background: var(--card); flex-shrink: 0; }
 .j-chip { font-size: 20rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 24rpx; padding: 7rpx 18rpx; margin: 0 10rpx 8rpx 0; }
 .j-chip.on { background: #54427C; color: #fff; }
