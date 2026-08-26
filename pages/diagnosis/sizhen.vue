@@ -441,7 +441,10 @@ export default {
       }
       this.analyzing = true
       try {
-        this.result = await analyzeSizhen(this.pick, this.basic, this.redFlags, this.pulseSource)
+        const raw = await analyzeSizhen(this.pick, this.basic, this.redFlags, this.pulseSource)
+        this.result = Object.assign(EMPTY_RESULT(), raw, {
+          sources: raw.sources || [], kbEvidence: raw.kbEvidence || [], scores: raw.scores || [], meridians: raw.meridians || [], patterns: raw.patterns || [], formulas: raw.formulas || [], formulaDetails: raw.formulaDetails || [], cases: raw.cases || [], acupoints: raw.acupoints || [], zangxiang: raw.zangxiang || [], risk: raw.risk || EMPTY_RESULT().risk
+        })
         this.clearDraft(); this.step = 4
       } catch (e) {
         console.error('四诊分析失败', e)
