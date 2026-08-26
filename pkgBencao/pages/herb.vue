@@ -76,7 +76,12 @@ export default {
       pushHistory({ f: 'bencao', i: this.h.id, t: this.h.n, c: 'herb' })
       loadData('formulas').then(d => {
         const name = this.h.n
-        this.relatedFormulas = (d.items || []).filter(f => String(f.composition || f.origin || '').includes(name)).slice(0, 8)
+        const names = [name, this.h.canonicalName, ...(this.h.aliases || [])].filter(Boolean)
+        this.relatedFormulas = (d.items || []).filter(f => {
+          const hasComponent = (f.components || []).some(c => names.includes(c.name))
+          const textHit = names.some(n => String(f.composition || f.origin || '').includes(n))
+          return hasComponent || textHit
+        }).slice(0, 8)
       }).catch(() => {})
     }
   },

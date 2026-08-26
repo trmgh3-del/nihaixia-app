@@ -125,7 +125,7 @@ export default {
     async openHerb(name) {
       try {
         const d = await loadData('bencao')
-        const herb = (d.herbs || []).find(h => h.n === name || h.canonicalName === name)
+        const herb = (d.herbs || []).find(h => h.n === name || h.canonicalName === name || (h.aliases || []).includes(name))
         if (herb) { store.readerItem = { kind: 'herb', item: herb }; uni.navigateTo({ url: '/pkgBencao/pages/herb' }) }
         else uni.showToast({ title: '未找到本草条目', icon: 'none' })
       } catch (e) { uni.showToast({ title: '本草库加载失败', icon: 'none' }) }
