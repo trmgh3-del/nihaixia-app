@@ -20,6 +20,10 @@
         <view class="s-t serif"><text class="s-orn">▍</text>组成</view>
         <view class="s-v" :style="{ fontSize: fs }">{{ f.composition }}</view>
       </view>
+      <view class="sec card fade-in" v-if="f.components && f.components.length">
+        <view class="s-t serif"><text class="s-orn">▍</text>逐味组成（点击药名查看本草）</view>
+        <view class="component-list"><view class="component-chip" v-for="c in f.components" :key="c.name" @tap="openHerb(c.name)">{{ c.name }}<text v-if="c.dosage"> {{ c.dosage }}</text></view></view>
+      </view>
       <view class="sec card fade-in" v-if="f.origin">
         <view class="s-t serif"><text class="s-orn">▍</text>古代原方 <text class="s-unit">汉朝度量衡 · 1两≈15.6g</text></view>
         <view class="s-v" :style="{ fontSize: fs }">{{ f.origin }}</view>
@@ -118,6 +122,14 @@ export default {
       uni.navigateTo({ url: '/pkgCase/pages/row' })
     },
     switchSegGuard() {},
+    async openHerb(name) {
+      try {
+        const d = await loadData('bencao')
+        const herb = (d.herbs || []).find(h => h.n === name || h.canonicalName === name)
+        if (herb) { store.readerItem = { kind: 'herb', item: herb }; uni.navigateTo({ url: '/pkgBencao/pages/herb' }) }
+        else uni.showToast({ title: '未找到本草条目', icon: 'none' })
+      } catch (e) { uni.showToast({ title: '本草库加载失败', icon: 'none' }) }
+    },
     switchTo(o) {
       this.current = o
       uni.pageScrollTo({ scrollTop: 0 })
@@ -162,6 +174,8 @@ export default {
 .s-orn { color: var(--brand); }
 .s-unit { font-size: 19rpx; color: var(--ink2); font-weight: 400; margin-left: 12rpx; }
 .s-v { font-size: 26rpx; color: var(--ink); line-height: 1.9; text-align: justify; }
+.component-list { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.component-chip { color: var(--brand); background: var(--zebra-bg); border: 1rpx solid var(--line); border-radius: 12rpx; padding: 9rpx 16rpx; font-size: 22rpx; }
 .clinical { color: var(--brand); font-weight: 600; }
 .note { color: var(--ink2); }
 .others { padding: 24rpx 28rpx; margin-bottom: 22rpx; }

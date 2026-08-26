@@ -35,9 +35,11 @@ for item in items:
         item['contraindication'] = uf.get('contraindication', '')
         item['preparation'] = uf.get('dosage', '')
         item['keywords'] = uf.get('keywords', [])
+        item['components'] = uf.get('components', [])
     item.setdefault('zhizhi', item.get('clinical', ''))
     item.setdefault('composition', item.get('origin', ''))
     item.setdefault('doses', '')
+    item.setdefault('components', [])
 current['items'] = items
 fp.write_text(json.dumps(current, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
