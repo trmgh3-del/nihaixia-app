@@ -14,7 +14,7 @@ assert len(rule_ids) == len(set(rule_ids)), 'duplicate rule id'
 assert all(x.get('name') and isinstance(x.get('when'), list) for x in rules['rules']), 'invalid rule schema'
 assert all(not x.get('sourceId') or x['sourceId'] in ids for x in rules['rules']), 'orphan source id'
 assert all(sid in ids for x in rules['rules'] for sid in x.get('sourceIds', [])), 'orphan source ids'
-allowed_fields = {'望色','舌质','舌苔','望神','声音','呼吸','汗','头身','大便','小便','口渴','睡眠','手足温度','胃口','腹满','疼痛','胸腹','耳','妇女','寒热','脉位','脉率','脉形','脉力','复合脉'}
+allowed_fields = {'望色','舌质','舌苔','望神','声音','呼吸','汗','头身','大便','小便','口渴','睡眠','手足温度','胃口','腹满','疼痛','胸腹','耳','妇女','厥热胜复','misTreatment','miscDisease','duration','寒热','脉位','脉率','脉形','脉力','复合脉'}
 for rule in rules['rules']:
     for condition in rule['when']:
         field, sep, value = condition.partition('=')
@@ -37,6 +37,9 @@ cases = [
     ({'舌质':'红', '脉位':'沉', '口渴':'渴喜冷饮'}, '阳明'),
     ({'复合脉':'浮紧'}, '太阳'),
     ({'复合脉':'弦数'}, '少阳'),
+    ({'厥热胜复':'厥多热少（病进）'}, '厥阴'),
+    ({'miscDisease':'胸痹'}, '少阴'),
+    ({'miscDisease':'痰饮咳嗽', '舌苔':'白腻', '大便':'溏泄', '胃口':'差/食少'}, '太阴'),
 ]
 for pick, expected in cases:
     scores = {}

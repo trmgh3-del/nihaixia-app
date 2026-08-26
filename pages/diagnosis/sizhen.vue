@@ -17,6 +17,10 @@
         <view class="opts"><view v-for="o in durationOptions" :key="o" class="opt sm" :class="{ on: basic.duration === o }" @tap="basic.duration = o">{{ o }}</view></view>
         <view class="sub-lab">问诊类型</view>
         <view class="opts"><view v-for="o in caseTypes" :key="o" class="opt sm" :class="{ on: basic.caseType === o }" @tap="basic.caseType = o">{{ o }}</view></view>
+        <view class="sub-lab">已知误治情况（可选）</view>
+        <view class="opts"><view v-for="o in misTreatmentOptions" :key="o" class="opt sm" :class="{ on: basic.misTreatment === o }" @tap="basic.misTreatment = o">{{ o }}</view></view>
+        <view class="sub-lab">金匮杂病类型（可选）</view>
+        <view class="opts"><view v-for="o in miscDiseaseOptions" :key="o" class="opt sm" :class="{ on: basic.miscDisease === o }" @tap="basic.miscDisease = o">{{ o }}</view></view>
         <view class="sub-lab">性别</view>
         <view class="opts"><view v-for="o in ['未说明', '男', '女']" :key="o" class="opt sm" :class="{ on: basic.sex === o }" @tap="basic.sex = o">{{ o }}</view></view>
         <view class="sub-lab">特殊情况</view>
@@ -89,6 +93,10 @@
         <view class="opts">
           <view class="opt sm" v-for="o in q.opts" :key="o" :class="{ on: pick[q.k] === o }" @tap="setPick(q.k, o)">{{ o }}</view>
         </view>
+      </view>
+      <view class="grp card">
+        <view class="g-t serif">⟡ 厥热胜复（厥阴动态，可选）</view>
+        <view class="opts"><view v-for="o in jueReversalOptions" :key="o" class="opt sm" :class="{ on: pick['厥热胜复'] === o }" @tap="setPick('厥热胜复', o)">{{ o }}</view></view>
       </view>
       <view class="nav-row">
         <view class="nav-btn" @tap="step = 1">‹ 上一步</view>
@@ -298,6 +306,9 @@ const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕�
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
 const CASE_TYPES = ['急性外感/感冒', '慢性内伤', '妇科问题', '消化问题', '心肺症状', '不确定']
+const MISTREATMENTS = ['无/不确定', '表证误下·利不止', '无汗误用桂枝·烦躁胸闷', '少阴误汗·亡阳', '厥阴误下·利不止']
+const MISC_DISEASES = ['不适用/未说明', '痉病', '湿病', '中风', '历节', '血痹', '虚劳', '肺痿', '肺痈', '胸痹', '腹满寒疝', '痰饮咳嗽', '消渴']
+const JUE_REVERSALS = ['厥多热少（病进）', '热多厥少（病退）', '厥热相等（病稳）']
 const COMPLEX_PULSES = [
   { k: '浮缓', mer: '太阳', reason: '太阳中风，体虚有汗' }, { k: '浮紧', mer: '太阳', reason: '太阳伤寒，体实无汗' },
   { k: '沉迟', mer: '太阴', reason: '里寒湿、脾阳不足' }, { k: '沉微', mer: '少阴', reason: '阳虚、病由太阴入少阴' },
@@ -312,8 +323,11 @@ export default {
       step: 0,
       stepNames: ['望诊', '闻诊', '问诊', '切诊', '报告'],
       pick: {},
-      basic: { age: '', sex: '未说明', duration: '', caseType: '不确定', pregnant: false, chronic: false },
+      basic: { age: '', sex: '未说明', duration: '', caseType: '不确定', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false },
       caseTypes: CASE_TYPES,
+      misTreatmentOptions: MISTREATMENTS,
+      miscDiseaseOptions: MISC_DISEASES,
+      jueReversalOptions: JUE_REVERSALS,
       complexPulses: COMPLEX_PULSES,
       redFlags: [],
       redFlagOptions: RED_FLAGS,
@@ -334,7 +348,7 @@ export default {
     stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } },
     basicSummary() {
       const b = this.basic
-      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '类型：' + (b.caseType || '不确定'), '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
+      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '类型：' + (b.caseType || '不确定'), b.miscDisease && b.miscDisease !== '不适用/未说明' ? '杂病：' + b.miscDisease : '', b.misTreatment && b.misTreatment !== '无/不确定' ? '误治：' + b.misTreatment : '', '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
     }
   },
   onLoad() {
@@ -361,7 +375,7 @@ export default {
       // 只允许返回已走过的步骤；报告必须先完成辨证，避免出现空白报告。
       if (i <= this.step) this.step = i
     },
-    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
+    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
     toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
     async analyze() {
       if (this.analyzing) return

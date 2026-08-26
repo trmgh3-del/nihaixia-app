@@ -105,6 +105,24 @@ rules = [
  {'id':'transmission-warning','name':'脉微细伴嗜睡提示由太阴入少阴','meridian':'少阴','score':1,'when':['脉形=细','睡眠=但欲寐'],'sourceTitle':'传变预警'},
  {'id':'formula-check-sweat','name':'有汗麻黄禁忌复核','meridian':'','score':0,'when':['汗=有汗自汗'],'sourceTitle':'用药铁律'},
  {'id':'formula-check-shaoyang','name':'少阳三禁复核','meridian':'','score':0,'when':['寒热=往来寒热'],'sourceTitle':'少阳三禁'},
+ # 开阖枢、六经交界与传变动态
+ {'id':'kai-taiyang','name':'太阳为开·表防御','meridian':'太阳','score':1,'when':['脉位=浮'],'sourceTitle':'六经开阖枢'},
+ {'id':'shu-shaoyang','name':'少阳为枢·半表半里','meridian':'少阳','score':1,'when':['寒热=往来寒热'],'sourceTitle':'六经开阖枢'},
+ {'id':'he-yangming','name':'阳明为阖·里热胃家实','meridian':'阳明','score':1,'when':['寒热=但热不寒'],'sourceTitle':'六经开阖枢'},
+ {'id':'taiyin-yangming-diff','name':'太阴阳明鉴别','meridian':'太阴、阳明','score':2,'when':['大便=溏泄','口渴=不渴'],'sourceTitle':'太阴 vs 阳明'},
+ {'id':'taiyin-yangming-hot','name':'太阴阳明鉴别·阳明侧','meridian':'阳明','score':2,'when':['大便=便秘','口渴=渴喜冷饮'],'sourceTitle':'太阴 vs 阳明'},
+ {'id':'taiyin-shaoyin-border','name':'太阴少阴交界','meridian':'太阴、少阴','score':2,'when':['头身=身重困倦','睡眠=但欲寐'],'sourceTitle':'太阴与少阴交界'},
+ {'id':'jue-re-progress','name':'厥多热少·病进','meridian':'厥阴','score':2,'when':['厥热胜复=厥多热少（病进）'],'sourceTitle':'厥热胜复'},
+ {'id':'jue-re-recover','name':'热多厥少·病退','meridian':'厥阴','score':2,'when':['厥热胜复=热多厥少（病退）'],'sourceTitle':'厥热胜复'},
+ {'id':'jue-re-stable','name':'厥热相等·病稳','meridian':'厥阴','score':1,'when':['厥热胜复=厥热相等（病稳）'],'sourceTitle':'厥热胜复'},
+ {'id':'transmission-warning-solar','name':'太阳日久传少阳预警','meridian':'少阳','score':1,'when':['duration=超过2周','寒热=往来寒热'],'sourceTitle':'传变预警'},
+ {'id':'mistreat-lizhong','name':'表证误下利不止·急救复核','meridian':'太阴','score':1,'when':['misTreatment=表证误下·利不止'],'sourceTitle':'误治急救方案'},
+ {'id':'mistreat-siyin','name':'少阴误汗亡阳·急救复核','meridian':'少阴','score':1,'when':['misTreatment=少阴误汗·亡阳'],'sourceTitle':'误治急救方案'},
+ {'id':'misc-chibi','name':'金匮胸痹六经归属','meridian':'少阴、厥阴','score':1,'when':['miscDisease=胸痹'],'sourceTitle':'金匮杂病六经归属'},
+ {'id':'misc-tan-yin','name':'金匮痰饮咳嗽六经归属','meridian':'太阳、太阴','score':1,'when':['miscDisease=痰饮咳嗽'],'sourceTitle':'金匮杂病六经归属'},
+ {'id':'misc-xulao','name':'金匮虚劳六经归属','meridian':'太阴、少阴','score':1,'when':['miscDisease=虚劳'],'sourceTitle':'金匮杂病六经归属'},
+ {'id':'misc-xiaoke','name':'金匮消渴六经归属','meridian':'阳明、少阴','score':1,'when':['miscDisease=消渴'],'sourceTitle':'金匮杂病六经归属'},
+ {'id':'misc-lijie','name':'金匮历节六经归属','meridian':'太阳、少阴','score':1,'when':['miscDisease=历节'],'sourceTitle':'金匮杂病六经归属'},
 ]
 
 # 绑定最接近的原始条目，保留所有条目作为可检索的知识索引。
