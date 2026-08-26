@@ -172,8 +172,13 @@
           <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
           <view class="r-line">知识库匹配条目：{{ result.kbMatches }} 条（仅作为学习证据，不等同于诊断）</view>
         </view>
+        <view class="r-sec" v-if="result.zangxiang.length">
+          <view class="rs-t">藏象倾向（仅供学习）</view>
+          <view class="r-line" v-for="z in result.zangxiang" :key="z.name">● {{ z.name }}：{{ z.hits.join('、') }}（{{ z.meridians.join('、') }}）</view>
+          <view class="basic-hint">藏象倾向不等同于现代医学器官疾病诊断。</view>
+        </view>
         <view class="r-sec" v-if="result.acupoints.length">
-          <view class="rs-t">相关经络/穴位学习（仅供学习）</view>
+          <view class="rs-t">相关经络/穴位学习（仅供学习）</view
           <view class="r-line acupoint-line" v-for="a in result.acupoints" :key="a.id" @tap="openAcupoint(a)">● {{ a.title }}：{{ a.excerpt }} ›</view>
           <view class="basic-hint">穴位资料用于经络学习，不构成针刺、放血、艾灸或自行操作建议。</view>
         </view>
@@ -312,7 +317,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [], acupoints: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [], acupoints: [], zangxiang: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -447,7 +452,7 @@ export default {
     },
     reportText() {
       const r = this.result
-      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.risk.level === 'high' ? '高风险，已停止推荐' : (r.formulas.join('、') || '暂无')), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
+      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '藏象：' + (r.zangxiang || []).map(z => z.name).join('、'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.risk.level === 'high' ? '高风险，已停止推荐' : (r.formulas.join('、') || '暂无')), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
     },
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
