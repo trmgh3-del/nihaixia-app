@@ -195,6 +195,9 @@
           <view class="rs-t">参考方剂方向</view>
           <view class="r-fang serif" v-for="f in result.formulas" :key="f">「{{ f }}」</view>
           <view class="basic-hint">仅为学习用方证提示，不构成购药、煎服或处方依据。</view>
+          <view class="formula-detail" v-for="f in result.formulaDetails" :key="f.name">
+            <text class="formula-name">{{ f.name }}</text><text v-if="f.clinical">主治/依据：{{ f.clinical }}</text><text v-if="f.composition">组成：{{ f.composition }}</text><text v-if="f.caution">禁忌：{{ f.caution }}</text>
+          </view>
         </view>
         <view class="r-sec" v-if="result.risk.level === 'high'">
           <view class="rs-t">紧急处理</view><view class="r-risk">检测到高风险表现，已停止方剂推荐。请立即就医，不要依据本工具自行用药。</view>
@@ -213,7 +216,7 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
-import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases } from '@/utils/sizhen-engine.js'
+import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases, findFormulaDetails } from '@/utils/sizhen-engine.js'
 import { loadData } from '@/utils/data.js'
 import { openMd, openEntry } from '@/utils/routes.js'
 
@@ -289,7 +292,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, cases: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, cases: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -466,10 +469,11 @@ export default {
       const kbEval = await evaluateKnowledgeAsync(p, this.basic)
       MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
-      let sources = []; let cases = []
+      let sources = []; let cases = []; let formulaDetails = []
       try {
         const topMers = scores.slice(0, 3).map(x => x.name)
         ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
+        formulaDetails = await findFormulaDetails(formulas)
       } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
       const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
       sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
@@ -527,6 +531,7 @@ export default {
         meridians: scores.length ? scores.map(x => x.name) : [...mer],
         patterns: patterns.slice(0, 8),
         formulas: [...new Set(formulas)].slice(0, 5),
+        formulaDetails,
         scores,
         selected,
         completeness,
@@ -634,6 +639,8 @@ export default {
 .case-title { color: var(--brand); font-weight: 700; font-size: 22rpx; }
 .case-date { color: var(--ink2); font-size: 18rpx; margin-left: 12rpx; }
 .case-excerpt { color: var(--ink2); font-size: 19rpx; line-height: 1.6; margin-top: 6rpx; }
+.formula-detail { margin-top: 14rpx; padding: 14rpx 18rpx; border-radius: 10rpx; background: var(--zebra-bg); display: flex; flex-direction: column; gap: 6rpx; font-size: 19rpx; color: var(--ink2); line-height: 1.6; }
+.formula-name { color: var(--brand); font-weight: 800; font-size: 22rpx; }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
 .saved-reports { margin-top: 22rpx; padding: 24rpx 28rpx; }
 .saved-item { display: flex; justify-content: space-between; border-top: 1rpx solid var(--line); padding: 14rpx 0; font-size: 20rpx; color: var(--ink2); }

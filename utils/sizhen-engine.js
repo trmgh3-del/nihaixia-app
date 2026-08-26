@@ -79,6 +79,17 @@ export async function findKnowledgeSources(pick) {
   }
 }
 
+export async function findFormulaDetails(names = []) {
+  try {
+    const data = await loadData('formulas')
+    return names.map(name => {
+      const clean = String(name).replace(/（.*?）/g, '').replace(/类.*/, '')
+      const item = (data.items || []).find(x => x.n === clean || x.n.includes(clean))
+      return item ? { name, id: item.id, composition: item.composition || item.组成 || '', clinical: item.clinical || item.主治 || '', caution: item.禁忌 || '' } : { name }
+    })
+  } catch (e) { return names.map(name => ({ name })) }
+}
+
 export async function findSimilarCases(pick, meridians = []) {
   try {
     const data = await loadData('cases_table')
