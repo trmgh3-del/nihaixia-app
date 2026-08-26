@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 rules = json.loads((ROOT / 'static/data/sizhen-rules.json').read_text(encoding='utf-8'))
 assert rules.get('rules'), 'rules must not be empty'
 assert rules.get('knowledgeItems'), 'knowledge index must not be empty'
+assert 'contextItems' in rules, 'context item classification missing'
+assert len(rules['contextItems']) + len({sid for x in rules['rules'] for sid in x.get('sourceIds', [])}) >= len(rules['knowledgeItems']), 'knowledge coverage classification incomplete'
 ids = {x['id'] for x in rules['knowledgeItems']}
 rule_ids = [x.get('id') for x in rules['rules']]
 assert len(rule_ids) == len(set(rule_ids)), 'duplicate rule id'

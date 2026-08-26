@@ -130,6 +130,8 @@ for rule in rules:
     candidates = [x for x in items if rule['sourceTitle'] in x['title']]
     rule['sourceIds'] = [x['id'] for x in candidates]
     rule['sourceId'] = candidates[0]['id'] if candidates else None
-out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items}
+rule_source_ids = {sid for rule in rules for sid in rule.get('sourceIds', []) if sid}
+context_items = [item for item in items if item.get('id') not in rule_source_ids]
+out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items, 'contextItems':context_items}
 (ROOT / 'static/data/sizhen-rules.json').write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding='utf-8')
 print('compiled rules:', len(rules), 'knowledge items:', len(items))

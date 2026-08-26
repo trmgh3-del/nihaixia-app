@@ -14,6 +14,7 @@ uncovered = [x for x in items if x.get('id') not in rule_sources]
 ratio = len(covered) / len(items) * 100 if items else 0
 print(f'knowledge items: {len(items)}')
 print(f'referenced by executable rules: {len(covered)} ({ratio:.1f}%)')
+print(f'context-only items: {len(compiled.get("contextItems", uncovered))}')
 print(f'not directly referenced: {len(uncovered)}')
 for x in uncovered:
     print(f'- {x.get("id")}: {x.get("t")}')
