@@ -17,6 +17,8 @@
         <view class="opts"><view v-for="o in ['未说明', '男', '女']" :key="o" class="opt sm" :class="{ on: basic.sex === o }" @tap="basic.sex = o">{{ o }}</view></view>
         <view class="sub-lab">特殊情况</view>
         <view class="opts"><view class="opt sm" :class="{ on: basic.pregnant }" @tap="basic.pregnant = !basic.pregnant">孕期/备孕</view><view class="opt sm" :class="{ on: basic.chronic }" @tap="basic.chronic = !basic.chronic">有慢性病或正在用药</view></view>
+        <view class="sub-lab">红旗症状（如有请立即就医）</view>
+        <view class="opts"><view v-for="o in redFlagOptions" :key="o" class="opt sm danger-opt" :class="{ on: redFlags.includes(o) }" @tap="toggleRedFlag(o)">{{ o }}</view></view>
         <view class="basic-hint">基本信息仅用于风险提示，不会替代四诊判断；涉及孕期、儿童、高龄、慢性病或正在用药，请优先咨询执业医师。</view>
       </view>
       <view class="grp card">
@@ -131,6 +133,10 @@
           <text :class="'risk-' + result.risk.level">风险：{{ result.risk.label }}</text>
         </view>
         <view class="r-risk" v-if="result.risk.reasons.length">⚠ {{ result.risk.reasons.join('；') }}</view>
+        <view class="r-sec">
+          <view class="rs-t">基本信息</view>
+          <view class="r-line">{{ basicSummary }}</view>
+        </view>
         <view class="r-sec" v-if="result.scores.length">
           <view class="rs-t">六经倾向（按证据排序）</view>
           <view class="r-score" v-for="m in result.scores" :key="m.name"><text class="r-tag mer">{{ m.name }} {{ m.score }}分</text><text class="score-reason">{{ m.reason }}</text></view>
@@ -163,6 +169,10 @@
         <view class="r-actions"><view class="nav-btn" @tap="copyReport">复制报告</view><view class="nav-btn main" @tap="saveReport">保存报告</view></view>
       </view>
       <view class="nav-row"><view class="nav-btn" @tap="step = 0">‹ 返回修改</view><view class="nav-btn" @tap="reset">↺ 重新采集</view></view>
+      <view class="saved-reports card" v-if="savedReports.length">
+        <view class="rs-t">历史报告（最近 {{ savedReports.length }} 份）</view>
+        <view class="saved-item" v-for="(item, i) in savedReports" :key="item.ts"><text>{{ formatReportTime(item.ts) }}</text><text class="saved-del" @tap="removeReport(i)">删除</text></view>
+      </view>
     </view>
   </view>
 </template>
@@ -240,6 +250,7 @@ const STEP_FIELDS = [
   ['脉位', '脉率', '脉形', '脉力']
 ]
 const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] } })
+const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const MERIDIANS = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
 
 export default {
@@ -249,6 +260,9 @@ export default {
       stepNames: ['望诊', '闻诊', '问诊', '切诊', '报告'],
       pick: {},
       basic: { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false },
+      redFlags: [],
+      redFlagOptions: RED_FLAGS,
+      savedReports: [],
       result: EMPTY_RESULT(),
       wangSe: WANG_SE, wangShe: WANG_SHE, wangTai: WANG_TAI, wangShen: WANG_SHEN,
       wenVoice: WEN_VOICE, wenBreath: WEN_BREATH,
@@ -258,30 +272,38 @@ export default {
   },
   computed: {
     theme() { return store.theme },
-    stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } }
+    stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } },
+    basicSummary() {
+      const b = this.basic
+      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
+    }
   },
   onLoad() {
     try {
       const draft = uni.getStorageSync('nx_sizhen_draft')
       if (draft && draft.ts && Date.now() - draft.ts < 24 * 60 * 60 * 1000) {
-        this.pick = draft.pick || {}; this.basic = Object.assign(this.basic, draft.basic || {}); this.step = draft.step || 0
+        this.pick = draft.pick || {}; this.basic = Object.assign(this.basic, draft.basic || {}); this.redFlags = draft.redFlags || []; this.step = Math.min(draft.step || 0, 3)
         uni.showToast({ title: '已恢复上次问诊', icon: 'none' })
       }
     } catch (e) {}
   },
-  onShow() { applyTheme() },
-  onHide() { this.saveDraft() },
+  onShow() {
+    applyTheme()
+    try { this.savedReports = uni.getStorageSync('nx_sizhen_reports') || [] } catch (e) { this.savedReports = [] }
+  },
+  onHide() { if (this.step < 4) this.saveDraft() },
   methods: {
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
     saveDraft() {
-      try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, step: this.step }) } catch (e) {}
+      try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, redFlags: this.redFlags, step: this.step }) } catch (e) {}
     },
     clearDraft() { try { uni.removeStorageSync('nx_sizhen_draft') } catch (e) {} },
     jumpStep(i) {
       // 只允许返回已走过的步骤；报告必须先完成辨证，避免出现空白报告。
       if (i <= this.step) this.step = i
     },
-    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false }; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
+    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false }; this.redFlags = []; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
+    toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
     analyze() {
       if (!Object.keys(this.pick).some(k => this.pick[k])) {
         uni.showToast({ title: '请至少选择一项体征', icon: 'none' })
@@ -385,12 +407,16 @@ export default {
       if (p['脉率'] === '迟' && p['舌苔'] === '黄') conflicts.push('脉迟但苔黄，寒热线索并见')
       if (p['睡眠'] === '但欲寐' && p['脉力'] === '有力') conflicts.push('但欲寐与脉有力需复核')
       const riskReasons = [...conflicts]
+      if (this.redFlags.length) riskReasons.push('红旗症状：' + this.redFlags.join('、'))
       if (['失神', '假神'].includes(p['望神'])) riskReasons.push('神志异常')
       if (['大汗不止', '下利清谷'].includes(p['汗']) || p['大便'] === '下利清谷') riskReasons.push('存在脱液或亡阳风险')
       if (p['手足温度'] === '手脚冰凉' || p['脉力'] === '微') riskReasons.push('阳虚厥逆表现')
       if (this.basic.pregnant) riskReasons.push('孕期/备孕')
       if (this.basic.chronic) riskReasons.push('慢性病或正在用药')
-      const risk = { level: riskReasons.length ? (riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x)) ? 'high' : 'medium') : 'low', label: riskReasons.length ? (riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x)) ? '高风险' : '需复核') : '一般', reasons: riskReasons }
+      if (this.basic.duration && /(?:超过|大于|长期|两周|2周|14天)/.test(this.basic.duration)) riskReasons.push('病程较长，不能仅按急性外感判断')
+      if (this.basic.age && (Number(this.basic.age) < 12 || Number(this.basic.age) >= 65)) riskReasons.push('儿童或高龄')
+      const highRisk = this.redFlags.length > 0 || riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x))
+      const risk = { level: highRisk ? 'high' : riskReasons.length ? 'medium' : 'low', label: highRisk ? '高风险' : riskReasons.length ? '需复核' : '一般', reasons: riskReasons }
 
       // 阴阳总判
       const hasYang = [...bg].some(b => ['表','热','实'].includes(b))
@@ -417,7 +443,7 @@ export default {
     },
     reportText() {
       const r = this.result
-      return ['《四诊合参辨证报告》', '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.formulas.join('、') || '暂无'), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
+      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.formulas.join('、') || '暂无'), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
     },
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
@@ -425,10 +451,16 @@ export default {
     saveReport() {
       try {
         const list = uni.getStorageSync('nx_sizhen_reports') || []
-        list.unshift({ ts: Date.now(), text: this.reportText(), result: this.result })
+        list.unshift({ ts: Date.now(), text: this.reportText(), result: this.result, basic: this.basic, redFlags: this.redFlags })
         uni.setStorageSync('nx_sizhen_reports', list.slice(0, 20))
+        this.savedReports = list.slice(0, 20)
         uni.showToast({ title: '报告已保存', icon: 'success' })
       } catch (e) { uni.showToast({ title: '保存失败', icon: 'none' }) }
+    },
+    formatReportTime(ts) { return new Date(ts).toLocaleString() },
+    removeReport(i) {
+      const list = this.savedReports.slice(); list.splice(i, 1); this.savedReports = list
+      try { uni.setStorageSync('nx_sizhen_reports', list) } catch (e) {}
     }
   }
 }
@@ -448,6 +480,8 @@ export default {
 .basic-row { display: flex; gap: 14rpx; }
 .basic-input { flex: 1; height: 68rpx; line-height: 68rpx; padding: 0 18rpx; box-sizing: border-box; border-radius: 12rpx; background: var(--zebra-bg); color: var(--ink); font-size: 22rpx; }
 .basic-hint { margin-top: 14rpx; color: var(--ink2); font-size: 19rpx; line-height: 1.6; }
+.danger-opt { color: #9A2E1F; border-color: rgba(154,46,31,.2); }
+.danger-opt.on { background: #9A2E1F; color: #fff; }
 .step.on .sp-t { color: var(--brand); font-weight: 700; }
 
 .tab-body { padding: 10rpx 32rpx 0; }
@@ -477,6 +511,9 @@ export default {
 .r-score { display: flex; align-items: center; gap: 14rpx; margin-bottom: 10rpx; }
 .score-reason { font-size: 20rpx; color: var(--ink2); }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.saved-reports { margin-top: 22rpx; padding: 24rpx 28rpx; }
+.saved-item { display: flex; justify-content: space-between; border-top: 1rpx solid var(--line); padding: 14rpx 0; font-size: 20rpx; color: var(--ink2); }
+.saved-del { color: var(--brand); padding-left: 24rpx; }
 .r-sec { margin-bottom: 24rpx; }
 .rs-t { font-size: 24rpx; font-weight: 800; color: var(--ink); margin-bottom: 12rpx; border-left: 5rpx solid var(--gold); padding-left: 14rpx; }
 .r-tags { display: flex; flex-wrap: wrap; gap: 10rpx; }
