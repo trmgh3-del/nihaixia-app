@@ -3,7 +3,7 @@
     <view class="wrap">
       <view class="hero">
         <view class="hero-t serif">接口配置</view>
-        <view class="hero-s">OpenAI 兼容 · DeepSeek / Kimi / 通义 / OpenAI / Ollama</view>
+        <view class="hero-s">OpenAI 兼容 · DeepSeek / Kimi / 通义 / OpenAI / 远程 Ollama</view>
       </view>
 
       <view class="form card fade-in">
@@ -79,8 +79,7 @@ export default {
       models: [
         { label: 'DeepSeek', u: 'https://api.deepseek.com', m: 'deepseek-chat' },
         { label: 'Kimi', u: 'https://api.moonshot.cn/v1', m: 'moonshot-v1-8k' },
-        { label: '通义', u: 'https://dashscope.aliyuncs.com/compatible-mode/v1', m: 'qwen-plus' },
-        { label: 'Ollama', u: 'http://127.0.0.1:11434/v1', m: 'qwen2.5:7b' }
+        { label: '通义', u: 'https://dashscope.aliyuncs.com/compatible-mode/v1', m: 'qwen-plus' }
       ]
     }
   },
@@ -91,6 +90,7 @@ export default {
     testConn() {
       if (this.testing) return
       if (!this.cfg.apiKey) { this.testResult = { ok: false, msg: '请先填写 API Key' }; return }
+      if (/^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:|\/|$)/i.test(this.cfg.baseUrl.trim())) { this.testResult = { ok: false, msg: '浏览器端不支持访问本机地址，请填写可从设备访问的 HTTPS 接口' }; return }
       this.testing = true
       this.testResult = null
       const t0 = Date.now()

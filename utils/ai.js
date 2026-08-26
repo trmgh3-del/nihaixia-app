@@ -77,6 +77,7 @@ async function buildRag(q) {
 export async function chatCompletion(question, onDelta) {
   const cfg = store.ai
   if (!cfg.apiKey) throw new Error('未配置 API Key')
+  if (/^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:|\/|$)/i.test(String(cfg.baseUrl || '').trim())) throw new Error('浏览器端不支持本机地址，请使用可访问的 HTTPS 接口')
   const messages = await buildMessages(question)
   const url = cfg.baseUrl.replace(/\/+$/, '') + '/chat/completions'
   const body = { model: cfg.model, messages, temperature: Number(cfg.temperature) || 0.7, stream: !!cfg.stream }
