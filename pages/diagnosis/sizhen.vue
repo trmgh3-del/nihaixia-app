@@ -180,7 +180,7 @@
         </view>
         <view class="r-sec" v-if="result.scores.length">
           <view class="rs-t">六经倾向（按证据排序）</view>
-          <view class="r-score" v-for="m in result.scores" :key="m.name"><text class="r-tag mer">{{ m.name }} {{ m.score }}分</text><text class="score-reason">{{ m.reason }}</text></view>
+          <view class="r-score" v-for="m in result.scores" :key="m.name"><text class="r-tag mer">{{ m.role }}：{{ m.name }} {{ m.score }}分</text><text class="score-reason">{{ m.reason }}</text></view>
         </view>
         <view class="r-sec">
           <view class="rs-t">本次采集记录</view>
@@ -376,8 +376,14 @@ export default {
     toggleOption(k, v) {
       if (!MULTI_FIELDS.includes(k)) { this.setPick(k, v); return }
       const current = Array.isArray(this.pick[k]) ? this.pick[k].slice() : []
+      const neutral = ['无', '无寒热', '无明显异常', '不适用/未说明']
       const i = current.indexOf(v)
-      if (i >= 0) current.splice(i, 1); else current.push(v)
+      if (i >= 0) current.splice(i, 1)
+      else {
+        if (neutral.includes(v)) current.splice(0, current.length)
+        else neutral.forEach(x => { const j = current.indexOf(x); if (j >= 0) current.splice(j, 1) })
+        current.push(v)
+      }
       this.pick[k] = current
     },
     hasPick(k, v) { return Array.isArray(this.pick[k]) ? this.pick[k].includes(v) : this.pick[k] === v },
@@ -499,7 +505,7 @@ export default {
       // 编译后的知识库规则是唯一主评分源；仅在规则未命中时使用页面兜底判断。
       const kbHasScore = MERIDIANS.some(m => (kbEval.scores[m] || 0) > 0)
       MERIDIANS.forEach(m => { score[m] = kbHasScore ? (kbEval.scores[m] || 0) : score[m] })
-      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score).map((x, i) => ({ ...x, role: i === 0 ? '主证' : i === 1 ? '兼证' : '待排' }))
       const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
       const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
       const completeness = Math.round(completedSteps / STEP_FIELDS.length * 100)
