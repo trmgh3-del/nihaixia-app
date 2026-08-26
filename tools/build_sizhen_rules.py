@@ -34,7 +34,31 @@ rules = [
  {'id':'taiyin-wet','name':'太阴脾虚湿盛','meridian':'太阴','score':3,'when':['舌质=胖大有齿痕','舌苔=白腻'],'sourceTitle':'舌诊速查'},
  {'id':'yangming-dry','name':'阳明腑实舌象','meridian':'阳明','score':3,'when':['舌质=红','舌苔=燥裂'],'sourceTitle':'舌诊速查'},
  {'id':'jueyin-tongue','name':'厥阴寒热错杂舌象','meridian':'厥阴','score':3,'when':['舌质=红','舌苔=薄白'],'sourceTitle':'舌诊速查'},
+ # 知识库复合舌象与真寒假热/真热假寒
+ {'id':'tongue-taiyin-wet','name':'太阴脾虚湿盛舌象','meridian':'太阴','score':3,'when':['舌质=胖大有齿痕','舌苔=白腻'],'sourceTitle':'舌诊速查'},
+ {'id':'tongue-yangming-dry','name':'阳明腑实舌象','meridian':'阳明','score':3,'when':['舌质=红','舌苔=燥裂'],'sourceTitle':'舌诊速查'},
+ {'id':'tongue-shaoyin-cold','name':'少阴寒化兼瘀血舌象','meridian':'少阴','score':2,'when':['舌质=紫暗','舌苔=薄白'],'sourceTitle':'舌诊速查'},
+ {'id':'tongue-shaoyin-hot','name':'少阴热化舌象','meridian':'少阴','score':3,'when':['舌质=红','舌苔=剥落','睡眠=彻夜不眠'],'sourceTitle':'舌诊速查'},
+ {'id':'true-cold-false-hot','name':'真寒假热鉴别','meridian':'','score':0,'when':['舌质=淡白','口渴=渴不欲饮','小便=清长'],'sourceTitle':'真寒假热'},
+ {'id':'true-hot-false-cold','name':'真热假寒鉴别','meridian':'','score':0,'when':['舌质=红','舌苔=燥裂','口渴=渴喜冷饮','小便=短赤'],'sourceTitle':'真热假寒'},
+ # 合病、并病和七步中的关键组合
+ {'id':'hebing-taiyang-yangming','name':'太阳阳明合病','meridian':'太阳、阳明','score':2,'when':['汗=无汗','寒热=恶寒','口渴=渴喜冷饮'],'sourceTitle':'合病'},
+ {'id':'bing-shaoyin-jueyin','name':'少阴厥阴并病','meridian':'少阴、厥阴','score':2,'when':['手足温度=手脚冰凉','舌质=红','舌苔=薄白'],'sourceTitle':'并病'},
+ {'id':'transmission-taiyin-shaoyin','name':'太阴传少阴观察','meridian':'太阴、少阴','score':1,'when':['头身=身重困倦','脉形=细','睡眠=但欲寐'],'sourceTitle':'七步走'},
+ # 用药铁律：只产出安全证据，不直接增加方剂分数
+ {'id':'rule-no-mahuang-with-sweat','name':'有汗不可用麻黄方向','meridian':'','score':0,'when':['汗=有汗自汗'],'sourceTitle':'用药铁律'},
+ {'id':'rule-no-guizhi-without-sweat','name':'无汗不可直接用桂枝方向','meridian':'','score':0,'when':['汗=无汗'],'sourceTitle':'用药铁律'},
+ {'id':'rule-shaoyang-three禁','name':'少阳三禁：不可汗、下、吐','meridian':'','score':0,'when':['寒热=往来寒热'],'sourceTitle':'用药铁律'},
+ {'id':'rule-shaoyin-no-sweat','name':'少阴不可随意发汗','meridian':'','score':0,'when':['睡眠=但欲寐','脉形=细'],'sourceTitle':'用药铁律'},
+ # 闻诊、饮食、二便和心腹证据
+ {'id':'wen-deficiency','name':'闻诊虚证','meridian':'太阴、少阴','score':1,'when':['声音=语声低微','呼吸=呼吸微弱'],'sourceTitle':'诊病十问'},
+ {'id':'wen-excess','name':'闻诊实热','meridian':'阳明','score':1,'when':['声音=语声高亢','呼吸=呼吸气粗'],'sourceTitle':'诊病十问'},
+ {'id':'shaoyang-chest','name':'少阳胸胁苦满','meridian':'少阳','score':2,'when':['疼痛=胸胁苦满','口渴=口苦咽干'],'sourceTitle':'少阳病'},
+ {'id':'taiyin-no-thirst','name':'太阴湿在中焦','meridian':'太阴','score':2,'when':['口渴=不渴','大便=溏泄','胃口=差/食少'],'sourceTitle':'太阴病'},
+ {'id':'shaoyin-urine','name':'少阴下焦虚寒','meridian':'少阴','score':2,'when':['小便=清长','手足温度=手脚冰凉'],'sourceTitle':'少阴病'},
+ {'id':'jueyin-chong','name':'厥阴寒热错杂核心证','meridian':'厥阴','score':3,'when':['口渴=消渴多饮','胃口=饥而不欲食','疼痛=气上撞心/心中疼热'],'sourceTitle':'厥阴病'},
 ]
+
 # 绑定最接近的原始条目，保留所有条目作为可检索的知识索引。
 for rule in rules:
     candidates = [x for x in items if rule['sourceTitle'] in x['title']]
