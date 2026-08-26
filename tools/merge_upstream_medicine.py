@@ -40,6 +40,7 @@ for item in items:
     item.setdefault('composition', item.get('origin', ''))
     item.setdefault('doses', '')
     item.setdefault('components', [])
+    item.setdefault('sources', [])
 current['items'] = items
 fp.write_text(json.dumps(current, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
@@ -50,7 +51,7 @@ up_herbs = read('herbs.json').get('herbs', [])
 for h in up_herbs:
     n = h.get('name','')
     if norm(n) in herb_names: continue
-    herbs.append({'id': 'up_hb_' + norm(n), 'n': n, 'g': h.get('category','其他'), '原文': h.get('original',''), '性味': h.get('nature','') or h.get('flavor',''), '主治': h.get('action',''), '倪注': h.get('ni_note',''), '容川': '', '用量': h.get('dosage',''), '禁忌': h.get('contraindication',''), '口述': h.get('clinical_notes',''), '补注': h.get('historical_notes','') + ('；归经：' + '、'.join(h.get('meridians',[])) if h.get('meridians') else '')})
+    herbs.append({'id': 'up_hb_' + norm(n), 'n': n, 'g': h.get('category','其他'), '原文': h.get('original',''), '性味': h.get('nature','') or h.get('flavor',''), '主治': h.get('action',''), '倪注': h.get('ni_note',''), '容川': '', '用量': h.get('dosage',''), '禁忌': h.get('contraindication',''), '口述': h.get('clinical_notes',''), '补注': h.get('historical_notes','') + ('；归经：' + '、'.join(h.get('meridians',[])) if h.get('meridians') else ''), 'canonicalName': n, 'processing': '', 'natureCategory': h.get('nature_category',''), 'flavor': h.get('flavor',''), 'meridians': h.get('meridians',[]), 'category': h.get('category','其他'), 'aliases': h.get('herb_comparisons',[])[:4], 'sources': ['上游 nihaixia-app']})
     herb_names.add(norm(n))
 up_herb_by_name = {norm(x.get('name')): x for x in up_herbs}
 for herb in herbs:

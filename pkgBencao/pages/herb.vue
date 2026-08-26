@@ -30,7 +30,7 @@
         <view class="k-v oral" :style="{ fontSize: fs }">{{ h['口述'] }}</view>
       </view>
 
-      <view class="r-foot"><text>—— 神农本草经 · 人纪 ——</text></view>
+      <view class="r-foot"><text>—— 神农本草经 · 人纪 ——</text><text v-if="h.sources && h.sources.length" class="r-source">来源：{{ h.sources.join('、') }}</text></view>
     </view>
     <view class="empty-state" v-if="!h">
     <view class="es-orn serif">空</view>
@@ -122,4 +122,5 @@ export default {
 .k-v { font-size: 26rpx; color: var(--ink); line-height: 1.9; text-align: justify; }
 .oral { color: var(--ink2); background: var(--quote-bg); border-radius: 14rpx; padding: 20rpx 24rpx; }
 .r-foot { text-align: center; color: var(--gold); font-size: 21rpx; margin: 40rpx 0; letter-spacing: 4rpx; }
+.r-source { display: block; margin-top: 10rpx; font-size: 18rpx; color: var(--ink2); letter-spacing: 0; }
 </style>
