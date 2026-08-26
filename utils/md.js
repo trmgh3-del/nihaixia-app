@@ -1,0 +1,201 @@
+/* ================= 轻量 Markdown -> 结构块 解析器 =================
+ * 输出块: {ty:'h1'|'h2'|'h3'|'h4'|'p'|'quote'|'ul'|'ol'|'code'|'table'|'hr', ...}
+ * ul/ol: {items:[{lvl,segs}]}  table:{head:[],rows:[[]]}
+ * 段内行内格式 -> segs: [{t:'b'|'i'|'c'|'a'|'txt', v}]
+ */
+
+/* 方剂名词典（启动后注入；渲染时自动把正文方名变为可点击段）
+   用全局对象存储，避免打包器模块实例隔离导致状态不共享 */
+const __FANG_KEY = '__NX_FANGS__'
+export function setFangNames(arr) {
+  const names = (arr || []).filter(n => n && n.length >= 2).sort((a, b) => b.length - a.length)
+  try { uni.setStorageSync('nx_fang_cache', names) } catch (e) { /* noop */ }
+  const g = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : uni)
+  g[__FANG_KEY] = names
+}
+export function getFangNames() {
+  const g = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : uni)
+  if (g[__FANG_KEY]) return g[__FANG_KEY]
+  try { const cached = uni.getStorageSync('nx_fang_cache'); if (cached && cached.length) { g[__FANG_KEY] = cached; return cached } } catch (e) { /* noop */ }
+  return []
+}
+
+export function inlineSegs(s) {
+  const segs = []
+  let rest = String(s == null ? '' : s)
+  const re = /(\*\*([^*]+)\*\*)|(`([^`]+)`)|(\[([^\]]+)\]\(([^)]+)\))|(~~([^~]+)~~)/
+  while (rest) {
+    const m = rest.match(re)
+    if (!m) { segs.push({ t: 'txt', v: rest }); break }
+    if (m.index > 0) segs.push({ t: 'txt', v: rest.slice(0, m.index) })
+    if (m[2] !== undefined) segs.push({ t: 'b', v: m[2] })
+    else if (m[4] !== undefined) segs.push({ t: 'c', v: m[4] })
+    else if (m[6] !== undefined) segs.push({ t: 'a', v: m[6], u: m[7] })
+    else if (m[9] !== undefined) segs.push({ t: 'd', v: m[9] })
+    rest = rest.slice(m.index + m[0].length)
+  }
+  if (!segs.length) segs.push({ t: 'txt', v: '' })
+  const fangs = getFangNames()
+  if (!fangs.length) return segs
+  return linkify(segs, fangs)
+}
+
+/* 把文本段中的方剂名替换为链接段 */
+function linkify(segs, FANG_NAMES) {
+  const out = []
+  segs.forEach(seg => {
+    // 仅处理纯文本段，且需含方剂后缀字（汤/丸/散/丹/饮/膏）才尝试匹配
+    if (seg.t !== 'txt' || !/[汤丸散丹饮膏]/.test(seg.v)) { out.push(seg); return }
+    let rest = seg.v
+    const buf = []
+    let guard = 0
+    while (rest && guard++ < 30) {
+      let hit = null
+      for (const n of FANG_NAMES) {
+        const at = rest.indexOf(n)
+        if (at >= 0) { hit = { n, at }; break }
+      }
+      if (!hit) { buf.push({ t: 'txt', v: rest }); break }
+      if (hit.at > 0) buf.push({ t: 'txt', v: rest.slice(0, hit.at) })
+      buf.push({ t: 'fang', v: hit.n })
+      rest = rest.slice(hit.at + hit.n.length)
+    }
+    buf.forEach(x => out.push(x))
+  })
+  return out
+}
+
+const stripMd = s => String(s || '')
+  .replace(/\*\*([^*]+)\*\*/g, '$1')
+  .replace(/`([^`]+)`/g, '$1')
+
+export function parseMd(md) {
+  const blocks = []
+  if (!md) return blocks
+  const lines = String(md).replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n')
+  let i = 0
+  const flushP = buf => {
+    if (!buf.length) return
+    blocks.push({ ty: 'p', segs: inlineSegs(buf.map(stripLead).join(' ')) })
+  }
+  const stripLead = s => s
+  while (i < lines.length) {
+    let line = lines[i]
+    const t = line.trim()
+    if (!t) { i++; continue }
+    // 代码块
+    if (t.startsWith('```')) {
+      i++
+      const buf = []
+      while (i < lines.length && !lines[i].trim().startsWith('```')) { buf.push(lines[i]); i++ }
+      i++
+      blocks.push({ ty: 'code', text: buf.join('\n') })
+      continue
+    }
+    // 标题
+    let m = t.match(/^(#{1,4})\s+(.*)$/)
+    if (m) {
+      blocks.push({ ty: 'h' + m[1].length, segs: inlineSegs(m[2].replace(/\s*#+\s*$/, '')) })
+      i++; continue
+    }
+    // 分隔线
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(t)) { blocks.push({ ty: 'hr' }); i++; continue }
+    // 表格
+    if (t.startsWith('|') && i + 1 < lines.length && /^\|?[\s:|-]+\|/.test(lines[i + 1].trim())) {
+      const cells = l => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim())
+      const head = cells(t)
+      i += 2
+      const rows = []
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        const cs = cells(lines[i])
+        while (cs.length < head.length) cs.push('')
+        rows.push(cs.slice(0, head.length))
+        i++
+      }
+      blocks.push({ ty: 'table', head, rows })
+      continue
+    }
+    // 引用块
+    if (t.startsWith('>')) {
+      const buf = []
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        buf.push(lines[i].trim().replace(/^>\s?/, ''))
+        i++
+      }
+      const inner = buf.join('\n')
+      // 引用内不再递归表格/标题，按行渲染（保持原味）
+      const tbl = tryInnerTable(inner)
+      if (tbl) { blocks.push(tbl); continue }
+      blocks.push({ ty: 'quote', lines: buf.filter(x => x.trim() !== '').map(x => inlineSegs(x)) })
+      continue
+    }
+    // 无序列表
+    if (/^[-*+]\s+/.test(t)) {
+      const items = []
+      while (i < lines.length) {
+        const lt = lines[i].trim()
+        const lm = lt.match(/^([-*+])\s+(.*)$/)
+        if (!lm) break
+        const indent = lines[i].length - lines[i].trimStart().length
+        items.push({ lvl: indent >= 2 ? 1 : 0, segs: inlineSegs(lm[2]) })
+        i++
+      }
+      blocks.push({ ty: 'ul', items })
+      continue
+    }
+    // 有序列表
+    if (/^\d+[.、]\s+/.test(t)) {
+      const items = []
+      while (i < lines.length) {
+        const lt = lines[i].trim()
+        const lm = lt.match(/^(\d+)[.、]\s+(.*)$/)
+        if (!lm) break
+        const indent = lines[i].length - lines[i].trimStart().length
+        items.push({ lvl: indent >= 2 ? 1 : 0, n: lm[1], segs: inlineSegs(lm[2]) })
+        i++
+      }
+      blocks.push({ ty: 'ol', items })
+      continue
+    }
+    // 段落（合并至空行）
+    const buf = []
+    while (i < lines.length && lines[i].trim() !== '' &&
+      !/^(#{1,4}\s|>|[-*+]\s|\d+[.、]\s|```|\|)/.test(lines[i].trim())) {
+      buf.push(lines[i].trim())
+      i++
+    }
+    if (buf.length) {
+      const joined = buf.join(' ')
+      // 「**字段**：值」单行 -> kv 块，视觉更佳
+      const kv = joined.match(/^\*\*([^*]{1,12})\*\*[：:]\s*(.*)$/)
+      if (kv && joined.length < 400) blocks.push({ ty: 'kv', k: kv[1], segs: inlineSegs(kv[2]) })
+      else {
+        // 中文长段落：首行缩进两字（古典排版）
+        const plain = joined.replace(/\*\*?/g, '')
+        const ind = plain.length > 50 && /^[\u4e00-\u9fa5「《（]/.test(plain)
+        blocks.push({ ty: 'p', segs: inlineSegs(joined), ind })
+      }
+    } else {
+      i++
+    }
+  }
+  return blocks
+}
+
+function tryInnerTable(inner) {
+  const ls = inner.split('\n').filter(x => x.trim())
+  if (ls.length >= 3 && ls.every(x => x.trim().startsWith('|'))) {
+    const cells = l => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim())
+    const head = cells(ls[0])
+    if (/^[\s:|-]+$/.test(ls[1])) {
+      const rows = ls.slice(2).map(cells)
+      return { ty: 'table', head, rows }
+    }
+  }
+  return null
+}
+
+export function plainText(md, max = 120) {
+  const s = stripMd(String(md || '')).replace(/[#>`|*\-]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return s.slice(0, max)
+}

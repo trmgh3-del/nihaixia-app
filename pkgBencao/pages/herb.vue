@@ -1,0 +1,97 @@
+<template>
+  <view class="page" :class="theme === 'dark' ? 'tdark' : 'tlight'">
+    <view class="hero" v-if="h">
+      <view class="h-name serif">{{ h.n }}</view>
+      <view class="h-flags">
+        <view class="h-tag" :class="gradeClass">{{ h.g }}</view>
+        <view class="h-fav" @tap="doFav">{{ fav ? '★' : '☆' }}</view>
+      </view>
+    </view>
+
+    <view class="body" v-if="h">
+      <view class="kv card fade-in" v-for="f in fields" :key="f.k">
+        <view class="k-head">
+          <text class="k-orn">▍</text>
+          <text class="k-t serif">{{ f.k }}</text>
+        </view>
+        <view class="k-v" :style="{ fontSize: fs }">{{ f.v }}</view>
+      </view>
+
+      <view class="kv card fade-in" v-if="h['口述']">
+        <view class="k-head">
+          <text class="k-orn">▍</text>
+          <text class="k-t serif">倪师临床口述</text>
+          <text class="k-badge">视频讲义</text>
+        </view>
+        <view class="k-v oral" :style="{ fontSize: fs }">{{ h['口述'] }}</view>
+      </view>
+
+      <view class="r-foot"><text>—— 神农本草经 · 人纪 ——</text></view>
+    </view>
+    <view class="empty-state" v-if="!h">
+    <view class="es-orn serif">空</view>
+    <view class="es-t">请从「神农本草」列表选择药物进入</view>
+    <view class="es-btn" @tap="goBack">‹ 返回</view>
+  </view>
+</view>
+</template>
+
+<script>
+import { store, isFav, toggleFav, pushHistory , applyTheme } from '@/utils/store.js'
+
+export default {
+  onShow() { applyTheme() },
+  data() {
+    return { favState: false }
+  },
+  computed: {
+    theme() { return store.theme },
+    h() { const r = store.readerItem; return r && r.kind === 'herb' ? r.item : null },
+    fav() { return this.h ? isFav('bencao', this.h.id) : false },
+    fields() {
+      const h = this.h
+      if (!h) return []
+      return ['原文', '性味', '主治', '倪注', '容川', '用量', '禁忌', '补注']
+        .filter(k => h[k] && String(h[k]).trim())
+        .map(k => ({ k, v: h[k] }))
+    },
+    gradeClass() { return this.h && this.h.g === '上经' ? 'up' : this.h && this.h.g === '中经' ? 'mid' : 'down' },
+    fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
+  },
+  mounted() {
+    if (this.h) {
+      uni.setNavigationBarTitle({ title: this.h.n , fail: () => {} })
+      pushHistory({ f: 'bencao', i: this.h.id, t: this.h.n, c: 'herb' })
+    }
+  },
+  methods: {
+    goBack() { uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) }) },
+    doFav() {
+      const added = toggleFav({ f: 'bencao', i: this.h.id, t: this.h.n, s: (this.h['主治'] || '').slice(0, 60), c: 'herb' })
+      uni.showToast({ title: added ? '已收藏' : '已取消', icon: 'none' })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.empty-state { display: flex; flex-direction: column; align-items: center; padding: 220rpx 60rpx; }
+.es-orn { width: 120rpx; height: 120rpx; border: 4rpx solid var(--line); border-radius: 24rpx; color: var(--gold); opacity: .5; font-size: 52rpx; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.es-t { font-size: 25rpx; color: var(--ink2); margin-top: 30rpx; }
+.es-btn { margin-top: 40rpx; font-size: 24rpx; color: var(--brand); border: 2rpx solid var(--brand); border-radius: 40rpx; padding: 12rpx 60rpx; font-weight: 700; }
+.page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
+.hero { background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 52rpx; display: flex; align-items: center; }
+.h-name { font-size: 54rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
+.h-flags { margin-left: auto; display: flex; align-items: center; }
+.h-tag { font-size: 22rpx; border-radius: 10rpx; padding: 6rpx 18rpx; background: rgba(253,248,238,.2); color: #FDF8EE; border: 1rpx solid rgba(253,248,238,.5); }
+.h-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
+.body { margin-top: -26rpx; padding: 0 32rpx; }
+.kv { padding: 28rpx 30rpx; margin-bottom: 22rpx; }
+.k-head { display: flex; align-items: center; margin-bottom: 14rpx; }
+.k-orn { color: var(--brand); font-size: 26rpx; }
+.k-t { font-size: 29rpx; font-weight: 800; color: var(--ink); margin-left: 10rpx; }
+.k-badge { margin-left: auto; font-size: 19rpx; color: var(--gold); border: 1rpx solid var(--gold); border-radius: 8rpx; padding: 2rpx 12rpx; }
+.k-v { font-size: 26rpx; color: var(--ink); line-height: 1.9; text-align: justify; }
+.oral { color: var(--ink2); background: var(--quote-bg); border-radius: 14rpx; padding: 20rpx 24rpx; }
+.r-foot { text-align: center; color: var(--gold); font-size: 21rpx; margin: 40rpx 0; letter-spacing: 4rpx; }
+</style>
