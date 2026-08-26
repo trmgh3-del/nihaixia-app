@@ -4,12 +4,21 @@
     <view class="steps">
       <view class="step" v-for="(s, i) in stepNames" :key="i" :class="{ on: step === i, done: step > i }" @tap="jumpStep(i)">
         <view class="sp-num serif">{{ i + 1 }}</view>
-        <view class="sp-t">{{ s }}</view>
+        <view class="sp-t">{{ s }}<text class="step-count" v-if="i < 4">{{ stepCount(i) }}</text></view>
       </view>
     </view>
 
     <!-- ===== 1 望诊 ===== -->
     <view v-if="step === 0" class="tab-body fade-in">
+      <view class="grp card basic-card">
+        <view class="g-t serif">⟡ 基本信息（可选）</view>
+        <view class="basic-row"><input v-model="basic.age" type="number" placeholder="年龄" class="basic-input" /><input v-model="basic.duration" placeholder="症状持续时间" class="basic-input" /></view>
+        <view class="sub-lab">性别</view>
+        <view class="opts"><view v-for="o in ['未说明', '男', '女']" :key="o" class="opt sm" :class="{ on: basic.sex === o }" @tap="basic.sex = o">{{ o }}</view></view>
+        <view class="sub-lab">特殊情况</view>
+        <view class="opts"><view class="opt sm" :class="{ on: basic.pregnant }" @tap="basic.pregnant = !basic.pregnant">孕期/备孕</view><view class="opt sm" :class="{ on: basic.chronic }" @tap="basic.chronic = !basic.chronic">有慢性病或正在用药</view></view>
+        <view class="basic-hint">基本信息仅用于风险提示，不会替代四诊判断；涉及孕期、儿童、高龄、慢性病或正在用药，请优先咨询执业医师。</view>
+      </view>
       <view class="grp card">
         <view class="g-t serif">⟡ 望色（面色）</view>
         <view class="opts">
@@ -117,6 +126,19 @@
     <view v-if="step === 4" class="tab-body fade-in">
       <view class="report card">
         <view class="r-t serif">⟡ 四诊合参 · 辨证报告</view>
+        <view class="report-meta">
+          <text>采集完整度：{{ result.completeness }}%</text>
+          <text :class="'risk-' + result.risk.level">风险：{{ result.risk.label }}</text>
+        </view>
+        <view class="r-risk" v-if="result.risk.reasons.length">⚠ {{ result.risk.reasons.join('；') }}</view>
+        <view class="r-sec" v-if="result.scores.length">
+          <view class="rs-t">六经倾向（按证据排序）</view>
+          <view class="r-score" v-for="m in result.scores" :key="m.name"><text class="r-tag mer">{{ m.name }} {{ m.score }}分</text><text class="score-reason">{{ m.reason }}</text></view>
+        </view>
+        <view class="r-sec">
+          <view class="rs-t">本次采集记录</view>
+          <view class="r-line" v-for="x in result.selected" :key="x">● {{ x }}</view>
+        </view>
         <view class="r-sec">
           <view class="rs-t">八纲判定</view>
           <view class="r-tags">
@@ -137,11 +159,10 @@
           <view class="rs-t">参考方剂方向</view>
           <view class="r-fang serif" v-for="f in result.formulas" :key="f">「{{ f }}」</view>
         </view>
-        <view class="r-warn">⚠ 四诊合参仅供学习参考，非诊断结论。临床请由执业医师面诊；急重症立即就医。</view>
+        <view class="r-warn">⚠ 四诊合参仅供学习参考，非诊断结论。临床请由执业医师面诊；急重症立即就医。涉及附子、麻黄、细辛等峻药，严禁据此自行购药服用。</view>
+        <view class="r-actions"><view class="nav-btn" @tap="copyReport">复制报告</view><view class="nav-btn main" @tap="saveReport">保存报告</view></view>
       </view>
-      <view class="nav-row">
-        <view class="nav-btn" @tap="reset">↺ 重新采集</view>
-      </view>
+      <view class="nav-row"><view class="nav-btn" @tap="step = 0">‹ 返回修改</view><view class="nav-btn" @tap="reset">↺ 重新采集</view></view>
     </view>
   </view>
 </template>
@@ -212,28 +233,55 @@ const QIE_LI = [
   { k: '有力', bagang: '实证' }, { k: '无力', bagang: '虚证' }, { k: '微', bagang: '阳虚' }
 ]
 
+const STEP_FIELDS = [
+  ['望色', '舌质', '舌苔', '望神'],
+  ['声音', '呼吸'],
+  TEN_Q.map(q => q.k),
+  ['脉位', '脉率', '脉形', '脉力']
+]
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] } })
+const MERIDIANS = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
+
 export default {
   data() {
     return {
       step: 0,
       stepNames: ['望诊', '闻诊', '问诊', '切诊', '报告'],
       pick: {},
-      result: { bagang: [], meridians: [], patterns: [], formulas: [] },
+      basic: { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false },
+      result: EMPTY_RESULT(),
       wangSe: WANG_SE, wangShe: WANG_SHE, wangTai: WANG_TAI, wangShen: WANG_SHEN,
       wenVoice: WEN_VOICE, wenBreath: WEN_BREATH,
       tenQ: TEN_Q,
       qieWei: QIE_WEI, qieShuai: QIE_SHUAI, qieXing: QIE_XING, qieLi: QIE_LI
     }
   },
-  computed: { theme() { return store.theme } },
+  computed: {
+    theme() { return store.theme },
+    stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } }
+  },
+  onLoad() {
+    try {
+      const draft = uni.getStorageSync('nx_sizhen_draft')
+      if (draft && draft.ts && Date.now() - draft.ts < 24 * 60 * 60 * 1000) {
+        this.pick = draft.pick || {}; this.basic = Object.assign(this.basic, draft.basic || {}); this.step = draft.step || 0
+        uni.showToast({ title: '已恢复上次问诊', icon: 'none' })
+      }
+    } catch (e) {}
+  },
   onShow() { applyTheme() },
+  onHide() { this.saveDraft() },
   methods: {
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
+    saveDraft() {
+      try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, step: this.step }) } catch (e) {}
+    },
+    clearDraft() { try { uni.removeStorageSync('nx_sizhen_draft') } catch (e) {} },
     jumpStep(i) {
       // 只允许返回已走过的步骤；报告必须先完成辨证，避免出现空白报告。
       if (i <= this.step) this.step = i
     },
-    reset() { this.pick = {}; this.result = { bagang: [], meridians: [], patterns: [], formulas: [] }; this.step = 0 },
+    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false }; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
     analyze() {
       if (!Object.keys(this.pick).some(k => this.pick[k])) {
         uni.showToast({ title: '请至少选择一项体征', icon: 'none' })
@@ -307,6 +355,43 @@ export default {
       if (p['脉力'] === '有力') bg.add('实')
       if (p['脉力'] === '无力') bg.add('虚')
 
+      // 证据评分：问诊/切诊权重高于一般望闻信息，并保留理由供报告复核。
+      const score = {}; const reasons = {}
+      MERIDIANS.forEach(m => { score[m] = 0; reasons[m] = [] })
+      const addScore = (m, n, why) => { score[m] += n; if (why && !reasons[m].includes(why)) reasons[m].push(why) }
+      const rules = {
+        '望色': { '面色黄': ['太阴', 1, '面色黄'], '面色黑': ['少阴', 1, '面色黑'], '面色赤': ['阳明', 1, '面色赤'] },
+        '舌苔': { '黄': ['阳明', 2, '苔黄'], '黄腻': ['阳明', 1, '苔黄腻'], '白腻': ['太阴', 2, '苔白腻'] },
+        '汗': { '无汗': ['太阳', 2, '无汗'], '有汗自汗': ['太阳', 2, '自汗'], '大汗不止': ['少阴', 2, '大汗不止'] },
+        '寒热': { '恶寒': ['太阳', 3, '恶寒'], '恶风': ['太阳', 2, '恶风'], '往来寒热': ['少阳', 3, '往来寒热'], '但热不寒': ['阳明', 3, '但热不寒'] },
+        '大便': { '便秘': ['阳明', 3, '便秘'], '下利清谷': ['少阴', 3, '下利清谷'], '黏滞不爽': ['太阴', 2, '便黏滞'] },
+        '口渴': { '渴喜冷饮': ['阳明', 2, '渴喜冷饮'], '消渴多饮': ['厥阴', 3, '消渴'] },
+        '睡眠': { '但欲寐': ['少阴', 3, '但欲寐'] },
+        '手足温度': { '手脚冰凉': ['少阴', 3, '手脚冰凉'], '手心热脚凉': ['厥阴', 3, '上热下寒'], '脚凉手温': ['太阴', 2, '脚凉手温'] },
+        '头身': { '头痛项强': ['太阳', 2, '头项强痛'], '身痛骨节痛': ['太阳', 2, '身痛骨节痛'], '身重困倦': ['太阴', 2, '身重困倦'], '头晕目眩': ['少阳', 1, '头晕目眩'] },
+        '脉位': { '浮': ['太阳', 3, '脉浮'], '沉': ['少阴', 2, '脉沉'] },
+        '脉率': { '迟': ['少阴', 2, '脉迟'], '数': ['阳明', 2, '脉数'] },
+        '脉形': { '弦': ['少阳', 2, '脉弦'], '细': ['少阴', 2, '脉细'], '滑': ['阳明', 1, '脉滑'], '洪': ['阳明', 2, '脉洪'] },
+        '脉力': { '有力': ['阳明', 1, '脉有力'], '无力': ['少阴', 2, '脉无力'], '微': ['少阴', 3, '脉微'] }
+      }
+      Object.keys(rules).forEach(k => { const rule = rules[k][p[k]]; if (rule) addScore(rule[0], rule[1], rule[2]) })
+      mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
+      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: reasons[name].slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+      const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
+      const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
+      const completeness = Math.round(completedSteps / STEP_FIELDS.length * 100)
+      const conflicts = []
+      if (p['口渴'] === '渴喜冷饮' && ['白腻', '薄白'].includes(p['舌苔'])) conflicts.push('口渴喜冷饮但舌苔偏寒湿，寒热线索并见')
+      if (p['脉率'] === '迟' && p['舌苔'] === '黄') conflicts.push('脉迟但苔黄，寒热线索并见')
+      if (p['睡眠'] === '但欲寐' && p['脉力'] === '有力') conflicts.push('但欲寐与脉有力需复核')
+      const riskReasons = [...conflicts]
+      if (['失神', '假神'].includes(p['望神'])) riskReasons.push('神志异常')
+      if (['大汗不止', '下利清谷'].includes(p['汗']) || p['大便'] === '下利清谷') riskReasons.push('存在脱液或亡阳风险')
+      if (p['手足温度'] === '手脚冰凉' || p['脉力'] === '微') riskReasons.push('阳虚厥逆表现')
+      if (this.basic.pregnant) riskReasons.push('孕期/备孕')
+      if (this.basic.chronic) riskReasons.push('慢性病或正在用药')
+      const risk = { level: riskReasons.length ? (riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x)) ? 'high' : 'medium') : 'low', label: riskReasons.length ? (riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x)) ? '高风险' : '需复核') : '一般', reasons: riskReasons }
+
       // 阴阳总判
       const hasYang = [...bg].some(b => ['表','热','实'].includes(b))
       const hasYin = [...bg].some(b => ['里','寒','虚'].includes(b))
@@ -315,13 +400,35 @@ export default {
       else if (hasYang && hasYin) bg.add('寒热错杂')
 
       // 去重
+      if (conflicts.length) patterns.unshift('输入复核：' + conflicts.join('；'))
+      if (!scores.length) patterns.unshift('当前信息不足，暂不能形成明确六经倾向，请补充寒热、汗、二便、胃口及脉象。')
       this.result = {
         bagang: [...bg],
-        meridians: [...mer],
+        meridians: scores.length ? scores.map(x => x.name) : [...mer],
         patterns: patterns.slice(0, 8),
-        formulas: [...new Set(formulas)].slice(0, 5)
+        formulas: [...new Set(formulas)].slice(0, 5),
+        scores,
+        selected,
+        completeness,
+        risk
       }
+      this.clearDraft()
       this.step = 4
+    },
+    reportText() {
+      const r = this.result
+      return ['《四诊合参辨证报告》', '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.formulas.join('、') || '暂无'), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
+    },
+    copyReport() {
+      uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
+    },
+    saveReport() {
+      try {
+        const list = uni.getStorageSync('nx_sizhen_reports') || []
+        list.unshift({ ts: Date.now(), text: this.reportText(), result: this.result })
+        uni.setStorageSync('nx_sizhen_reports', list.slice(0, 20))
+        uni.showToast({ title: '报告已保存', icon: 'success' })
+      } catch (e) { uni.showToast({ title: '保存失败', icon: 'none' }) }
     }
   }
 }
@@ -337,6 +444,10 @@ export default {
 .step.on .sp-num { border-color: var(--brand); background: var(--brand); color: #FDF8EE; }
 .step.done .sp-num { border-color: var(--gold); background: var(--gold); color: #fff; }
 .sp-t { font-size: 18rpx; color: var(--ink2); margin-top: 6rpx; }
+.step-count { display: block; font-size: 16rpx; color: var(--gold); margin-top: 3rpx; }
+.basic-row { display: flex; gap: 14rpx; }
+.basic-input { flex: 1; height: 68rpx; line-height: 68rpx; padding: 0 18rpx; box-sizing: border-box; border-radius: 12rpx; background: var(--zebra-bg); color: var(--ink); font-size: 22rpx; }
+.basic-hint { margin-top: 14rpx; color: var(--ink2); font-size: 19rpx; line-height: 1.6; }
 .step.on .sp-t { color: var(--brand); font-weight: 700; }
 
 .tab-body { padding: 10rpx 32rpx 0; }
@@ -359,7 +470,13 @@ export default {
 
 /* 报告 */
 .report { padding: 32rpx 30rpx; }
-.r-t { font-size: 32rpx; font-weight: 800; color: var(--brand); margin-bottom: 24rpx; text-align: center; }
+.r-t { font-size: 32rpx; font-weight: 800; color: var(--brand); margin-bottom: 18rpx; text-align: center; }
+.report-meta { display: flex; justify-content: space-between; font-size: 21rpx; color: var(--ink2); margin-bottom: 16rpx; }
+.risk-low { color: #3F6B37; }.risk-medium { color: #A2651B; }.risk-high { color: #9A2E1F; font-weight: 800; }
+.r-risk { color: #9A2E1F; background: #F5E8E8; padding: 14rpx 18rpx; border-radius: 10rpx; font-size: 21rpx; line-height: 1.7; margin-bottom: 20rpx; }
+.r-score { display: flex; align-items: center; gap: 14rpx; margin-bottom: 10rpx; }
+.score-reason { font-size: 20rpx; color: var(--ink2); }
+.r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
 .r-sec { margin-bottom: 24rpx; }
 .rs-t { font-size: 24rpx; font-weight: 800; color: var(--ink); margin-bottom: 12rpx; border-left: 5rpx solid var(--gold); padding-left: 14rpx; }
 .r-tags { display: flex; flex-wrap: wrap; gap: 10rpx; }

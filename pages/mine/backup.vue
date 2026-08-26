@@ -30,7 +30,7 @@
 <script>
 import { store, applyTheme, initSettings } from '@/utils/store.js'
 
-const KEYS = ['nx_fav', 'nx_hist', 'nx_notes', 'nx_flash', 'nx_recite', 'nx_health', 'nx_shist', 'nx_theme', 'nx_font', 'nx_fontfam']
+const KEYS = ['nx_fav', 'nx_hist', 'nx_notes', 'nx_flash', 'nx_recite', 'nx_health', 'nx_shist', 'nx_sizhen_reports', 'nx_sizhen_draft', 'nx_theme', 'nx_font', 'nx_fontfam']
 
 export default {
   data() {
