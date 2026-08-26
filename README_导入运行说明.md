@@ -113,6 +113,7 @@ nihaixia-app/
 git clone https://github.com/jangviktor-web/nihaixia /tmp/repo
 python3 tools/build_data.py /tmp/repo static/data    # 重建全部 JSON
 python3 tools/build_sizhen_rules.py                    # 编译四诊可执行规则
+python3 tools/normalize_medicine_schema.py               # 统一方剂/本草字段
 python3 tools/test_sizhen_rules.py                     # 规则结构+六经回归样例检查
 python3 tools/test_sizhen_architecture.py              # 检查页面是否仍有旧辨证逻辑
 node --experimental-default-type=module tools/test_sizhen_safety.mjs # 方剂安全过滤回归检查
