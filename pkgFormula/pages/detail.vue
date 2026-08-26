@@ -32,6 +32,14 @@
         <view class="s-t serif"><text class="s-orn">▍</text>倪师临床剂量 <text class="s-unit">台湾制 · 1钱≈3.75g</text></view>
         <view class="s-v clinical" :style="{ fontSize: fs }">{{ f.clinical }}</view>
       </view>
+      <view class="sec card fade-in" v-if="f.preparation">
+        <view class="s-t serif"><text class="s-orn">▍</text>煎服法</view>
+        <view class="s-v" :style="{ fontSize: fs }">{{ f.preparation }}</view>
+      </view>
+      <view class="sec card fade-in danger-card" v-if="f.contraindication">
+        <view class="s-t serif"><text class="s-orn">▍</text>禁忌与风险</view>
+        <view class="s-v caution" :style="{ fontSize: fs }">{{ f.contraindication }}</view>
+      </view>
       <view class="sec card fade-in" v-if="f.doses">
         <view class="s-t serif"><text class="s-orn">▍</text>逐味剂量（原文）</view>
         <view class="s-v" :style="{ fontSize: fs }">{{ f.doses }}</view>
@@ -177,6 +185,8 @@ export default {
 .component-list { display: flex; flex-wrap: wrap; gap: 12rpx; }
 .component-chip { color: var(--brand); background: var(--zebra-bg); border: 1rpx solid var(--line); border-radius: 12rpx; padding: 9rpx 16rpx; font-size: 22rpx; }
 .clinical { color: var(--brand); font-weight: 600; }
+.danger-card { border: 2rpx solid rgba(154,46,31,.35); }
+.caution { color: #9A2E1F; }
 .note { color: var(--ink2); }
 .others { padding: 24rpx 28rpx; margin-bottom: 22rpx; }
 .o-t { font-size: 24rpx; font-weight: 700; color: var(--ink2); margin-bottom: 14rpx; }
