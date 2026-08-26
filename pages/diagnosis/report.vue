@@ -4,7 +4,7 @@
     <view class="report card" v-if="report">
       <view class="report-time">{{ formatTime(report.ts) }}</view>
       <text class="report-text">{{ report.text }}</text>
-      <view class="actions"><view class="btn main" @tap="copy">复制完整报告</view><view class="btn" @tap="goBack">返回</view></view>
+      <view class="actions"><view class="btn main" @tap="copy">复制完整报告</view><view class="btn" @tap="restore">恢复为当前问诊</view><view class="btn" @tap="goBack">返回</view></view>
     </view>
     <view class="empty" v-else>未找到历史报告</view>
   </view>
@@ -18,6 +18,11 @@ export default {
   methods: {
     formatTime(ts) { return ts ? new Date(ts).toLocaleString() : '' },
     copy() { if (this.report) uni.setClipboardData({ data: this.report.text, success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) }) },
+    restore() {
+      if (!this.report || !this.report.pick) { uni.showToast({ title: '该报告没有可恢复的采集记录', icon: 'none' }); return }
+      uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.report.pick, basic: this.report.basic || {}, redFlags: this.report.redFlags || [], pulseSource: this.report.pulseSource || '不确定', step: 0 })
+      uni.navigateTo({ url: '/pages/diagnosis/sizhen' })
+    },
     goBack() { uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/diagnosis/diagnosis' }) }) }
   }
 }

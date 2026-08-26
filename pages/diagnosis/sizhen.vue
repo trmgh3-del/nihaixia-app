@@ -471,7 +471,7 @@ export default {
     saveReport() {
       try {
         const list = uni.getStorageSync('nx_sizhen_reports') || []
-        list.unshift({ ts: Date.now(), text: this.reportText(), result: this.result, basic: this.basic, redFlags: this.redFlags })
+        list.unshift({ ts: Date.now(), text: this.reportText(), result: this.result, pick: JSON.parse(JSON.stringify(this.pick)), basic: this.basic, redFlags: this.redFlags, pulseSource: this.pulseSource })
         uni.setStorageSync('nx_sizhen_reports', list.slice(0, 20))
         this.savedReports = list.slice(0, 20)
         uni.showToast({ title: '报告已保存', icon: 'success' })
