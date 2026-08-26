@@ -12,6 +12,15 @@
         "寒热=恶寒"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -24,6 +33,15 @@
         "寒热=恶风"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -36,6 +54,15 @@
         "脉形=紧"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -48,6 +75,14 @@
         "口渴=渴喜冷饮"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -60,6 +95,14 @@
         "脉形=洪"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -72,6 +115,15 @@
         "脉形=弦"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -84,6 +136,15 @@
         "胃口=差/食少"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -96,6 +157,18 @@
         "脉形=细"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -108,6 +181,18 @@
         "脉力=微"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -120,6 +205,16 @@
         "手足温度=手心热脚凉"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -132,6 +227,13 @@
         "脉形=弦"
       ],
       "sourceTitle": "合病",
+      "sourceIds": [
+        "liu_28",
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_28"
     },
     {
@@ -144,6 +246,13 @@
         "大便=便秘"
       ],
       "sourceTitle": "合病",
+      "sourceIds": [
+        "liu_28",
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_28"
     },
     {
@@ -156,6 +265,13 @@
         "大便=溏泄"
       ],
       "sourceTitle": "合病",
+      "sourceIds": [
+        "liu_28",
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_28"
     },
     {
@@ -168,6 +284,12 @@
         "脉位=沉"
       ],
       "sourceTitle": "并病",
+      "sourceIds": [
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_51"
     },
     {
@@ -181,6 +303,12 @@
         "手足温度=手脚冰凉"
       ],
       "sourceTitle": "并病",
+      "sourceIds": [
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_51"
     },
     {
@@ -194,6 +322,18 @@
         "睡眠=彻夜不眠"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -206,6 +346,9 @@
         "舌苔=白腻"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -218,6 +361,9 @@
         "舌苔=燥裂"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -230,6 +376,9 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -242,6 +391,9 @@
         "舌苔=白腻"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -254,6 +406,9 @@
         "舌苔=燥裂"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -266,6 +421,9 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -279,6 +437,9 @@
         "睡眠=彻夜不眠"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -292,6 +453,12 @@
         "小便=清长"
       ],
       "sourceTitle": "真寒假热",
+      "sourceIds": [
+        "liu_65",
+        "liu_66",
+        "liu_68",
+        "liu_69"
+      ],
       "sourceId": "liu_65"
     },
     {
@@ -306,6 +473,12 @@
         "小便=短赤"
       ],
       "sourceTitle": "真热假寒",
+      "sourceIds": [
+        "liu_65",
+        "liu_67",
+        "liu_68",
+        "liu_69"
+      ],
       "sourceId": "liu_65"
     },
     {
@@ -319,6 +492,13 @@
         "口渴=渴喜冷饮"
       ],
       "sourceTitle": "合病",
+      "sourceIds": [
+        "liu_28",
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_28"
     },
     {
@@ -332,6 +512,12 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "并病",
+      "sourceIds": [
+        "liu_51",
+        "liu_52",
+        "liu_53",
+        "liu_54"
+      ],
       "sourceId": "liu_51"
     },
     {
@@ -345,6 +531,9 @@
         "睡眠=但欲寐"
       ],
       "sourceTitle": "七步走",
+      "sourceIds": [
+        "liu_74"
+      ],
       "sourceId": "liu_74"
     },
     {
@@ -356,6 +545,9 @@
         "汗=有汗自汗"
       ],
       "sourceTitle": "用药铁律",
+      "sourceIds": [
+        "liu_61"
+      ],
       "sourceId": "liu_61"
     },
     {
@@ -367,6 +559,9 @@
         "汗=无汗"
       ],
       "sourceTitle": "用药铁律",
+      "sourceIds": [
+        "liu_61"
+      ],
       "sourceId": "liu_61"
     },
     {
@@ -378,6 +573,9 @@
         "寒热=往来寒热"
       ],
       "sourceTitle": "用药铁律",
+      "sourceIds": [
+        "liu_61"
+      ],
       "sourceId": "liu_61"
     },
     {
@@ -390,6 +588,9 @@
         "脉形=细"
       ],
       "sourceTitle": "用药铁律",
+      "sourceIds": [
+        "liu_61"
+      ],
       "sourceId": "liu_61"
     },
     {
@@ -402,6 +603,7 @@
         "呼吸=呼吸微弱"
       ],
       "sourceTitle": "诊病十问",
+      "sourceIds": [],
       "sourceId": null
     },
     {
@@ -414,6 +616,7 @@
         "呼吸=呼吸气粗"
       ],
       "sourceTitle": "诊病十问",
+      "sourceIds": [],
       "sourceId": null
     },
     {
@@ -426,6 +629,15 @@
         "口渴=口苦咽干"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -439,6 +651,15 @@
         "胃口=差/食少"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -451,6 +672,18 @@
         "手足温度=手脚冰凉"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -464,6 +697,16 @@
         "疼痛=气上撞心/心中疼热"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -476,6 +719,15 @@
         "汗=无汗"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -488,6 +740,15 @@
         "寒热=恶寒"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -502,6 +763,14 @@
         "脉形=洪"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -514,6 +783,14 @@
         "口渴=渴喜冷饮"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -526,6 +803,15 @@
         "寒热=往来寒热"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -538,6 +824,15 @@
         "脉形=弦"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -550,6 +845,15 @@
         "胃口=差/食少"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -562,6 +866,9 @@
         "口渴=不渴"
       ],
       "sourceTitle": "舌诊速查",
+      "sourceIds": [
+        "liu_57"
+      ],
       "sourceId": "liu_57"
     },
     {
@@ -575,6 +882,18 @@
         "脉力=微"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -587,6 +906,18 @@
         "手足温度=手脚冰凉"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -599,6 +930,18 @@
         "脉力=无力"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -611,6 +954,16 @@
         "胃口=饥而不欲食"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -622,6 +975,9 @@
         "复合脉=浮紧"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -633,6 +989,9 @@
         "复合脉=沉迟"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -644,6 +1003,9 @@
         "复合脉=沉微"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -655,6 +1017,9 @@
         "复合脉=弦数"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -666,6 +1031,9 @@
         "复合脉=微细欲绝"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -677,6 +1045,9 @@
         "复合脉=结代"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -690,6 +1061,12 @@
         "口渴=渴不欲饮"
       ],
       "sourceTitle": "真寒假热",
+      "sourceIds": [
+        "liu_65",
+        "liu_66",
+        "liu_68",
+        "liu_69"
+      ],
       "sourceId": "liu_65"
     },
     {
@@ -703,6 +1080,12 @@
         "口渴=渴喜冷饮"
       ],
       "sourceTitle": "真热假寒",
+      "sourceIds": [
+        "liu_65",
+        "liu_67",
+        "liu_68",
+        "liu_69"
+      ],
       "sourceId": "liu_65"
     },
     {
@@ -714,6 +1097,15 @@
         "寒热=恶风"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -725,6 +1117,15 @@
         "头身=头痛项强"
       ],
       "sourceTitle": "太阳病",
+      "sourceIds": [
+        "liu_2",
+        "liu_3",
+        "liu_4",
+        "liu_5",
+        "liu_6",
+        "liu_7",
+        "liu_8"
+      ],
       "sourceId": "liu_2"
     },
     {
@@ -736,6 +1137,14 @@
         "汗=大汗不止"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -747,6 +1156,14 @@
         "大便=便秘"
       ],
       "sourceTitle": "阳明病",
+      "sourceIds": [
+        "liu_9",
+        "liu_10",
+        "liu_11",
+        "liu_12",
+        "liu_13",
+        "liu_14"
+      ],
       "sourceId": "liu_9"
     },
     {
@@ -758,6 +1175,15 @@
         "脉形=弦"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -769,6 +1195,15 @@
         "口渴=口苦咽干"
       ],
       "sourceTitle": "少阳病",
+      "sourceIds": [
+        "liu_15",
+        "liu_16",
+        "liu_17",
+        "liu_18",
+        "liu_19",
+        "liu_20",
+        "liu_21"
+      ],
       "sourceId": "liu_15"
     },
     {
@@ -780,6 +1215,15 @@
         "胸腹=腹满"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -791,6 +1235,15 @@
         "口渴=不渴"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -802,6 +1255,15 @@
         "胃口=差/食少"
       ],
       "sourceTitle": "太阴病",
+      "sourceIds": [
+        "liu_22",
+        "liu_23",
+        "liu_24",
+        "liu_25",
+        "liu_26",
+        "liu_27",
+        "liu_28"
+      ],
       "sourceId": "liu_22"
     },
     {
@@ -813,6 +1275,18 @@
         "脉位=沉"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -824,6 +1298,18 @@
         "脉率=迟"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -836,6 +1322,18 @@
         "手足温度=手脚冰凉"
       ],
       "sourceTitle": "少阴病",
+      "sourceIds": [
+        "liu_29",
+        "liu_30",
+        "liu_31",
+        "liu_32",
+        "liu_33",
+        "liu_34",
+        "liu_35",
+        "liu_36",
+        "liu_37",
+        "liu_38"
+      ],
       "sourceId": "liu_29"
     },
     {
@@ -848,6 +1346,16 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -859,6 +1367,16 @@
         "疼痛=气上撞心/心中疼热"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -871,6 +1389,16 @@
         "舌质=红"
       ],
       "sourceTitle": "厥阴病",
+      "sourceIds": [
+        "liu_39",
+        "liu_40",
+        "liu_41",
+        "liu_42",
+        "liu_43",
+        "liu_44",
+        "liu_45",
+        "liu_46"
+      ],
       "sourceId": "liu_39"
     },
     {
@@ -883,6 +1411,9 @@
         "脉力=有力"
       ],
       "sourceTitle": "七步走",
+      "sourceIds": [
+        "liu_74"
+      ],
       "sourceId": "liu_74"
     },
     {
@@ -895,6 +1426,9 @@
         "脉力=无力"
       ],
       "sourceTitle": "七步走",
+      "sourceIds": [
+        "liu_74"
+      ],
       "sourceId": "liu_74"
     },
     {
@@ -908,6 +1442,9 @@
         "汗=有汗自汗"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -921,6 +1458,9 @@
         "汗=无汗"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -933,6 +1473,9 @@
         "脉率=迟"
       ],
       "sourceTitle": "脉诊速查",
+      "sourceIds": [
+        "liu_56"
+      ],
       "sourceId": "liu_56"
     },
     {
@@ -945,6 +1488,9 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "舌象组合速查",
+      "sourceIds": [
+        "liu_72"
+      ],
       "sourceId": "liu_72"
     },
     {
@@ -957,6 +1503,9 @@
         "舌苔=薄白"
       ],
       "sourceTitle": "舌象组合速查",
+      "sourceIds": [
+        "liu_72"
+      ],
       "sourceId": "liu_72"
     },
     {
@@ -969,6 +1518,9 @@
         "舌苔=燥裂"
       ],
       "sourceTitle": "舌象组合速查",
+      "sourceIds": [
+        "liu_72"
+      ],
       "sourceId": "liu_72"
     },
     {
@@ -981,6 +1533,9 @@
         "睡眠=但欲寐"
       ],
       "sourceTitle": "传变预警",
+      "sourceIds": [
+        "liu_63"
+      ],
       "sourceId": "liu_63"
     },
     {
@@ -992,6 +1547,9 @@
         "汗=有汗自汗"
       ],
       "sourceTitle": "用药铁律",
+      "sourceIds": [
+        "liu_61"
+      ],
       "sourceId": "liu_61"
     },
     {
@@ -1003,6 +1561,9 @@
         "寒热=往来寒热"
       ],
       "sourceTitle": "少阳三禁",
+      "sourceIds": [
+        "liu_17"
+      ],
       "sourceId": "liu_17"
     }
   ],

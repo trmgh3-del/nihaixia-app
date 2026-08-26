@@ -110,6 +110,7 @@ rules = [
 # 绑定最接近的原始条目，保留所有条目作为可检索的知识索引。
 for rule in rules:
     candidates = [x for x in items if rule['sourceTitle'] in x['title']]
+    rule['sourceIds'] = [x['id'] for x in candidates]
     rule['sourceId'] = candidates[0]['id'] if candidates else None
 out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items}
 (ROOT / 'static/data/sizhen-rules.json').write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding='utf-8')
