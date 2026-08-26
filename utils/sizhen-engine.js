@@ -98,6 +98,7 @@ export function filterFormulaSafety(names = [], pick = {}, basic = {}, redFlags 
     if (basic.pregnant && /麻黄|附子|细辛|承气|乌梅|四逆汤|真武汤/.test(name)) block(name, '孕期/备孕需医师确认')
     if (basic.caseType === '慢性内伤' && /麻黄|大青龙|小青龙|葛根|小柴胡/.test(name)) block(name, '慢性内伤不直接套用急性外感方')
     if (basic.caseType === '心肺症状') block(name, '心肺症状需先完成现代医学急症排查')
+    if (basic.age && (Number(basic.age) < 12 || Number(basic.age) >= 65)) block(name, '儿童或高龄需医师确认剂量与适应证')
   })
   if (basic.chronic)
      warnings.push('存在慢性病或正在用药，方剂方向必须由医师复核')
