@@ -79,4 +79,22 @@ export async function findKnowledgeSources(pick) {
   }
 }
 
+export async function findSimilarCases(pick, meridians = []) {
+  try {
+    const data = await loadData('cases_table')
+    const terms = Object.keys(pick || {}).filter(k => pick[k]).map(k => String(pick[k])).filter(x => x.length > 1)
+    const mers = meridians || []
+    const ranked = (data.rows || []).map(row => {
+      const hay = [row.diag, row.bingji, row.fangji, row.result, row.guandian].join(' ')
+      const hits = terms.filter(t => hay.includes(t))
+      const merHits = mers.filter(m => hay.includes(m))
+      return { row, score: hits.length * 2 + merHits.length, hits: hits.concat(merHits) }
+    }).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+    return ranked.slice(0, 3).map(({ row, hits }) => ({
+      id: 'c' + row.n, date: row.date || '日期未载', title: row.diag || '未标注诊断',
+      excerpt: String(row.bingji || row.result || '').replace(/[#*`]/g, '').slice(0, 160), formula: String(row.fangji || '').replace(/[#*`]/g, '').slice(0, 120), hits
+    }))
+  } catch (e) { return [] }
+}
+
 export { MERIDIANS }

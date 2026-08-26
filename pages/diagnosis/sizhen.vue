@@ -159,6 +159,10 @@
           <view class="r-line source-link" v-for="s in result.sources" :key="s.id" @tap="openSource(s)">● {{ s.source }}：{{ s.title }} ›</view>
           <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
         </view>
+        <view class="r-sec" v-if="result.cases.length">
+          <view class="rs-t">相似医案（仅供学习）</view>
+          <view class="case-item" v-for="c in result.cases" :key="c.id" @tap="openCase(c)"><view><text class="case-title">{{ c.title }}</text><text class="case-date">{{ c.date }}</text></view><view class="case-excerpt">{{ c.excerpt || '医案未载病机摘要' }}</view></view>
+        </view>
         <view class="r-sec">
           <view class="rs-t">基本信息</view>
           <view class="r-line">{{ basicSummary }}</view>
@@ -209,9 +213,9 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
-import { evaluateKnowledgeAsync, findKnowledgeSources } from '@/utils/sizhen-engine.js'
+import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases } from '@/utils/sizhen-engine.js'
 import { loadData } from '@/utils/data.js'
-import { openMd } from '@/utils/routes.js'
+import { openMd, openEntry } from '@/utils/routes.js'
 
 /* ===== 望诊数据 ===== */
 const WANG_SE = [
@@ -284,7 +288,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0 })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, cases: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -461,8 +465,11 @@ export default {
       const kbEval = await evaluateKnowledgeAsync(p, this.basic)
       MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
-      let sources = []
-      try { sources = await findKnowledgeSources(p) } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
+      let sources = []; let cases = []
+      try {
+        const topMers = scores.slice(0, 3).map(x => x.name)
+        ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
+      } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
       const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
       sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
       this.analyzing = false
@@ -528,7 +535,8 @@ export default {
         sources,
         kbEvidence: kbEval.evidence,
         kbVersion: kbEval.modelVersion,
-        kbCoverage: kbEval.coverage || 0
+        kbCoverage: kbEval.coverage || 0,
+        cases
       }
       this.clearDraft()
       this.step = 4
@@ -540,6 +548,7 @@ export default {
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
     },
+    openCase(c) { openEntry({ f: 'casesTable', i: c.id, c: 'case' }) },
     async openSource(source) {
       try {
         const d = await loadData('diagnosis')
@@ -620,6 +629,10 @@ export default {
 .score-reason { font-size: 20rpx; color: var(--ink2); }
 .step-label { display: inline-block; min-width: 120rpx; color: var(--brand); font-weight: 700; }
 .source-link { color: var(--brand); text-decoration: underline; }
+.case-item { border-top: 1rpx solid var(--line); padding: 14rpx 0; }
+.case-title { color: var(--brand); font-weight: 700; font-size: 22rpx; }
+.case-date { color: var(--ink2); font-size: 18rpx; margin-left: 12rpx; }
+.case-excerpt { color: var(--ink2); font-size: 19rpx; line-height: 1.6; margin-top: 6rpx; }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
 .saved-reports { margin-top: 22rpx; padding: 24rpx 28rpx; }
 .saved-item { display: flex; justify-content: space-between; border-top: 1rpx solid var(--line); padding: 14rpx 0; font-size: 20rpx; color: var(--ink2); }
