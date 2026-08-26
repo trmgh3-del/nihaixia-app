@@ -112,7 +112,9 @@ nihaixia-app/
 ```bash
 git clone https://github.com/jangviktor-web/nihaixia /tmp/repo
 python3 tools/build_data.py /tmp/repo static/data    # 重建全部 JSON
-python3 tools/final_audit.py                          # 逐行审计（应为 0 缺失）
+python3 tools/build_sizhen_rules.py                    # 编译四诊可执行规则
+python3 tools/test_sizhen_rules.py                     # 规则结构+六经回归样例检查
+python3 tools/final_audit.py                           # 逐行审计（应为 0 缺失）
 ```
 
 ## 七、免责声明

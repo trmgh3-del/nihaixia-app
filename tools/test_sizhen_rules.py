@@ -18,4 +18,21 @@ for rule in rules['rules']:
     for condition in rule['when']:
         field, sep, value = condition.partition('=')
         assert sep and field in allowed_fields and value, f'unknown condition: {condition}'
-print(f'PASS: {len(rules["rules"])} executable rules, {len(rules["knowledgeItems"])} indexed items')
+
+# 标准六经回归样例：只验证规则排序，不宣称医疗诊断。
+cases = [
+    ({'脉位':'浮', '寒热':'恶寒', '汗':'无汗', '脉形':'紧'}, '太阳'),
+    ({'寒热':'但热不寒', '口渴':'渴喜冷饮', '汗':'大汗不止', '脉形':'洪'}, '阳明'),
+    ({'寒热':'往来寒热', '脉形':'弦', '口渴':'口苦咽干'}, '少阳'),
+    ({'大便':'溏泄', '胃口':'差/食少', '舌苔':'白腻'}, '太阴'),
+    ({'睡眠':'但欲寐', '脉形':'细', '脉力':'微'}, '少阴'),
+    ({'口渴':'消渴多饮', '胃口':'饥而不欲食', '疼痛':'气上撞心/心中疼热'}, '厥阴'),
+]
+for pick, expected in cases:
+    scores = {}
+    for rule in rules['rules']:
+        if all(pick.get(c.split('=', 1)[0]) == c.split('=', 1)[1] for c in rule['when']):
+            for mer in rule.get('meridian', '').replace('、', ',').split(','):
+                if mer: scores[mer] = scores.get(mer, 0) + rule['score']
+    assert scores and max(scores, key=scores.get) == expected, f'case expected {expected}, got {scores}'
+print(f'PASS: {len(rules["rules"])} executable rules, {len(rules["knowledgeItems"])} indexed items, {len(cases)} regression cases')
