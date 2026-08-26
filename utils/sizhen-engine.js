@@ -28,14 +28,20 @@ function runRules(pick, basic, rules) {
     const refHits = reference.filter(x => vals.includes(x)).length
     const effectiveScore = score + refHits
 
-    MERIDIANS.filter(m => name.includes(m)).forEach(m => { scores[m] += effectiveScore })
+    const meridianText = Array.isArray(rule) ? name : (rule.meridian || name)
+    MERIDIANS.filter(m => meridianText.includes(m)).forEach(m => { scores[m] += effectiveScore })
     evidence.push({ name, points: effectiveScore, required: when, referenceHits: refHits, source: Array.isArray(rule) ? '本地兜底规则' : (rule.sourceTitle || '六经辨证诊断公式'), sourceId: rule.sourceId || '' })
   }
   return { scores, evidence }
 }
+export function evaluateCompiledRules(compiled, pick, basic = {}) {
+  const r = runRules(pick, basic, (compiled && compiled.rules) || [])
+  return { ...r, modelVersion: (compiled && compiled.version) || 'unknown', ruleCount: ((compiled && compiled.rules) || []).length }
+}
+
 export async function evaluateKnowledgeAsync(pick, basic = {}) {
   try {
-    const compiled = await loadData('sizhen-rules'); const r = runRules(pick, basic, compiled.rules || [])
+    const compiled = await loadData('sizhen-rules'); const r = evaluateCompiledRules(compiled, pick, basic)
     return { ...r, modelVersion: compiled.version || 'unknown', ruleCount: (compiled.rules || []).length }
   } catch (e) { return { ...runRules(pick, basic, FALLBACK_RULES), modelVersion: 'fallback-local', ruleCount: FALLBACK_RULES.length } }
 }
