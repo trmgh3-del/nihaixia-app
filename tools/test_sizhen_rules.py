@@ -25,6 +25,14 @@ for rule in rules['rules']:
     assert len(fields) == len(set(fields)), f'mutually exclusive duplicate field in rule: {rule["id"]}'
     assert not set(rule.get('required', [])) & set(rule.get('exclude', [])), f'required/exclude conflict: {rule["id"]}'
 
+# 必选/参考/排除协议回归：排除条件优先于参考加分。
+taiyang_wind = next(x for x in rules['rules'] if x['id'] == 'taiyang-wind')
+assert '汗=无汗' in taiyang_wind['exclude'] and '脉位=浮' in taiyang_wind['reference']
+def matches(rule, pick):
+    hit = lambda c: pick.get(c.split('=', 1)[0]) == c.split('=', 1)[1]
+    return all(hit(c) for c in rule['required']) and not any(hit(c) for c in rule.get('exclude', []))
+assert not matches(taiyang_wind, {'汗': '有汗自汗', '寒热': '恶风', '脉形': '紧'})
+
 # 标准六经回归样例：只验证规则排序，不宣称医疗诊断。
 cases = [
     ({'脉位':'浮', '寒热':'恶寒', '汗':'无汗', '脉形':'紧'}, '太阳'),
@@ -52,8 +60,13 @@ cases = [
 for pick, expected in cases:
     scores = {}
     for rule in rules['rules']:
-        if all(pick.get(c.split('=', 1)[0]) == c.split('=', 1)[1] for c in rule['when']):
+        def hit(condition):
+            field, value = condition.split('=', 1)
+            return pick.get(field) == value
+        required = rule.get('required', rule['when'])
+        if all(hit(c) for c in required) and not any(hit(c) for c in rule.get('exclude', [])):
+            ref_hits = sum(hit(c) for c in rule.get('reference', []))
             for mer in rule.get('meridian', '').replace('、', ',').split(','):
-                if mer: scores[mer] = scores.get(mer, 0) + rule['score']
+                if mer: scores[mer] = scores.get(mer, 0) + rule['score'] + ref_hits
     assert scores and max(scores, key=scores.get) == expected, f'case expected {expected}, got {scores}'
 print(f'PASS: {len(rules["rules"])} executable rules, {len(rules["knowledgeItems"])} indexed items, {len(cases)} regression cases')
