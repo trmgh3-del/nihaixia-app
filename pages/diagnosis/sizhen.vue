@@ -486,7 +486,9 @@ export default {
       if (complexPulse) { addScore(complexPulse.mer, 3, complexPulse.k); if (complexPulse.k === '微细欲绝') patterns.push('微细欲绝为高风险脉象') }
       mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
       const kbEval = await evaluateKnowledgeAsync(p, this.basic)
-      MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
+      // 编译后的知识库规则是唯一主评分源；仅在规则未命中时使用页面兜底判断。
+      const kbHasScore = MERIDIANS.some(m => (kbEval.scores[m] || 0) > 0)
+      MERIDIANS.forEach(m => { score[m] = kbHasScore ? (kbEval.scores[m] || 0) : score[m] })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
       const safeFormulas = formulaSafety.formulas.slice(0, 5)
       let sources = []; let cases = []; let formulaDetails = []
