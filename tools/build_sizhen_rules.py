@@ -190,6 +190,22 @@ EXCLUDES = {
 for rule in rules:
     rule['exclude'] = EXCLUDES.get(rule['id'], rule.get('exclude', []))
 
+REFERENCES = {
+    'taiyang-wind': ['头身=身痛骨节痛', '脉位=浮'],
+    'taiyang-cold': ['头身=身痛骨节痛', '脉位=浮'],
+    'yangming-meridian': ['汗=大汗不止', '脉形=洪'],
+    'yangming-fu': ['胸腹=腹满', '疼痛=胸腹胀痛'],
+    'shaoyang-outline': ['疼痛=胸胁苦满', '口渴=口苦咽干'],
+    'taiyin-cold': ['舌苔=白腻', '口渴=不渴'],
+    'shaoyin-cold': ['手足温度=手脚冰凉', '小便=清长'],
+    'shaoyin-reheat-outline': ['舌质=红', '舌苔=剥落'],
+    'jueyin-coldheat': ['胃口=饥而不欲食', '疼痛=气上撞心/心中疼热'],
+    'yangming-four': ['脉位=浮'],
+    'taiyin-shaoyin-border': ['脉位=沉'],
+}
+for rule in rules:
+    rule['reference'] = REFERENCES.get(rule['id'], rule.get('reference', []))
+
 rule_source_ids = {sid for rule in rules for sid in rule.get('sourceIds', []) if sid}
 context_items = [item for item in items if item.get('id') not in rule_source_ids]
 out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items, 'contextItems':context_items}
