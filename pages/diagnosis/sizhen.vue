@@ -490,16 +490,6 @@ export default {
       const kbHasScore = MERIDIANS.some(m => (kbEval.scores[m] || 0) > 0)
       MERIDIANS.forEach(m => { score[m] = kbHasScore ? (kbEval.scores[m] || 0) : score[m] })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
-      const safeFormulas = formulaSafety.formulas.slice(0, 5)
-      let sources = []; let cases = []; let formulaDetails = []
-      try {
-        const topMers = scores.slice(0, 3).map(x => x.name)
-        ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
-        formulaDetails = await findFormulaDetails(safeFormulas)
-      } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
-      const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
-      sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
-      this.analyzing = false
       const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
       const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
       const completeness = Math.round(completedSteps / STEP_FIELDS.length * 100)
@@ -529,6 +519,17 @@ export default {
       formulaSafety.warnings.forEach(w => { patterns.unshift(w); if (!risk.reasons.includes(w)) risk.reasons.push(w) })
       if (formulaSafety.blocked.length && risk.level === 'low') { risk.level = 'medium'; risk.label = '需复核' }
       if (formulaSafety.blocked.length) patterns.unshift('方剂安全过滤：' + formulaSafety.blocked.map(x => x.name + '（' + x.reason + '）').join('；'))
+
+      const safeFormulas = formulaSafety.formulas.slice(0, 5)
+      let sources = []; let cases = []; let formulaDetails = []
+      try {
+        const topMers = scores.slice(0, 3).map(x => x.name)
+        ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
+        formulaDetails = await findFormulaDetails(safeFormulas)
+      } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
+      const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
+      sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
+      this.analyzing = false
 
       // 阴阳总判
       const hasYang = [...bg].some(b => ['表','热','实'].includes(b))
