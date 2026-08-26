@@ -85,7 +85,7 @@ export async function findFormulaDetails(names = []) {
     return names.map(name => {
       const clean = String(name).replace(/（.*?）/g, '').replace(/类.*/, '')
       const item = (data.items || []).find(x => x.n === clean || x.n.includes(clean))
-      return item ? { name, id: item.id, composition: item.composition || item.组成 || '', clinical: item.clinical || item.主治 || '', caution: item.禁忌 || '' } : { name }
+      return item ? { name, id: item.id, composition: item.composition || item.组成 || item.origin || '', clinical: item.clinical || item.主治 || '', caution: item.禁忌 || (String(item.note || '').match(/禁忌[^。；]*/u) || [''])[0] } : { name }
     })
   } catch (e) { return names.map(name => ({ name })) }
 }
