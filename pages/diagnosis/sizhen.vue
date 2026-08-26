@@ -217,7 +217,7 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
-import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases, findFormulaDetails } from '@/utils/sizhen-engine.js'
+import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases, findFormulaDetails, filterFormulaSafety } from '@/utils/sizhen-engine.js'
 import { loadData } from '@/utils/data.js'
 import { openMd, openEntry } from '@/utils/routes.js'
 
@@ -470,11 +470,12 @@ export default {
       const kbEval = await evaluateKnowledgeAsync(p, this.basic)
       MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+      const safeFormulas = formulaSafety.formulas.slice(0, 5)
       let sources = []; let cases = []; let formulaDetails = []
       try {
         const topMers = scores.slice(0, 3).map(x => x.name)
         ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
-        formulaDetails = await findFormulaDetails(formulas)
+        formulaDetails = await findFormulaDetails(safeFormulas)
       } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
       const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
       sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
@@ -504,6 +505,9 @@ export default {
       if (this.pulseSource !== '医师诊察' && STEP_FIELDS[3].some(k => p[k])) riskReasons.push('切诊来源非医师诊察，脉象可靠性有限')
       const highRisk = this.redFlags.length > 0 || riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x))
       const risk = { level: highRisk ? 'high' : riskReasons.length ? 'medium' : 'low', label: highRisk ? '高风险' : riskReasons.length ? '需复核' : '一般', reasons: riskReasons }
+      const formulaSafety = filterFormulaSafety(formulas, p, this.basic, this.redFlags)
+      formulaSafety.warnings.forEach(w => patterns.unshift(w))
+      if (formulaSafety.blocked.length) patterns.unshift('方剂安全过滤：' + formulaSafety.blocked.map(x => x.name + '（' + x.reason + '）').join('；'))
 
       // 阴阳总判
       const hasYang = [...bg].some(b => ['表','热','实'].includes(b))
@@ -531,7 +535,7 @@ export default {
         bagang: [...bg],
         meridians: scores.length ? scores.map(x => x.name) : [...mer],
         patterns: patterns.slice(0, 8),
-        formulas: [...new Set(formulas)].slice(0, 5),
+        formulas: [...new Set(safeFormulas)],
         formulaDetails,
         scores,
         selected,
