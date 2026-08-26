@@ -127,6 +127,7 @@ python3 tools/report_knowledge_review.py                # 输出穴位/藏象专
 python3 tools/validate_case_dataset.py                 # 验证 1257 条结构化医案字段
 python3 tools/test_acupoint_dataset.py                 # 验证穴位库与辨证联动数据
 python3 tools/test_zangxiang_dataset.py                # 验证藏象基础数据
+node --experimental-default-type=module tools/test_najia_table.mjs # 验证纳甲全日开穴表
 python3 tools/test_medicine_dataset.py                 # 验证 351 首方剂和 471 味本草
 python3 tools/report_medicine_quality.py                # 输出方剂/本草详情字段完整率
 python3 tools/validate_expert_blind.py tools/expert_blind_cases.schema.json # 验证专家盲测数据格式

@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 page = (ROOT / 'pages/diagnosis/sizhen.vue').read_text(encoding='utf-8')
 engine = (ROOT / 'utils/sizhen-engine.js').read_text(encoding='utf-8')
 assert "import { analyzeSizhen } from '@/utils/sizhen-engine.js'" in page, 'page must call central engine'
-assert 'this.result = await analyzeSizhen(' in page, 'page must use central analysis'
+assert 'analyzeSizhen(this.pick' in page and 'this.result = Object.assign(EMPTY_RESULT(), raw' in page, 'page must use central analysis'
 for forbidden in ['formulas.push(', 'mer.add(', 'filterFormulaSafety(', 'evaluateKnowledgeAsync(']:
     assert forbidden not in page, f'legacy inline diagnosis logic remains: {forbidden}'
 for required in ['export async function analyzeSizhen', 'filterFormulaSafety', 'evaluateKnowledgeAsync', 'findSimilarCases', 'findFormulaDetails']:
