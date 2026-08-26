@@ -25,6 +25,10 @@
       <view class="xw-chip" :class="{ on: xw === '' }" @tap="xw = ''">性味不限</view>
       <view v-for="x in xws" :key="x" class="xw-chip" :class="{ on: xw === x }" @tap="xw = xw === x ? '' : x">{{ x }}</view>
     </view>
+    <view class="jingbar" v-if="g !== 'intro' && jings.length">
+      <view class="j-chip" :class="{ on: jing === '' }" @tap="jing = ''">归经不限</view>
+      <view v-for="j in jings" :key="j" class="j-chip" :class="{ on: jing === j }" @tap="jing = jing === j ? '' : j">{{ j }}</view>
+    </view>
     <scroll-view v-if="g !== 'intro'" scroll-y class="herbs">
       <view class="h-grid">
         <view v-for="h in shown" :key="h.id" class="h-card card fade-in" @tap="open(h)">
@@ -47,13 +51,19 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', g: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
+    return { q: '', g: '', jing: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
   },
   computed: {
     theme() { return store.theme },
+    jings() {
+      const seen = []
+      for (const h of this.herbs) for (const j of (h.meridians || [])) if (j && !seen.includes(j)) seen.push(j)
+      return seen.slice(0, 16)
+    },
     shown() {
       let list = this.herbs
       if (this.g) list = list.filter(h => h.g === this.g)
+      if (this.jing) list = list.filter(h => (h.meridians || []).includes(this.jing))
       if (this.xw) {
         const xw = this.xw
         list = list.filter(h => (h['性味'] || '').includes(xw) || (h.natureCategory || '').includes(xw) || (h['原文'] || '').slice(0, 30).includes('味' + xw))
@@ -93,6 +103,9 @@ export default {
 .tabs { display: flex; background: var(--card); padding: 0 20rpx 20rpx; gap: 10rpx; flex-shrink: 0; }
 .tab { text-align: center; font-size: 22rpx; padding: 12rpx 0; border-radius: 28rpx; background: var(--zebra-bg); color: var(--ink2); flex: 1; }
 .tab.on { background: var(--brand); color: #fff; font-weight: 700; }
+.jingbar { display: flex; flex-wrap: wrap; padding: 4rpx 24rpx 14rpx; background: var(--card); flex-shrink: 0; }
+.j-chip { font-size: 20rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 24rpx; padding: 7rpx 18rpx; margin: 0 10rpx 8rpx 0; }
+.j-chip.on { background: #54427C; color: #fff; }
 .herbs { flex: 1; }
 .h-grid { display: flex; flex-wrap: wrap; padding: 24rpx 20rpx 60rpx; }
 .h-card { width: 46.5%; margin: 1.5%; padding: 24rpx; box-sizing: border-box; position: relative; }
