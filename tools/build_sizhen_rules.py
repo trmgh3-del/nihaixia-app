@@ -152,6 +152,16 @@ rules = [
  {'id':'lower-jiao','name':'病机经验·诸厥固泄属下','meridian':'少阴','score':1,'when':['手足温度=手脚冰凉','小便=不利/癃闭'],'sourceTitle':'病机十九条'},
  {'id':'upper-middle','name':'病机经验·诸痿喘呕属上','meridian':'阳明','score':1,'when':['呼吸=喘','胃口=食入即吐'],'sourceTitle':'病机十九条'},
  {'id':'fire-spasm','name':'病机经验·诸热瞀瘛属火','meridian':'阳明','score':1,'when':['望神=失神','脉率=数'] ,'sourceTitle':'病机十九条'},
+ {'id':'time-taiyang','name':'欲解时·太阳','meridian':'太阳','score':0,'when':['symptomTime=中午（巳至未）'],'sourceTitle':'欲解时'},
+ {'id':'time-yangming','name':'欲解时·阳明','meridian':'阳明','score':0,'when':['symptomTime=黄昏（申至戌）'],'sourceTitle':'欲解时'},
+ {'id':'time-shaoyang','name':'欲解时·少阳','meridian':'少阳','score':0,'when':['symptomTime=清晨（寅至辰）'],'sourceTitle':'欲解时'},
+ {'id':'time-sanyin','name':'欲解时·三阴时段','meridian':'太阴、少阴、厥阴','score':0,'when':['symptomTime=深夜（子至寅）'],'sourceTitle':'欲解时'},
+ {'id':'formula-gui-zhi-source','name':'桂枝汤经方资料索引','meridian':'太阳','score':0,'when':['汗=有汗自汗'],'sourceTitle':'治感冒六大经方'},
+ {'id':'formula-ma-huang-source','name':'麻黄汤经方资料索引','meridian':'太阳','score':0,'when':['汗=无汗'],'sourceTitle':'治感冒六大经方'},
+ {'id':'formula-ge-gen-source','name':'葛根汤经方资料索引','meridian':'太阳','score':0,'when':['头身=头痛项强'],'sourceTitle':'治感冒六大经方'},
+ {'id':'formula-da-qing-long-source','name':'大青龙汤经方资料索引','meridian':'太阳','score':0,'when':['汗=无汗','口渴=渴喜冷饮'],'sourceTitle':'治感冒六大经方'},
+ {'id':'formula-xiao-qing-long-source','name':'小青龙汤经方资料索引','meridian':'太阳','score':0,'when':['呼吸=喘','汗=无汗'],'sourceTitle':'治感冒六大经方'},
+ {'id':'formula-xiao-chai-hu-source','name':'小柴胡汤经方资料索引','meridian':'少阳','score':0,'when':['寒热=往来寒热'],'sourceTitle':'治感冒六大经方'},
 ]
 
 # 绑定最接近的原始条目，保留所有条目作为可检索的知识索引。

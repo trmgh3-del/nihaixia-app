@@ -17,6 +17,8 @@
         <view class="opts"><view v-for="o in durationOptions" :key="o" class="opt sm" :class="{ on: basic.duration === o }" @tap="basic.duration = o">{{ o }}</view></view>
         <view class="sub-lab">问诊类型</view>
         <view class="opts"><view v-for="o in caseTypes" :key="o" class="opt sm" :class="{ on: basic.caseType === o }" @tap="basic.caseType = o">{{ o }}</view></view>
+        <view class="sub-lab">症状明显时段（可选）</view>
+        <view class="opts"><view v-for="o in symptomTimeOptions" :key="o" class="opt sm" :class="{ on: basic.symptomTime === o }" @tap="basic.symptomTime = o">{{ o }}</view></view>
         <view class="sub-lab">已知误治情况（可选）</view>
         <view class="opts"><view v-for="o in misTreatmentOptions" :key="o" class="opt sm" :class="{ on: basic.misTreatment === o }" @tap="basic.misTreatment = o">{{ o }}</view></view>
         <view class="sub-lab">金匮杂病类型（可选）</view>
@@ -309,6 +311,7 @@ const CASE_TYPES = ['急性外感/感冒', '慢性内伤', '妇科问题', '消�
 const MISTREATMENTS = ['无/不确定', '表证误下·利不止', '无汗误用桂枝·烦躁胸闷', '少阴误汗·亡阳', '厥阴误下·利不止']
 const MISC_DISEASES = ['不适用/未说明', '痉病', '湿病', '中风', '历节', '血痹', '虚劳', '肺痿', '肺痈', '胸痹', '腹满寒疝', '痰饮咳嗽', '消渴']
 const JUE_REVERSALS = ['厥多热少（病进）', '热多厥少（病退）', '厥热相等（病稳）']
+const SYMPTOM_TIMES = ['未说明', '清晨（寅至辰）', '中午（巳至未）', '黄昏（申至戌）', '半夜（亥至丑）', '深夜（子至寅）', '凌晨（丑至卯）']
 const COMPLEX_PULSES = [
   { k: '浮缓', mer: '太阳', reason: '太阳中风，体虚有汗' }, { k: '浮紧', mer: '太阳', reason: '太阳伤寒，体实无汗' },
   { k: '沉迟', mer: '太阴', reason: '里寒湿、脾阳不足' }, { k: '沉微', mer: '少阴', reason: '阳虚、病由太阴入少阴' },
@@ -323,8 +326,9 @@ export default {
       step: 0,
       stepNames: ['望诊', '闻诊', '问诊', '切诊', '报告'],
       pick: {},
-      basic: { age: '', sex: '未说明', duration: '', caseType: '不确定', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false },
+      basic: { age: '', sex: '未说明', duration: '', caseType: '不确定', symptomTime: '未说明', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false },
       caseTypes: CASE_TYPES,
+      symptomTimeOptions: SYMPTOM_TIMES,
       misTreatmentOptions: MISTREATMENTS,
       miscDiseaseOptions: MISC_DISEASES,
       jueReversalOptions: JUE_REVERSALS,
@@ -348,7 +352,7 @@ export default {
     stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } },
     basicSummary() {
       const b = this.basic
-      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '类型：' + (b.caseType || '不确定'), b.miscDisease && b.miscDisease !== '不适用/未说明' ? '杂病：' + b.miscDisease : '', b.misTreatment && b.misTreatment !== '无/不确定' ? '误治：' + b.misTreatment : '', '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
+      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '类型：' + (b.caseType || '不确定'), b.symptomTime && b.symptomTime !== '未说明' ? '时段：' + b.symptomTime : '', b.miscDisease && b.miscDisease !== '不适用/未说明' ? '杂病：' + b.miscDisease : '', b.misTreatment && b.misTreatment !== '无/不确定' ? '误治：' + b.misTreatment : '', '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
     }
   },
   onLoad() {
@@ -375,7 +379,7 @@ export default {
       // 只允许返回已走过的步骤；报告必须先完成辨证，避免出现空白报告。
       if (i <= this.step) this.step = i
     },
-    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
+    reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', symptomTime: '未说明', misTreatment: '无/不确定', miscDisease: '不适用/未说明', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
     toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
     async analyze() {
       if (this.analyzing) return
