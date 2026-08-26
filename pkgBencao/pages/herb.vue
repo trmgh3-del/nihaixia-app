@@ -51,9 +51,16 @@ export default {
     fields() {
       const h = this.h
       if (!h) return []
-      return ['原文', '性味', '主治', '倪注', '容川', '用量', '禁忌', '补注']
+      const extra = []
+      if (h.canonicalName && h.canonicalName !== h.n) extra.push({ k: '正名', v: h.canonicalName })
+      if (h.processing) extra.push({ k: '炮制', v: h.processing })
+      if (h.natureCategory) extra.push({ k: '性味分类', v: h.natureCategory })
+      if (h.flavor) extra.push({ k: '五味', v: h.flavor })
+      if (h.meridians && h.meridians.length) extra.push({ k: '归经', v: h.meridians.join('、') })
+      if (h.aliases && h.aliases.length) extra.push({ k: '别名', v: h.aliases.join('、') })
+      return extra.concat(['原文', '性味', '主治', '倪注', '容川', '用量', '禁忌', '补注']
         .filter(k => h[k] && String(h[k]).trim())
-        .map(k => ({ k, v: h[k] }))
+        .map(k => ({ k, v: h[k] })))
     },
     gradeClass() { return this.h && this.h.g === '上经' ? 'up' : this.h && this.h.g === '中经' ? 'mid' : 'down' },
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }

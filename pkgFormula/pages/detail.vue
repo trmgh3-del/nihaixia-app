@@ -2,7 +2,10 @@
   <view class="page" :class="theme === 'dark' ? 'tdark' : 'tlight'">
     <view class="hero" v-if="f">
       <view class="f-name serif">{{ f.n }}</view>
+      <view class="f-alias" v-if="f.alias">别名：{{ Array.isArray(f.alias) ? f.alias.join('、') : f.alias }}</view>
       <view class="f-flags">
+        <view class="f-tag" v-if="f.meridian">{{ f.meridian }}</view>
+        <view class="f-tag" v-if="f.category">{{ f.category }}</view>
         <view class="f-tag" v-if="f.src">{{ f.src }}</view>
         <view class="f-fav" @tap="doFav">{{ fav ? '★' : '☆' }}</view>
       </view>
@@ -148,6 +151,7 @@ export default {
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
 .hero { background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 52rpx; display: flex; align-items: center; }
 .f-name { font-size: 46rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 3rpx; }
+.f-alias { margin-top: 8rpx; color: rgba(253,248,238,.78); font-size: 19rpx; }
 .f-flags { margin-left: auto; display: flex; align-items: center; }
 .f-tag { font-size: 19rpx; color: #FDF8EE; background: rgba(253,248,238,.18); border: 1rpx solid rgba(253,248,238,.45); border-radius: 10rpx; padding: 6rpx 16rpx; }
 .f-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
