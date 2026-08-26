@@ -156,7 +156,8 @@
         </view>
         <view class="r-sec" v-if="result.sources.length">
           <view class="rs-t">知识库依据</view>
-          <view class="r-line" v-for="s in result.sources" :key="s.id">● {{ s.source }}：{{ s.title }}</view>
+          <view class="r-line source-link" v-for="s in result.sources" :key="s.id" @tap="openSource(s)">● {{ s.source }}：{{ s.title }} ›</view>
+          <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
         </view>
         <view class="r-sec">
           <view class="rs-t">基本信息</view>
@@ -209,6 +210,8 @@
 <script>
 import { store, applyTheme } from '@/utils/store.js'
 import { evaluateKnowledge, findKnowledgeSources } from '@/utils/sizhen-engine.js'
+import { loadData } from '@/utils/data.js'
+import { openMd } from '@/utils/routes.js'
 
 /* ===== 望诊数据 ===== */
 const WANG_SE = [
@@ -281,7 +284,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -517,7 +520,8 @@ export default {
         risk,
         sevenSteps,
         combination: combo,
-        sources
+        sources,
+        kbEvidence: kbEval.evidence
       }
       this.clearDraft()
       this.step = 4
@@ -528,6 +532,15 @@ export default {
     },
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
+    },
+    async openSource(source) {
+      try {
+        const d = await loadData('diagnosis')
+        for (const g of d.groups || []) {
+          const item = (g.items || []).find(x => x.id === source.id)
+          if (item) { openMd({ ...item, f: 'diag' }, item.t, { items: g.items }); return }
+        }
+      } catch (e) { uni.showToast({ title: '知识库加载失败', icon: 'none' }) }
     },
     saveReport() {
       try {
@@ -599,6 +612,7 @@ export default {
 .r-score { display: flex; align-items: center; gap: 14rpx; margin-bottom: 10rpx; }
 .score-reason { font-size: 20rpx; color: var(--ink2); }
 .step-label { display: inline-block; min-width: 120rpx; color: var(--brand); font-weight: 700; }
+.source-link { color: var(--brand); text-decoration: underline; }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
 .saved-reports { margin-top: 22rpx; padding: 24rpx 28rpx; }
 .saved-item { display: flex; justify-content: space-between; border-top: 1rpx solid var(--line); padding: 14rpx 0; font-size: 20rpx; color: var(--ink2); }
