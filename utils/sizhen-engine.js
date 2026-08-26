@@ -28,19 +28,33 @@ const KB_QUERIES = [
 function values(pick) { return Object.keys(pick || {}).filter(k => pick[k]).map(k => k + '=' + pick[k]) }
 function matchRule(rule, vals) { return rule[2].every(x => vals.includes(x)) }
 
-export function evaluateKnowledge(pick, basic = {}) {
+function runRules(pick, basic, rules) {
   const vals = values(pick)
   const scores = {}; const evidence = []
   MERIDIANS.forEach(m => { scores[m] = 0 })
-  RULES.forEach(([name, points, needs]) => {
-    if (!matchRule([name, points, needs], vals)) return
+  rules.forEach(rule => {
+    const name = Array.isArray(rule) ? rule[0] : rule.name
+    const points = Array.isArray(rule) ? rule[1] : rule.score
+    const needs = Array.isArray(rule) ? rule[2] : rule.when
+    if (!needs.every(x => vals.includes(x))) return
     const mers = MERIDIANS.filter(m => name.includes(m))
     mers.forEach(m => { scores[m] += points })
-    evidence.push({ name, points, needs, source: '六经辨证诊断公式·临床速查' })
+    evidence.push({ name, points, needs, source: Array.isArray(rule) ? '六经辨证诊断公式·临床速查' : (rule.sourceTitle || '六经辨证诊断公式·临床速查'), sourceId: rule.sourceId || '' })
   })
-  if (basic.caseType === '慢性内伤') evidence.push({ name: '外感规则不宜直接套用', points: 0, needs: [], source: '六经辨证诊断公式·适用边界' })
+  if (basic.caseType === '慢性内伤') evidence.push({ name: '外感规则不宜直接套用', points: 0, needs: [], source: '六经辨证公式·适用边界' })
   if (basic.duration === '超过2周' || basic.duration === '反复发作') evidence.push({ name: '病程较长，建议结合内伤/杂病资料复核', points: 0, needs: [], source: '七步走辨证思维模式' })
-  return { scores, evidence: evidence.slice(0, 12) }
+  return { scores, evidence: evidence.slice(0, 24) }
+}
+
+export function evaluateKnowledge(pick, basic = {}) { return runRules(pick, basic, RULES) }
+
+export async function evaluateKnowledgeAsync(pick, basic = {}) {
+  try {
+    const compiled = await loadData('sizhen-rules')
+    return { ...runRules(pick, basic, compiled.rules || []), modelVersion: compiled.version || 'unknown' }
+  } catch (e) {
+    return { ...runRules(pick, basic, RULES), modelVersion: 'fallback-local' }
+  }
 }
 
 export async function findKnowledgeSources(pick) {

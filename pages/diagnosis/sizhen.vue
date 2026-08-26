@@ -143,7 +143,7 @@
       <view class="report card">
         <view class="r-t serif">⟡ 四诊合参 · 辨证报告</view>
         <view class="report-meta">
-          <text>采集完整度：{{ result.completeness }}%</text>
+          <text>规则版本：{{ result.kbVersion || '本地规则' }}</text><text>采集完整度：{{ result.completeness }}%</text>
           <text :class="'risk-' + result.risk.level">风险：{{ result.risk.label }}</text>
         </view>
         <view class="r-risk" v-if="result.risk.reasons.length">⚠ {{ result.risk.reasons.join('；') }}</view>
@@ -209,7 +209,7 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
-import { evaluateKnowledge, findKnowledgeSources } from '@/utils/sizhen-engine.js'
+import { evaluateKnowledgeAsync, findKnowledgeSources } from '@/utils/sizhen-engine.js'
 import { loadData } from '@/utils/data.js'
 import { openMd } from '@/utils/routes.js'
 
@@ -284,7 +284,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '' })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -455,11 +455,13 @@ export default {
       const complexPulse = COMPLEX_PULSES.find(x => x.k === p['复合脉'])
       if (complexPulse) { addScore(complexPulse.mer, 3, complexPulse.k); if (complexPulse.k === '微细欲绝') patterns.push('微细欲绝为高风险脉象') }
       mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
-      const kbEval = evaluateKnowledge(p, this.basic)
+      const kbEval = await evaluateKnowledgeAsync(p, this.basic)
       MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
       const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
       let sources = []
       try { sources = await findKnowledgeSources(p) } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
+      const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
+      sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
       this.analyzing = false
       const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
       const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
@@ -521,7 +523,8 @@ export default {
         sevenSteps,
         combination: combo,
         sources,
-        kbEvidence: kbEval.evidence
+        kbEvidence: kbEval.evidence,
+        kbVersion: kbEval.modelVersion
       }
       this.clearDraft()
       this.step = 4
