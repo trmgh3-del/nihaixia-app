@@ -26,6 +26,8 @@
       <view class="setting-line"><text>子初换日</text><switch :checked="ziChuChange" @change="ziChuChange = $event.detail.value; tick()" color="#9A2E1F" /></view>
       <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
       <view class="calc-note">默认使用系统时间；开启子初换日后，23:00 起按次日干支计算。真太阳时按东八区标准经度作学习性修正。</view>
+      <view class="calc-line">日干支：{{ dayGz }}　时干支：{{ hourGz }}</view>
+      <view class="calc-line">纳甲依据：{{ dayGan }}日 · {{ hourName }}时 · {{ najiaMeta || '暂无开穴' }}</view>
       <view class="snapshot-row"><view class="snapshot-btn" @tap="useSystemTime">使用当前时间</view><view class="snapshot-btn" @tap="tick">重新计算</view></view>
     </view>
 
@@ -171,7 +173,7 @@ export default {
     return {
       dayGanIdx: 0, hourIdx: 0, nowHour: 0,
       najiaPoint: '', najiaMeta: '', najiaOpen: false,
-      liveClock: '', fullDay: [], najiaTable: [], manualDate: '', manualTime: '', timezone: 'Asia/Shanghai (UTC+8)', timezoneOptions: ['Asia/Shanghai (UTC+8)', 'Asia/Tokyo (UTC+9)', 'UTC (UTC+0)'], ziChuChange: false, useSolarTime: false
+      liveClock: '', fullDay: [], najiaTable: [], dayGz: '', hourGz: '', manualDate: '', manualTime: '', timezone: 'Asia/Shanghai (UTC+8)', timezoneOptions: ['Asia/Shanghai (UTC+8)', 'Asia/Tokyo (UTC+9)', 'UTC (UTC+0)'], ziChuChange: false, useSolarTime: false
     }
   },
   computed: {
@@ -230,6 +232,12 @@ export default {
       const jdn = day + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045
       return (jdn + 9) % 10
     },
+    calcDayZhi(date = new Date()) {
+      const y = date.getFullYear(), m = date.getMonth() + 1, day = date.getDate()
+      const a = Math.floor((14 - m) / 12); const y2 = y + 4800 - a; const m2 = m + 12 * a - 3
+      const jdn = day + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045
+      return (jdn + 1) % 12
+    },
     getHourIdx(h) {
       if (h === 23 || h === 0) return 0
       return Math.floor((h + 1) / 2)
@@ -240,6 +248,10 @@ export default {
       this.liveClock = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
       const dayForGan = this.ziChuChange && d.getHours() >= 23 ? new Date(d.getTime() + 24 * 3600000) : d
       this.dayGanIdx = this.calcDayGan(dayForGan)
+      const dayZhiIdx = this.calcDayZhi(dayForGan)
+      const hourGanIdx = (this.dayGanIdx * 2 + this.getHourIdx(d.getHours())) % 10
+      this.dayGz = GAN[this.dayGanIdx] + ZHI[dayZhiIdx]
+      this.hourGz = GAN[hourGanIdx] + ZHI[this.getHourIdx(d.getHours())]
       this.nowHour = d.getHours()
       this.hourIdx = this.getHourIdx(this.nowHour)
       this.calcNajia()
@@ -309,6 +321,7 @@ export default {
 .setting-value { color: var(--brand); }
 .calc-title { color: var(--brand); font-size: 26rpx; font-weight: 800; margin-bottom: 10rpx; }
 .calc-note { color: var(--ink2); font-size: 18rpx; margin-top: 8rpx; line-height: 1.6; }
+.calc-line { color: var(--ink); font-size: 20rpx; line-height: 1.8; margin-top: 6rpx; }
 .snapshot-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
 .snapshot-btn { flex: 1; text-align: center; border: 1rpx solid var(--line); border-radius: 24rpx; padding: 9rpx 0; color: var(--brand); font-size: 20rpx; }
 
