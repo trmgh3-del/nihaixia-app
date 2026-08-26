@@ -11,7 +11,7 @@ data = json.loads((ROOT / 'static/data/diagnosis.json').read_text(encoding='utf-
 items = []
 for group in data.get('groups', []):
     for item in group.get('items', []):
-        items.append({'id': item.get('id'), 'title': item.get('t', ''), 'group': group.get('label', '')})
+        items.append({'id': item.get('id'), 'title': item.get('t', ''), 'group': group.get('label', ''), 'excerpt': ' '.join(str(item.get('b', '')).split())[:320]})
 
 # 规则条件为 field=value；全部满足才命中。分数用于排序，sourceId 对应原始 diagnosis 条目。
 rules = [

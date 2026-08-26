@@ -43,7 +43,8 @@ function runRules(pick, basic, rules) {
   })
   if (basic.caseType === '慢性内伤') evidence.push({ name: '外感规则不宜直接套用', points: 0, needs: [], source: '六经辨证公式·适用边界' })
   if (basic.duration === '超过2周' || basic.duration === '反复发作') evidence.push({ name: '病程较长，建议结合内伤/杂病资料复核', points: 0, needs: [], source: '七步走辨证思维模式' })
-  return { scores, evidence: evidence.slice(0, 24) }
+  const matched = evidence.filter(e => e.points > 0).length
+  return { scores, evidence: evidence.slice(0, 24), matchedRules: matched, ruleCount: rules.length, coverage: rules.length ? Math.round(matched / rules.length * 100) : 0 }
 }
 
 export function evaluateKnowledge(pick, basic = {}) { return runRules(pick, basic, RULES) }
@@ -59,16 +60,23 @@ export async function evaluateKnowledgeAsync(pick, basic = {}) {
 
 export async function findKnowledgeSources(pick) {
   try {
-    const data = await loadData('diagnosis')
-    const items = (data.groups || []).flatMap(g => g.items || [])
-    const text = values(pick).join(' ')
-    const found = []
-    for (const query of KB_QUERIES) {
-      const hit = items.find(it => it.t.includes(query.title) && query.keys.some(k => text.includes(k) || String(it.b || '').includes(k)))
-      if (hit) found.push({ id: hit.id, title: hit.t, source: query.title })
-    }
-    return found.slice(0, 6)
-  } catch (e) { return [] }
+    const compiled = await loadData('sizhen-rules')
+    const items = compiled.knowledgeItems || []
+    const terms = Object.keys(pick || {}).filter(k => pick[k]).map(k => String(pick[k])).filter(x => x.length > 1)
+    const scored = items.map(it => {
+      const hay = it.title + ' ' + it.excerpt
+      const hits = terms.filter(t => hay.includes(t))
+      return { it, hits, score: hits.length * 2 + (hay.includes('诊断公式') ? 1 : 0) }
+    }).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+    return scored.slice(0, 8).map(({ it, hits }) => ({ id: it.id, title: it.title, source: it.group, hits }))
+  } catch (e) {
+    try {
+      const data = await loadData('diagnosis')
+      const items = (data.groups || []).flatMap(g => g.items || [])
+      const text = values(pick).join(' ')
+      return items.filter(it => text.includes(it.t) || String(it.b || '').split('').some(c => text.includes(c))).slice(0, 3).map(it => ({ id: it.id, title: it.t, source: '辨证知识库', hits: [] }))
+    } catch (err) { return [] }
+  }
 }
 
 export { MERIDIANS }

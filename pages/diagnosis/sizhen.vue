@@ -143,7 +143,7 @@
       <view class="report card">
         <view class="r-t serif">⟡ 四诊合参 · 辨证报告</view>
         <view class="report-meta">
-          <text>规则版本：{{ result.kbVersion || '本地规则' }}</text><text>采集完整度：{{ result.completeness }}%</text>
+          <text>规则版本：{{ result.kbVersion || '本地规则' }}</text><text>规则命中：{{ result.kbCoverage }}%</text><text>采集完整度：{{ result.completeness }}%</text>
           <text :class="'risk-' + result.risk.level">风险：{{ result.risk.label }}</text>
         </view>
         <view class="r-risk" v-if="result.risk.reasons.length">⚠ {{ result.risk.reasons.join('；') }}</view>
@@ -284,7 +284,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '' })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0 })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -524,7 +524,8 @@ export default {
         combination: combo,
         sources,
         kbEvidence: kbEval.evidence,
-        kbVersion: kbEval.modelVersion
+        kbVersion: kbEval.modelVersion,
+        kbCoverage: kbEval.coverage || 0
       }
       this.clearDraft()
       this.step = 4
