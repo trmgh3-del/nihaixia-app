@@ -172,6 +172,11 @@
           <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
           <view class="r-line">知识库匹配条目：{{ result.kbMatches }} 条（仅作为学习证据，不等同于诊断）</view>
         </view>
+        <view class="r-sec" v-if="result.acupoints.length">
+          <view class="rs-t">相关经络/穴位学习（仅供学习）</view>
+          <view class="r-line acupoint-line" v-for="a in result.acupoints" :key="a.id" @tap="openAcupoint(a)">● {{ a.title }}：{{ a.excerpt }} ›</view>
+          <view class="basic-hint">穴位资料用于经络学习，不构成针刺、放血、艾灸或自行操作建议。</view>
+        </view>
         <view class="r-sec" v-if="result.cases.length">
           <view class="rs-t">相似医案（仅供学习）</view>
           <view class="case-item" v-for="c in result.cases" :key="c.id" @tap="openCase(c)"><view><text class="case-title">{{ c.title }}</text><text class="case-date">{{ c.date }}</text></view><view class="case-excerpt">{{ c.excerpt || '医案未载病机摘要' }}</view></view>
@@ -307,7 +312,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [], acupoints: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -448,6 +453,7 @@ export default {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
     },
     openCase(c) { openEntry({ f: 'casesTable', i: c.id, c: 'case' }) },
+    openAcupoint(a) { uni.navigateTo({ url: '/pkgZhenjiu/pages/list?pt=' + encodeURIComponent(a.title.replace(/^.*·/, '')) }) },
     async openSource(source) {
       try {
         const d = await loadData('diagnosis')
@@ -539,6 +545,8 @@ export default {
 .case-title { color: var(--brand); font-weight: 700; font-size: 22rpx; }
 .case-date { color: var(--ink2); font-size: 18rpx; margin-left: 12rpx; }
 .case-excerpt { color: var(--ink2); font-size: 19rpx; line-height: 1.6; margin-top: 6rpx; }
+.acupoint-line { color: var(--brand); }
+.acupoint-line::first-letter { color: var(--gold); }
 .formula-detail { margin-top: 14rpx; padding: 14rpx 18rpx; border-radius: 10rpx; background: var(--zebra-bg); display: flex; flex-direction: column; gap: 6rpx; font-size: 19rpx; color: var(--ink2); line-height: 1.6; }
 .formula-name { color: var(--brand); font-weight: 800; font-size: 22rpx; }
 .r-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
