@@ -6,6 +6,7 @@
       <view class="f-flags">
         <view class="f-tag" v-if="f.meridian">{{ f.meridian }}</view>
         <view class="f-tag" v-if="f.category">{{ f.category }}</view>
+        <view class="f-tag review" v-if="f.expertStatus">资料审核：{{ f.expertStatus === 'approved' ? '已审核' : '待审核' }}</view>
         <view class="f-tag" v-if="f.src">{{ f.src }}</view>
         <view class="f-fav" @tap="doFav">{{ fav ? '★' : '☆' }}</view>
       </view>
@@ -174,6 +175,7 @@ export default {
 .f-alias { margin-top: 8rpx; color: rgba(253,248,238,.78); font-size: 19rpx; }
 .f-flags { margin-left: auto; display: flex; align-items: center; }
 .f-tag { font-size: 19rpx; color: #FDF8EE; background: rgba(253,248,238,.18); border: 1rpx solid rgba(253,248,238,.45); border-radius: 10rpx; padding: 6rpx 16rpx; }
+.f-tag.review { color: #F6E7C9; }
 .f-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
 .body { margin-top: -26rpx; padding: 0 32rpx; }
 .sec { padding: 28rpx 30rpx; margin-bottom: 22rpx; }

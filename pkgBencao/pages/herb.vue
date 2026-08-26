@@ -4,6 +4,7 @@
       <view class="h-name serif">{{ h.n }}</view>
       <view class="h-flags">
         <view class="h-tag" :class="gradeClass">{{ h.g }}</view>
+        <view class="h-tag review" v-if="h.expertStatus">{{ h.expertStatus === 'approved' ? '已审核' : '待审核' }}</view>
         <view class="h-fav" @tap="doFav">{{ fav ? '★' : '☆' }}</view>
       </view>
     </view>
@@ -109,6 +110,7 @@ export default {
 .h-name { font-size: 54rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
 .h-flags { margin-left: auto; display: flex; align-items: center; }
 .h-tag { font-size: 22rpx; border-radius: 10rpx; padding: 6rpx 18rpx; background: rgba(253,248,238,.2); color: #FDF8EE; border: 1rpx solid rgba(253,248,238,.5); }
+.h-tag.review { color: #F6E7C9; }
 .h-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
 .body { margin-top: -26rpx; padding: 0 32rpx; }
 .related { padding: 24rpx 30rpx; margin-bottom: 22rpx; }
