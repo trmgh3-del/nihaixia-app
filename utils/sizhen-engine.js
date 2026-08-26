@@ -25,7 +25,9 @@ const KB_QUERIES = [
   { title: '用药铁律', keys: ['有汗用麻黄', '无汗用桂枝', '少阳用汗法', '少阴用汗法'] }
 ]
 
-function values(pick) { return Object.keys(pick || {}).filter(k => pick[k]).map(k => k + '=' + pick[k]) }
+function values(pick) {
+  return Object.keys(pick || {}).filter(k => pick[k] && (!Array.isArray(pick[k]) || pick[k].length)).flatMap(k => Array.isArray(pick[k]) ? pick[k].map(v => k + '=' + v) : [k + '=' + pick[k]])
+}
 function matchRule(rule, vals) { return rule[2].every(x => vals.includes(x)) }
 
 function runRules(pick, basic, rules) {
@@ -90,11 +92,12 @@ export async function findKnowledgeSources(pick) {
 
 export function filterFormulaSafety(names = [], pick = {}, basic = {}, redFlags = []) {
   const blocked = []; const warnings = []
+  const has = (field, value) => Array.isArray(pick[field]) ? pick[field].includes(value) : pick[field] === value
   const block = (name, reason) => { blocked.push({ name, reason }) }
   names.forEach(name => {
-    if (pick['汗'] === '有汗自汗' && /麻黄|大青龙|小青龙/.test(name)) block(name, '有汗时不可直接使用发汗峻剂')
-    if (pick['汗'] === '无汗' && /桂枝汤/.test(name)) block(name, '无汗时不可直接套用桂枝汤方向')
-    if (pick['寒热'] === '往来寒热' && /麻黄|桂枝|承气/.test(name)) block(name, '少阳阶段需先复核三禁，不直接汗、下')
+    if (has('汗', '有汗自汗') && /麻黄|大青龙|小青龙/.test(name)) block(name, '有汗时不可直接使用发汗峻剂')
+    if (has('汗', '无汗') && /桂枝汤/.test(name)) block(name, '无汗时不可直接套用桂枝汤方向')
+    if (has('寒热', '往来寒热') && /麻黄|桂枝|承气/.test(name)) block(name, '少阳阶段需先复核三禁，不直接汗、下')
     if (basic.pregnant && /麻黄|附子|细辛|承气|乌梅|四逆汤|真武汤/.test(name)) block(name, '孕期/备孕需医师确认')
     if (basic.caseType === '慢性内伤' && /麻黄|大青龙|小青龙|葛根|小柴胡/.test(name)) block(name, '慢性内伤不直接套用急性外感方')
     if (basic.caseType === '心肺症状') block(name, '心肺症状需先完成现代医学急症排查')

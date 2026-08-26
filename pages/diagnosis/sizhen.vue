@@ -93,7 +93,7 @@
       <view class="grp card" v-for="q in tenQ" :key="q.k">
         <view class="g-t serif">{{ q.k }}</view>
         <view class="opts">
-          <view class="opt sm" v-for="o in q.opts" :key="o" :class="{ on: pick[q.k] === o }" @tap="setPick(q.k, o)">{{ o }}</view>
+          <view class="opt sm" v-for="o in q.opts" :key="o" :class="{ on: isPicked(q.k, o) }" @tap="toggleOption(q.k, o)">{{ o }}</view>
         </view>
       </view>
       <view class="grp card">
@@ -318,6 +318,7 @@ const COMPLEX_PULSES = [
   { k: '弦数', mer: '少阳', reason: '少阳郁热，需防阳明化热' }, { k: '弦缓', mer: '少阳', reason: '少阳兼太阴虚' },
   { k: '微细欲绝', mer: '少阴', reason: '阳气衰微，属于高风险脉象' }, { k: '结代', mer: '少阴', reason: '心动悸、脉结代，需医师复核' }
 ]
+const MULTI_FIELDS = ['寒热', '疼痛', '胸腹']
 const MERIDIANS = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
 
 export default {
@@ -371,6 +372,15 @@ export default {
   onHide() { if (this.step < 4) this.saveDraft() },
   methods: {
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
+    isPicked(k, v) { return MULTI_FIELDS.includes(k) ? (Array.isArray(this.pick[k]) && this.pick[k].includes(v)) : this.pick[k] === v },
+    toggleOption(k, v) {
+      if (!MULTI_FIELDS.includes(k)) { this.setPick(k, v); return }
+      const current = Array.isArray(this.pick[k]) ? this.pick[k].slice() : []
+      const i = current.indexOf(v)
+      if (i >= 0) current.splice(i, 1); else current.push(v)
+      this.pick[k] = current
+    },
+    hasPick(k, v) { return Array.isArray(this.pick[k]) ? this.pick[k].includes(v) : this.pick[k] === v },
     saveDraft() {
       try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, redFlags: this.redFlags, pulseSource: this.pulseSource, step: this.step }) } catch (e) {}
     },
@@ -442,14 +452,14 @@ export default {
       if (p['手足温度'] === '脚凉手温') { patterns.push('脚冷=里寒之兆'); mer.add('太阴') }
       if (p['胃口'] === '毫无胃口') patterns.push('胃气将绝，亟需重视')
       if (p['胃口'] === '饥而不欲食') { mer.add('厥阴'); patterns.push('饥而不欲食可见厥阴病') }
-      if (p['疼痛'] === '胸痛彻背') { patterns.push('胸痛彻背属于红旗表现，需先排除急症'); if (!this.redFlags.includes('胸痛/胸闷')) this.redFlags.push('胸痛/胸闷') }
-      if (p['疼痛'] === '气上撞心/心中疼热') { mer.add('厥阴'); patterns.push('气上撞心、心中疼热可见厥阴寒热错杂') }
-      if (p['疼痛'] === '胸胁苦满') { mer.add('少阳'); patterns.push('胸胁苦满为少阳重要证候') }
+      if (this.hasPick('疼痛', '胸痛彻背')) { patterns.push('胸痛彻背属于红旗表现，需先排除急症'); if (!this.redFlags.includes('胸痛/胸闷')) this.redFlags.push('胸痛/胸闷') }
+      if (this.hasPick('疼痛', '气上撞心/心中疼热')) { mer.add('厥阴'); patterns.push('气上撞心、心中疼热可见厥阴寒热错杂') }
+      if (this.hasPick('疼痛', '胸胁苦满')) { mer.add('少阳'); patterns.push('胸胁苦满为少阳重要证候') }
       if (p['耳'] === '耳鸣' || p['耳'] === '耳聋') patterns.push('耳鸣耳聋需结合少阳、少阴及肾系资料复核')
       if (p['妇女'] === '孕期出血或腹痛') { if (!this.redFlags.includes('孕期出血/腹痛')) this.redFlags.push('孕期出血/腹痛') }
-      if (p['寒热'] === '恶寒') { mer.add('太阳'); bg.add('表') }
-      if (p['寒热'] === '往来寒热') { mer.add('少阳'); formulas.push('小柴胡汤') }
-      if (p['寒热'] === '但热不寒') { mer.add('阳明'); bg.add('热') }
+      if (this.hasPick('寒热', '恶寒')) { mer.add('太阳'); bg.add('表') }
+      if (this.hasPick('寒热', '往来寒热')) { mer.add('少阳'); formulas.push('小柴胡汤') }
+      if (this.hasPick('寒热', '但热不寒')) { mer.add('阳明'); bg.add('热') }
       // 切诊
       if (p['脉位'] === '浮') bg.add('表')
       if (p['脉位'] === '沉') bg.add('里')
