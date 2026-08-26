@@ -9,8 +9,8 @@ assert len(formulas)>=322 and len(herbs)>=465
 assert len({x['id'] for x in formulas})==len(formulas)
 assert len({x['id'] for x in herbs})==len(herbs)
 assert all(x.get('n') for x in formulas) and all(x.get('n') for x in herbs)
-assert all(all(k in x for k in ('alias', 'meridian', 'category', 'contraindication', 'preparation', 'keywords', 'components')) for x in formulas)
-assert all(all(k in x for k in ('canonicalName', 'processing', 'natureCategory', 'flavor', 'meridians', 'aliases', 'sources')) for x in herbs)
+assert all(all(k in x for k in ('alias', 'meridian', 'category', 'contraindication', 'preparation', 'keywords', 'components', 'expertStatus', 'reviewNotes')) for x in formulas)
+assert all(all(k in x for k in ('canonicalName', 'processing', 'natureCategory', 'flavor', 'meridians', 'aliases', 'sources', 'expertStatus', 'reviewNotes')) for x in herbs)
 assert sum(bool(x.get('clinical') or x.get('origin') or x.get('note')) for x in formulas)>=322
 up = [x for x in formulas if str(x.get('id','')).startswith('up_')]
 assert up and all(x.get('zhizhi') and x.get('composition') and x.get('doses') for x in up), 'upstream formula detail mapping incomplete'

@@ -12,6 +12,8 @@ for f in fd.get('items', []):
     f.setdefault('contraindication', '')
     f.setdefault('preparation', '')
     f.setdefault('keywords', [])
+    f.setdefault('expertStatus', 'pending')
+    f.setdefault('reviewNotes', '')
     if not f.get('zhizhi'): f['zhizhi'] = f.get('clinical', '')
     if not f.get('composition'): f['composition'] = f.get('origin', '')
     if not f.get('contraindication') and '禁忌：' in str(f.get('note', '')): f['contraindication'] = str(f['note']).split('禁忌：', 1)[1]
@@ -27,5 +29,7 @@ for h in hd.get('herbs', []):
     h.setdefault('category', h.get('g', '其他'))
     h.setdefault('aliases', [])
     h.setdefault('sources', [])
+    h.setdefault('expertStatus', 'pending')
+    h.setdefault('reviewNotes', '')
 hp.write_text(json.dumps(hd, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 print(f'normalized formulas={len(fd.get("items", []))} herbs={len(hd.get("herbs", []))}')
