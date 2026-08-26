@@ -8,4 +8,5 @@ organs = d.get('organs', [])
 assert len(organs) >= 5
 assert len({x['name'] for x in organs}) == len(organs)
 assert all(x.get('evidence') and x.get('meridians') for x in organs)
+assert all(x.get('expertStatus') in ('pending', 'approved', 'needs_review', 'rejected') and 'reviewNotes' in x for x in organs), 'zangxiang review metadata incomplete'
 print(f'PASS: zangxiang dataset {len(organs)} organs')

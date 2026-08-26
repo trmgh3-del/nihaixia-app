@@ -122,6 +122,8 @@ python3 tools/check_upstream_sync.py                   # 检查上游 main 是�
 python3 tools/report_sizhen_coverage.py                # 查看知识条目到规则的引用覆盖率
 python3 tools/report_rule_review.py                    # 输出规则专家审核队列
 python3 tools/report_medicine_review.py                # 输出方剂/本草专家审核状态
+python3 tools/normalize_knowledge_review.py             # 初始化穴位/藏象审核字段
+python3 tools/report_knowledge_review.py                # 输出穴位/藏象专家审核状态
 python3 tools/validate_case_dataset.py                 # 验证 1257 条结构化医案字段
 python3 tools/test_acupoint_dataset.py                 # 验证穴位库与辨证联动数据
 python3 tools/test_zangxiang_dataset.py                # 验证藏象基础数据
