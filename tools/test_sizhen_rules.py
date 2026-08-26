@@ -18,11 +18,12 @@ assert all(not x.get('sourceId') or x['sourceId'] in ids for x in rules['rules']
 assert all(sid in ids for x in rules['rules'] for sid in x.get('sourceIds', [])), 'orphan source ids'
 allowed_fields = {'望色','舌质','舌苔','望神','声音','呼吸','汗','头身','大便','小便','口渴','睡眠','手足温度','胃口','腹满','疼痛','胸腹','耳','妇女','厥热胜复','misTreatment','miscDisease','duration','symptomTime','寒热','脉位','脉率','脉形','脉力','复合脉'}
 for rule in rules['rules']:
-    for condition in rule['when']:
+    for condition in rule['when'] + rule.get('reference', []) + rule.get('exclude', []):
         field, sep, value = condition.partition('=')
         assert sep and field in allowed_fields and value, f'unknown condition: {condition}'
     fields = [condition.split('=', 1)[0] for condition in rule['when']]
     assert len(fields) == len(set(fields)), f'mutually exclusive duplicate field in rule: {rule["id"]}'
+    assert not set(rule.get('required', [])) & set(rule.get('exclude', [])), f'required/exclude conflict: {rule["id"]}'
 
 # 标准六经回归样例：只验证规则排序，不宣称医疗诊断。
 cases = [

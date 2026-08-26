@@ -173,6 +173,23 @@ for rule in rules:
     rule['required'] = rule['when']
     rule.setdefault('reference', [])
     rule.setdefault('exclude', [])
+# 关键方证/证型的排除条件，避免只凭单一正向信号误判。
+EXCLUDES = {
+    'taiyang-wind': ['汗=无汗', '脉形=紧'],
+    'taiyang-cold': ['汗=有汗自汗'],
+    'yangming-meridian': ['寒热=恶寒'],
+    'yangming-fu': ['大便=溏泄'],
+    'shaoyang-outline': ['寒热=但热不寒'],
+    'taiyin-cold': ['大便=便秘', '口渴=渴喜冷饮'],
+    'shaoyin-cold': ['脉率=数', '舌质=红'],
+    'shaoyin-reheat-outline': ['脉率=迟', '舌苔=白腻'],
+    'jueyin-coldheat': ['舌苔=黄'],
+    'quick-flow-solar': ['脉位=沉'],
+    'quick-flow-shaoyin': ['脉位=浮'],
+}
+for rule in rules:
+    rule['exclude'] = EXCLUDES.get(rule['id'], rule.get('exclude', []))
+
 rule_source_ids = {sid for rule in rules for sid in rule.get('sourceIds', []) if sid}
 context_items = [item for item in items if item.get('id') not in rule_source_ids]
 out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items, 'contextItems':context_items}
