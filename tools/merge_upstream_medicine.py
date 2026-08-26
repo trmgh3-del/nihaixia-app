@@ -46,11 +46,22 @@ fp.write_text(json.dumps(current, ensure_ascii=False, separators=(',', ':')), en
 # 本草：旧字段全部保留；上游字段映射到当前阅读器字段，同时保留炮制、归经和比较资料。
 hp = ROOT / 'static/data/bencao.json'; herbs_data = json.loads(hp.read_text(encoding='utf-8'))
 herbs = herbs_data.get('herbs', []); herb_names = {norm(x.get('n')) for x in herbs}
-for h in read('herbs.json').get('herbs', []):
+up_herbs = read('herbs.json').get('herbs', [])
+for h in up_herbs:
     n = h.get('name','')
     if norm(n) in herb_names: continue
     herbs.append({'id': 'up_hb_' + norm(n), 'n': n, 'g': h.get('category','其他'), '原文': h.get('original',''), '性味': h.get('nature','') or h.get('flavor',''), '主治': h.get('action',''), '倪注': h.get('ni_note',''), '容川': '', '用量': h.get('dosage',''), '禁忌': h.get('contraindication',''), '口述': h.get('clinical_notes',''), '补注': h.get('historical_notes','') + ('；归经：' + '、'.join(h.get('meridians',[])) if h.get('meridians') else '')})
     herb_names.add(norm(n))
+up_herb_by_name = {norm(x.get('name')): x for x in up_herbs}
+for herb in herbs:
+    uh = up_herb_by_name.get(norm(herb.get('n')))
+    if uh and str(herb.get('id','')).startswith('up_hb_'):
+        herb['canonicalName'] = uh.get('name','')
+        herb['natureCategory'] = uh.get('nature_category','')
+        herb['flavor'] = uh.get('flavor','')
+        herb['meridians'] = uh.get('meridians',[])
+        herb['category'] = uh.get('category','其他')
+        herb['aliases'] = uh.get('herb_comparisons',[])[:4]
 herbs_data['herbs'] = herbs
 hp.write_text(json.dumps(herbs_data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 print(f'merged formulas={len(items)} herbs={len(herbs)}')

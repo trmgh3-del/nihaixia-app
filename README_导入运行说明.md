@@ -124,6 +124,7 @@ python3 tools/validate_case_dataset.py                 # 验证 1257 条结构�
 python3 tools/test_acupoint_dataset.py                 # 验证穴位库与辨证联动数据
 python3 tools/test_zangxiang_dataset.py                # 验证藏象基础数据
 python3 tools/test_medicine_dataset.py                 # 验证 351 首方剂和 471 味本草
+python3 tools/report_medicine_quality.py                # 输出方剂/本草详情字段完整率
 python3 tools/validate_expert_blind.py tools/expert_blind_cases.schema.json # 验证专家盲测数据格式
 python3 tools/score_expert_blind.py tools/expert_blind_cases.schema.json # 有真实结果后统计一致率
 python3 tools/final_audit.py

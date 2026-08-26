@@ -15,4 +15,5 @@ assert sum(bool(x.get('clinical') or x.get('origin') or x.get('note')) for x in 
 up = [x for x in formulas if str(x.get('id','')).startswith('up_')]
 assert up and all(x.get('zhizhi') and x.get('composition') and x.get('doses') for x in up), 'upstream formula detail mapping incomplete'
 assert sum(bool(x.get('原文') or x.get('倪注') or x.get('主治')) for x in herbs)>=465
+assert sum(bool(x.get('meridians')) for x in herbs) >= 80, 'upstream meridian mapping missing'
 print(f'PASS: formulas={len(formulas)}, herbs={len(herbs)}')
