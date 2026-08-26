@@ -56,11 +56,11 @@ export default {
       if (this.g) list = list.filter(h => h.g === this.g)
       if (this.xw) {
         const xw = this.xw
-        list = list.filter(h => (h['性味'] || '').includes(xw) || (h['原文'] || '').slice(0, 30).includes('味' + xw) || (h['性味'] || '').includes(xw))
+        list = list.filter(h => (h['性味'] || '').includes(xw) || (h.natureCategory || '').includes(xw) || (h['原文'] || '').slice(0, 30).includes('味' + xw))
       }
       const q = this.q.trim()
       if (q) {
-        list = list.filter(h => (h.n + (h['性味'] || '') + (h['主治'] || '') + (h['原文'] || '') + (h['倪注'] || '')).includes(q))
+        list = list.filter(h => (h.n + (h.canonicalName || '') + (h.g || '') + (h.category || '') + (h.natureCategory || '') + (h.flavor || '') + (h.meridians || []).join('') + (h.aliases || []).join('') + (h['性味'] || '') + (h['主治'] || '') + (h['原文'] || '') + (h['倪注'] || '')).includes(q))
       }
       return list
     }

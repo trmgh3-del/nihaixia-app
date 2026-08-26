@@ -96,7 +96,7 @@ export default {
       let list = this.items
       if (this.jing) list = list.filter(it => this.fJing(it) === this.jing)
       const q = this.q.trim()
-      if (q) list = list.filter(it => (it.n + (it.zhizhi || '') + (it.clinical || '') + (it.origin || '') + (it.composition || '') + (it.note || '') + (it.doses || '')).includes(q))
+      if (q) list = list.filter(it => (it.n + (it.alias || '') + (Array.isArray(it.keywords) ? it.keywords.join('') : '') + (it.category || '') + (it.meridian || '') + (it.zhizhi || '') + (it.clinical || '') + (it.origin || '') + (it.composition || '') + (it.note || '') + (it.doses || '')).includes(q))
       return list
     }
   },
@@ -112,6 +112,7 @@ export default {
   methods: {
     fJing(it) {
       const n = it.n || ''
+      if (it.meridian) return String(it.meridian).split(/[、,，/]/)[0]
       if (/柴胡/.test(n)) return '少阳'
       if (/承气|白虎/.test(n)) return '阳明'
       if (/麻黄汤|桂枝汤$|桂枝加|葛根汤|青龙/.test(n)) return '太阳'
