@@ -465,6 +465,245 @@
       ],
       "sourceTitle": "厥阴病",
       "sourceId": "liu_39"
+    },
+    {
+      "id": "taiyang-ge",
+      "name": "太阳项强无汗",
+      "meridian": "太阳",
+      "score": 2,
+      "when": [
+        "头身=头痛项强",
+        "汗=无汗"
+      ],
+      "sourceTitle": "太阳病",
+      "sourceId": "liu_2"
+    },
+    {
+      "id": "taiyang-body",
+      "name": "太阳身痛恶寒",
+      "meridian": "太阳",
+      "score": 2,
+      "when": [
+        "头身=身痛骨节痛",
+        "寒热=恶寒"
+      ],
+      "sourceTitle": "太阳病",
+      "sourceId": "liu_2"
+    },
+    {
+      "id": "yangming-four",
+      "name": "阳明四大证",
+      "meridian": "阳明",
+      "score": 4,
+      "when": [
+        "寒热=但热不寒",
+        "汗=大汗不止",
+        "口渴=渴喜冷饮",
+        "脉形=洪"
+      ],
+      "sourceTitle": "阳明病",
+      "sourceId": "liu_9"
+    },
+    {
+      "id": "yangming-urine",
+      "name": "阳明里热小便短赤",
+      "meridian": "阳明",
+      "score": 1,
+      "when": [
+        "小便=短赤",
+        "口渴=渴喜冷饮"
+      ],
+      "sourceTitle": "阳明病",
+      "sourceId": "liu_9"
+    },
+    {
+      "id": "shaoyang-mouth",
+      "name": "少阳口苦咽干",
+      "meridian": "少阳",
+      "score": 2,
+      "when": [
+        "口渴=口苦咽干",
+        "寒热=往来寒热"
+      ],
+      "sourceTitle": "少阳病",
+      "sourceId": "liu_15"
+    },
+    {
+      "id": "shaoyang-dizziness",
+      "name": "少阳目眩",
+      "meridian": "少阳",
+      "score": 1,
+      "when": [
+        "头身=头晕目眩",
+        "脉形=弦"
+      ],
+      "sourceTitle": "少阳病",
+      "sourceId": "liu_15"
+    },
+    {
+      "id": "taiyin-abdomen",
+      "name": "太阴腹满食不下",
+      "meridian": "太阴",
+      "score": 2,
+      "when": [
+        "腹满=腹满",
+        "胃口=差/食少"
+      ],
+      "sourceTitle": "太阴病",
+      "sourceId": "liu_22"
+    },
+    {
+      "id": "taiyin-white",
+      "name": "太阴苔白腻不渴",
+      "meridian": "太阴",
+      "score": 3,
+      "when": [
+        "舌苔=白腻",
+        "口渴=不渴"
+      ],
+      "sourceTitle": "舌诊速查",
+      "sourceId": "liu_57"
+    },
+    {
+      "id": "shaoyin-sleep",
+      "name": "少阴但欲寐脉微细",
+      "meridian": "少阴",
+      "score": 4,
+      "when": [
+        "睡眠=但欲寐",
+        "脉形=细",
+        "脉力=微"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "shaoyin-urine",
+      "name": "少阴小便清长",
+      "meridian": "少阴",
+      "score": 2,
+      "when": [
+        "小便=清长",
+        "手足温度=手脚冰凉"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "shaoyin-heart",
+      "name": "少阴心悸",
+      "meridian": "少阴",
+      "score": 1,
+      "when": [
+        "胸腹=心悸",
+        "脉力=无力"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "jueyin-thirst",
+      "name": "厥阴消渴饥不欲食",
+      "meridian": "厥阴",
+      "score": 3,
+      "when": [
+        "口渴=消渴多饮",
+        "胃口=饥而不欲食"
+      ],
+      "sourceTitle": "厥阴病",
+      "sourceId": "liu_39"
+    },
+    {
+      "id": "pulse-float-tight",
+      "name": "浮紧太阳伤寒脉",
+      "meridian": "太阳",
+      "score": 3,
+      "when": [
+        "复合脉=浮紧"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-sunken-late",
+      "name": "沉迟太阴寒湿脉",
+      "meridian": "太阴",
+      "score": 3,
+      "when": [
+        "复合脉=沉迟"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-sunken-weak",
+      "name": "沉微少阴阳虚脉",
+      "meridian": "少阴",
+      "score": 3,
+      "when": [
+        "复合脉=沉微"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-string-fast",
+      "name": "弦数少阳郁热脉",
+      "meridian": "少阳",
+      "score": 3,
+      "when": [
+        "复合脉=弦数"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-weak-fine",
+      "name": "微细欲绝高风险脉",
+      "meridian": "少阴",
+      "score": 4,
+      "when": [
+        "复合脉=微细欲绝"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-knotted",
+      "name": "结代心动悸脉",
+      "meridian": "少阴",
+      "score": 2,
+      "when": [
+        "复合脉=结代"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "cold-false-hot",
+      "name": "舌淡脉数真寒假热",
+      "meridian": "少阴",
+      "score": 2,
+      "when": [
+        "舌质=淡白",
+        "脉率=数",
+        "口渴=渴不欲饮"
+      ],
+      "sourceTitle": "真寒假热",
+      "sourceId": "liu_65"
+    },
+    {
+      "id": "hot-false-cold",
+      "name": "舌红脉沉真热假寒",
+      "meridian": "阳明",
+      "score": 2,
+      "when": [
+        "舌质=红",
+        "脉位=沉",
+        "口渴=渴喜冷饮"
+      ],
+      "sourceTitle": "真热假寒",
+      "sourceId": "liu_65"
     }
   ],
   "knowledgeItems": [
