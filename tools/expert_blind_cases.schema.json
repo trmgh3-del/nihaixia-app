@@ -8,6 +8,7 @@
         "basic": {"ageRange": "未说明", "caseType": "急性外感/感冒"},
         "findings": {}
       },
+      "engineResult": {"bagang": [], "primaryMeridian": "", "secondaryMeridians": [], "formulaDirection": "", "risk": ""},
       "expertAnnotations": [
         {"expertId": "E01", "bagang": [], "primaryMeridian": "", "secondaryMeridians": [], "formulaDirection": "", "risk": ""},
         {"expertId": "E02", "bagang": [], "primaryMeridian": "", "secondaryMeridians": [], "formulaDirection": "", "risk": ""},

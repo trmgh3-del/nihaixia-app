@@ -11,6 +11,10 @@ cases = data.get('cases', [])
 assert cases, 'cases must not be empty'
 for case in cases:
     assert case.get('id') and isinstance(case.get('input'), dict), 'case id/input missing'
+    engine = case.get('engineResult')
+    if engine is not None:
+        for key in ('bagang', 'primaryMeridian', 'secondaryMeridians', 'formulaDirection', 'risk'):
+            assert key in engine, f'{case["id"]}: engineResult missing {key}'
     annotations = case.get('expertAnnotations', [])
     assert len(annotations) >= 3, f'{case["id"]}: need at least 3 independent experts'
     ids = [a.get('expertId') for a in annotations]
