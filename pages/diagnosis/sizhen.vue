@@ -12,7 +12,9 @@
     <view v-if="step === 0" class="tab-body fade-in">
       <view class="grp card basic-card">
         <view class="g-t serif">⟡ 基本信息（可选）</view>
-        <view class="basic-row"><input v-model="basic.age" type="number" placeholder="年龄" class="basic-input" /><input v-model="basic.duration" placeholder="症状持续时间" class="basic-input" /></view>
+        <view class="basic-row"><input v-model="basic.age" type="number" placeholder="年龄" class="basic-input" /></view>
+        <view class="sub-lab">病程</view>
+        <view class="opts"><view v-for="o in durationOptions" :key="o" class="opt sm" :class="{ on: basic.duration === o }" @tap="basic.duration = o">{{ o }}</view></view>
         <view class="sub-lab">性别</view>
         <view class="opts"><view v-for="o in ['未说明', '男', '女']" :key="o" class="opt sm" :class="{ on: basic.sex === o }" @tap="basic.sex = o">{{ o }}</view></view>
         <view class="sub-lab">特殊情况</view>
@@ -118,6 +120,11 @@
           <view class="opt" v-for="o in qieLi" :key="o.k" :class="{ on: pick['脉力'] === o.k }" @tap="setPick('脉力', o.k)">{{ o.k }}</view>
         </view>
       </view>
+      <view class="grp card">
+        <view class="g-t serif">⟡ 切诊来源</view>
+        <view class="opts"><view v-for="o in pulseSources" :key="o" class="opt sm" :class="{ on: pulseSource === o }" @tap="pulseSource = o">{{ o }}</view></view>
+        <view class="basic-hint">非医师自行触摸的脉象仅供参考，不能作为处方依据。</view>
+      </view>
       <view class="nav-row">
         <view class="nav-btn" @tap="step = 2">‹ 上一步</view>
         <view class="nav-btn main" @tap="analyze">⟡ 生成辨证报告</view>
@@ -161,9 +168,13 @@
           <view class="rs-t">病机分析</view>
           <view class="r-line" v-for="p in result.patterns" :key="p">● {{ p }}</view>
         </view>
-        <view class="r-sec" v-if="result.formulas.length">
+        <view class="r-sec" v-if="result.formulas.length && result.risk.level !== 'high'">
           <view class="rs-t">参考方剂方向</view>
           <view class="r-fang serif" v-for="f in result.formulas" :key="f">「{{ f }}」</view>
+          <view class="basic-hint">仅为学习用方证提示，不构成购药、煎服或处方依据。</view>
+        </view>
+        <view class="r-sec" v-if="result.risk.level === 'high'">
+          <view class="rs-t">紧急处理</view><view class="r-risk">检测到高风险表现，已停止方剂推荐。请立即就医，不要依据本工具自行用药。</view>
         </view>
         <view class="r-warn">⚠ 四诊合参仅供学习参考，非诊断结论。临床请由执业医师面诊；急重症立即就医。涉及附子、麻黄、细辛等峻药，严禁据此自行购药服用。</view>
         <view class="r-actions"><view class="nav-btn" @tap="copyReport">复制报告</view><view class="nav-btn main" @tap="saveReport">保存报告</view></view>
@@ -171,7 +182,7 @@
       <view class="nav-row"><view class="nav-btn" @tap="step = 0">‹ 返回修改</view><view class="nav-btn" @tap="reset">↺ 重新采集</view></view>
       <view class="saved-reports card" v-if="savedReports.length">
         <view class="rs-t">历史报告（最近 {{ savedReports.length }} 份）</view>
-        <view class="saved-item" v-for="(item, i) in savedReports" :key="item.ts"><text>{{ formatReportTime(item.ts) }}</text><text class="saved-del" @tap="removeReport(i)">删除</text></view>
+        <view class="saved-item" v-for="(item, i) in savedReports" :key="item.ts" @tap="viewReport(item)"><text>{{ formatReportTime(item.ts) }} · {{ item.result && item.result.meridians ? (item.result.meridians[0] || '未明确') : '未明确' }}</text><text class="saved-del" @tap.stop="removeReport(i)">查看/删除</text></view>
       </view>
     </view>
   </view>
@@ -251,6 +262,8 @@ const STEP_FIELDS = [
 ]
 const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] } })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
+const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
+const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
 const MERIDIANS = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
 
 export default {
@@ -262,6 +275,9 @@ export default {
       basic: { age: '', sex: '未说明', duration: '', pregnant: false, chronic: false },
       redFlags: [],
       redFlagOptions: RED_FLAGS,
+      durationOptions: DURATIONS,
+      pulseSources: PULSE_SOURCES,
+      pulseSource: '不确定',
       savedReports: [],
       result: EMPTY_RESULT(),
       wangSe: WANG_SE, wangShe: WANG_SHE, wangTai: WANG_TAI, wangShen: WANG_SHEN,
@@ -275,14 +291,14 @@ export default {
     stepCount() { return i => { const fields = STEP_FIELDS[i] || []; return fields.filter(k => this.pick[k]).length + '/' + fields.length } },
     basicSummary() {
       const b = this.basic
-      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
+      return [b.age ? b.age + '岁' : '年龄未说明', b.sex || '性别未说明', b.duration || '病程未说明', '切诊来源：' + this.pulseSource, b.pregnant ? '孕期/备孕' : '', b.chronic ? '慢性病/用药' : '', this.redFlags.length ? '红旗：' + this.redFlags.join('、') : '无红旗症状'].filter(Boolean).join(' · ')
     }
   },
   onLoad() {
     try {
       const draft = uni.getStorageSync('nx_sizhen_draft')
       if (draft && draft.ts && Date.now() - draft.ts < 24 * 60 * 60 * 1000) {
-        this.pick = draft.pick || {}; this.basic = Object.assign(this.basic, draft.basic || {}); this.redFlags = draft.redFlags || []; this.step = Math.min(draft.step || 0, 3)
+        this.pick = draft.pick || {}; this.basic = Object.assign(this.basic, draft.basic || {}); this.redFlags = draft.redFlags || []; this.pulseSource = draft.pulseSource || '不确定'; this.step = Math.min(draft.step || 0, 3)
         uni.showToast({ title: '已恢复上次问诊', icon: 'none' })
       }
     } catch (e) {}
@@ -295,7 +311,7 @@ export default {
   methods: {
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
     saveDraft() {
-      try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, redFlags: this.redFlags, step: this.step }) } catch (e) {}
+      try { uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.pick, basic: this.basic, redFlags: this.redFlags, pulseSource: this.pulseSource, step: this.step }) } catch (e) {}
     },
     clearDraft() { try { uni.removeStorageSync('nx_sizhen_draft') } catch (e) {} },
     jumpStep(i) {
@@ -415,6 +431,7 @@ export default {
       if (this.basic.chronic) riskReasons.push('慢性病或正在用药')
       if (this.basic.duration && /(?:超过|大于|长期|两周|2周|14天)/.test(this.basic.duration)) riskReasons.push('病程较长，不能仅按急性外感判断')
       if (this.basic.age && (Number(this.basic.age) < 12 || Number(this.basic.age) >= 65)) riskReasons.push('儿童或高龄')
+      if (this.pulseSource !== '医师诊察' && STEP_FIELDS[3].some(k => p[k])) riskReasons.push('切诊来源非医师诊察，脉象可靠性有限')
       const highRisk = this.redFlags.length > 0 || riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x))
       const risk = { level: highRisk ? 'high' : riskReasons.length ? 'medium' : 'low', label: highRisk ? '高风险' : riskReasons.length ? '需复核' : '一般', reasons: riskReasons }
 
@@ -443,7 +460,7 @@ export default {
     },
     reportText() {
       const r = this.result
-      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.formulas.join('、') || '暂无'), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
+      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.risk.level === 'high' ? '高风险，已停止推荐' : (r.formulas.join('、') || '暂无')), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
     },
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
@@ -458,6 +475,10 @@ export default {
       } catch (e) { uni.showToast({ title: '保存失败', icon: 'none' }) }
     },
     formatReportTime(ts) { return new Date(ts).toLocaleString() },
+    viewReport(item) {
+      if (!item || !item.text) return
+      uni.showModal({ title: '历史辨证报告', content: item.text.slice(0, 1800), showCancel: false, confirmText: '关闭' })
+    },
     removeReport(i) {
       const list = this.savedReports.slice(); list.splice(i, 1); this.savedReports = list
       try { uni.setStorageSync('nx_sizhen_reports', list) } catch (e) {}
@@ -482,6 +503,8 @@ export default {
 .basic-hint { margin-top: 14rpx; color: var(--ink2); font-size: 19rpx; line-height: 1.6; }
 .danger-opt { color: #9A2E1F; border-color: rgba(154,46,31,.2); }
 .danger-opt.on { background: #9A2E1F; color: #fff; }
+.basic-row .basic-input { margin-bottom: 2rpx; }
+.risk-high + .r-sec { border-color: #9A2E1F; }
 .step.on .sp-t { color: var(--brand); font-weight: 700; }
 
 .tab-body { padding: 10rpx 32rpx 0; }
