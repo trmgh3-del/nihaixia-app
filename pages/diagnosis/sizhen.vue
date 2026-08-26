@@ -31,6 +31,7 @@
         <view class="opts"><view v-for="o in redFlagOptions" :key="o" class="opt sm danger-opt" :class="{ on: redFlags.includes(o) }" @tap="toggleRedFlag(o)">{{ o }}</view></view>
         <view class="basic-hint">基本信息仅用于风险提示，不会替代四诊判断；涉及孕期、儿童、高龄、慢性病或正在用药，请优先咨询执业医师。</view>
         <view class="snapshot-row"><view class="snapshot-btn" @tap="saveSnapshot">保存快照</view><view class="snapshot-btn" v-if="snapshots.length" @tap="restoreSnapshot">恢复最近快照</view></view>
+        <view class="snapshot-list" v-if="snapshots.length"><view class="snapshot-item" v-for="(s, i) in snapshots" :key="s.ts"><text>{{ formatReportTime(s.ts) }}</text><text class="snapshot-action" @tap="restoreSnapshotAt(i)">恢复</text><text class="snapshot-action danger" @tap="removeSnapshot(i)">删除</text></view></view>
       </view>
       <view class="grp card">
         <view class="g-t serif">⟡ 望色（面色）</view>
@@ -381,11 +382,16 @@ export default {
         this.snapshots = next; uni.setStorageSync('nx_sizhen_snapshots', next); uni.showToast({ title: '快照已保存', icon: 'success' })
       } catch (e) { uni.showToast({ title: '快照保存失败', icon: 'none' }) }
     },
-    restoreSnapshot() {
-      const s = this.snapshots && this.snapshots[0]
+    restoreSnapshot() { this.restoreSnapshotAt(0) },
+    restoreSnapshotAt(index) {
+      const s = this.snapshots && this.snapshots[index]
       if (!s) return
       this.pick = JSON.parse(JSON.stringify(s.pick || {})); this.basic = Object.assign(this.basic, s.basic || {}); this.redFlags = s.redFlags || []; this.pulseSource = s.pulseSource || '不确定'; this.step = 0
-      uni.showToast({ title: '已恢复最近快照', icon: 'none' })
+      uni.showToast({ title: '已恢复快照', icon: 'none' })
+    },
+    removeSnapshot(index) {
+      const next = this.snapshots.slice(); next.splice(index, 1); this.snapshots = next
+      try { uni.setStorageSync('nx_sizhen_snapshots', next) } catch (e) {}
     },
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
     isPicked(k, v) { return MULTI_FIELDS.includes(k) ? (Array.isArray(this.pick[k]) && this.pick[k].includes(v)) : this.pick[k] === v },
@@ -482,6 +488,11 @@ export default {
 .basic-hint { margin-top: 14rpx; color: var(--ink2); font-size: 19rpx; line-height: 1.6; }
 .snapshot-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
 .snapshot-btn { flex: 1; text-align: center; border: 1rpx solid var(--line); border-radius: 24rpx; padding: 9rpx 0; color: var(--brand); font-size: 20rpx; }
+.snapshot-list { margin-top: 12rpx; border-top: 1rpx solid var(--line); }
+.snapshot-item { display: flex; align-items: center; gap: 18rpx; padding: 10rpx 0; border-bottom: 1rpx solid var(--line); font-size: 19rpx; color: var(--ink2); }
+.snapshot-item > text:first-child { flex: 1; }
+.snapshot-action { color: var(--brand); }
+.snapshot-action.danger { color: #833B3B; }
 .danger-opt { color: #9A2E1F; border-color: rgba(154,46,31,.2); }
 .danger-opt.on { background: #9A2E1F; color: #fff; }
 .basic-row .basic-input { margin-bottom: 2rpx; }
