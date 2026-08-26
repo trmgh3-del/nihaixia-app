@@ -13,14 +13,25 @@ def read(name): return json.loads((SRC / name).read_text(encoding='utf-8'))
 
 # 方剂：保留当前项目同名条目，补入上游结构化字段。
 fp = ROOT / 'static/data/formulas.json'; current = json.loads(fp.read_text(encoding='utf-8'))
+up_formulas = read('formulas.json').get('formulas', [])
+up_formula_by_name = {norm(x.get('name')): x for x in up_formulas}
 items = current.get('items', []); names = {norm(x.get('n')) for x in items}
-for f in read('formulas.json').get('formulas', []):
+for f in up_formulas:
     n = f.get('name', '')
     if norm(n) in names: continue
     comps = f.get('components') or []
     comp_text = '、'.join(str(c.get('name','')) + ((' ' + str(c.get('dosage'))) if c.get('dosage') else '') for c in comps)
-    items.append({'id': 'up_' + str(f.get('id') or len(items)), 'n': n, 'origin': comp_text, 'clinical': f.get('indication',''), 'note': '别名：' + f.get('alias','') + ('；' if f.get('alias') else '') + f.get('explanation','') + ('；禁忌：' + f.get('contraindication','') if f.get('contraindication') else ''), 'src': '上游 nihaixia-app · ' + str(f.get('category',''))})
+    items.append({'id': 'up_' + str(f.get('id') or len(items)), 'n': n, 'origin': comp_text, 'clinical': f.get('indication',''), 'note': '别名：' + f.get('alias','') + ('；' if f.get('alias') else '') + f.get('explanation','') + ('；禁忌：' + f.get('contraindication','') if f.get('contraindication') else ''), 'src': '上游 nihaixia-app · ' + str(f.get('category','')), 'zhizhi': f.get('indication',''), 'composition': comp_text, 'doses': f.get('dosage','')})
     names.add(norm(n))
+for item in items:
+    uf = up_formula_by_name.get(norm(item.get('n')))
+    if uf and str(item.get('id','')).startswith('up_'):
+        item['zhizhi'] = uf.get('indication', '')
+        item['composition'] = '、'.join(str(c.get('name','')) + ((' ' + str(c.get('dosage'))) if c.get('dosage') else '') for c in (uf.get('components') or []))
+        item['doses'] = uf.get('dosage', '')
+    item.setdefault('zhizhi', item.get('clinical', ''))
+    item.setdefault('composition', item.get('origin', ''))
+    item.setdefault('doses', '')
 current['items'] = items
 fp.write_text(json.dumps(current, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
