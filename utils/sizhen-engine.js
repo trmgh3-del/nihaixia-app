@@ -95,10 +95,13 @@ export function filterFormulaSafety(names = [], pick = {}, basic = {}, redFlags 
     if (pick['汗'] === '有汗自汗' && /麻黄|大青龙|小青龙/.test(name)) block(name, '有汗时不可直接使用发汗峻剂')
     if (pick['汗'] === '无汗' && /桂枝汤/.test(name)) block(name, '无汗时不可直接套用桂枝汤方向')
     if (pick['寒热'] === '往来寒热' && /麻黄|桂枝|承气/.test(name)) block(name, '少阳阶段需先复核三禁，不直接汗、下')
-    if (basic.pregnant && /麻黄|附子|细辛|承气|乌梅/.test(name)) block(name, '孕期/备孕需医师确认')
+    if (basic.pregnant && /麻黄|附子|细辛|承气|乌梅|四逆汤|真武汤/.test(name)) block(name, '孕期/备孕需医师确认')
   })
   if (basic.chronic) warnings.push('存在慢性病或正在用药，方剂方向必须由医师复核')
-  if (redFlags.length) warnings.push('存在红旗症状，已停止所有方剂推荐')
+  if (redFlags.length) {
+    names.forEach(name => block(name, '存在红旗症状，已停止所有方剂推荐'))
+    warnings.push('存在红旗症状，已停止所有方剂推荐')
+  }
   const blockedNames = blocked.map(x => x.name)
   return { formulas: names.filter(name => !blockedNames.includes(name)), blocked, warnings }
 }
