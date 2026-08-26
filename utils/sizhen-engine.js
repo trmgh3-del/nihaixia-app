@@ -44,7 +44,9 @@ function runRules(pick, basic, rules) {
   if (basic.caseType === '慢性内伤') evidence.push({ name: '外感规则不宜直接套用', points: 0, needs: [], source: '六经辨证公式·适用边界' })
   if (basic.duration === '超过2周' || basic.duration === '反复发作') evidence.push({ name: '病程较长，建议结合内伤/杂病资料复核', points: 0, needs: [], source: '七步走辨证思维模式' })
   const matched = evidence.filter(e => e.points > 0).length
-  return { scores, evidence: evidence.slice(0, 24), matchedRules: matched, ruleCount: rules.length, coverage: rules.length ? Math.round(matched / rules.length * 100) : 0 }
+  const ranked = Object.values(scores).sort((a, b) => b - a)
+  const confidence = matched === 0 ? '不足' : ranked[0] >= 7 && ranked[0] - (ranked[1] || 0) >= 2 ? '较高' : matched >= 2 ? '一般' : '较低'
+  return { scores, evidence: evidence.slice(0, 24), matchedRules: matched, ruleCount: rules.length, coverage: rules.length ? Math.round(matched / rules.length * 100) : 0, confidence }
 }
 
 export function evaluateKnowledge(pick, basic = {}) { return runRules(pick, basic, RULES) }
