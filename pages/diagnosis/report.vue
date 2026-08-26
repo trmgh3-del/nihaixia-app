@@ -4,7 +4,7 @@
     <view class="report card" v-if="report">
       <view class="report-time">{{ formatTime(report.ts) }}</view>
       <text class="report-text">{{ report.text }}</text>
-      <view class="actions"><view class="btn main" @tap="copy">复制完整报告</view><view class="btn" @tap="restore">恢复为当前问诊</view><view class="btn" @tap="goBack">返回</view></view>
+      <view class="actions"><view class="btn main" @tap="copy">复制完整报告</view><view class="btn" v-if="history.length" @tap="comparePrevious">对比上一份</view><view class="btn" @tap="restore">恢复为当前问诊</view><view class="btn" @tap="goBack">返回</view></view>
     </view>
     <view class="empty" v-else>未找到历史报告</view>
   </view>
@@ -12,12 +12,19 @@
 <script>
 import { store, applyTheme } from '@/utils/store.js'
 export default {
-  data() { return { report: null } },
+  data() { return { report: null, history: [] } },
   computed: { theme() { return store.theme } },
-  onShow() { applyTheme(); this.report = store.sizhenReport || null },
+  onShow() { applyTheme(); this.report = store.sizhenReport || null; try { this.history = (uni.getStorageSync('nx_sizhen_reports') || []).filter(x => !this.report || x.ts !== this.report.ts).slice(0, 10) } catch (e) { this.history = [] } },
   methods: {
     formatTime(ts) { return ts ? new Date(ts).toLocaleString() : '' },
     copy() { if (this.report) uni.setClipboardData({ data: this.report.text, success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) }) },
+    comparePrevious() {
+      const prev = this.history[0]
+      if (!prev || !this.report) return
+      const a = this.report.result || {}; const b = prev.result || {}
+      const lines = ['当前报告：' + (a.meridians || []).join('、') + ' / ' + ((a.risk && a.risk.label) || '未知'), '上一报告：' + (b.meridians || []).join('、') + ' / ' + ((b.risk && b.risk.label) || '未知'), '六经变化：' + ((b.meridians || []).join('、') || '无') + ' → ' + ((a.meridians || []).join('、') || '无'), '风险变化：' + ((b.risk && b.risk.label) || '未知') + ' → ' + ((a.risk && a.risk.label) || '未知')]
+      uni.showModal({ title: '与上一份报告对比', content: lines.join('\\n'), showCancel: false, confirmText: '关闭' })
+    },
     restore() {
       if (!this.report || !this.report.pick) { uni.showToast({ title: '该报告没有可恢复的采集记录', icon: 'none' }); return }
       uni.setStorageSync('nx_sizhen_draft', { ts: Date.now(), pick: this.report.pick, basic: this.report.basic || {}, redFlags: this.report.redFlags || [], pulseSource: this.report.pulseSource || '不确定', step: 0 })
