@@ -55,7 +55,7 @@ rules = [
  {'id':'wen-excess','name':'闻诊实热','meridian':'阳明','score':1,'when':['声音=语声高亢','呼吸=呼吸气粗'],'sourceTitle':'诊病十问'},
  {'id':'shaoyang-chest','name':'少阳胸胁苦满','meridian':'少阳','score':2,'when':['疼痛=胸胁苦满','口渴=口苦咽干'],'sourceTitle':'少阳病'},
  {'id':'taiyin-no-thirst','name':'太阴湿在中焦','meridian':'太阴','score':2,'when':['口渴=不渴','大便=溏泄','胃口=差/食少'],'sourceTitle':'太阴病'},
- {'id':'shaoyin-urine','name':'少阴下焦虚寒','meridian':'少阴','score':2,'when':['小便=清长','手足温度=手脚冰凉'],'sourceTitle':'少阴病'},
+ {'id':'shaoyin-lower-urine','name':'少阴下焦虚寒','meridian':'少阴','score':2,'when':['小便=清长','手足温度=手脚冰凉'],'sourceTitle':'少阴病'},
  {'id':'jueyin-chong','name':'厥阴寒热错杂核心证','meridian':'厥阴','score':3,'when':['口渴=消渴多饮','胃口=饥而不欲食','疼痛=气上撞心/心中疼热'],'sourceTitle':'厥阴病'},
  # 八纲、脉舌和传变补充规则
  {'id':'taiyang-ge','name':'太阳项强无汗','meridian':'太阳','score':2,'when':['头身=头痛项强','汗=无汗'],'sourceTitle':'太阳病'},
