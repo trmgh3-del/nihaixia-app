@@ -169,7 +169,7 @@
         <view class="r-sec" v-if="result.sources.length">
           <view class="rs-t">知识库依据</view>
           <view class="r-line source-link" v-for="s in result.sources" :key="s.id" @tap="openSource(s)">● {{ s.source }}：{{ s.title }} ›</view>
-          <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
+          <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }} · {{ e.reviewStatus === 'approved' ? '已审核' : '待专家审核' }}）</view>
           <view class="r-line">知识库匹配条目：{{ result.kbMatches }} 条（仅作为学习证据，不等同于诊断）</view>
         </view>
         <view class="r-sec" v-if="result.zangxiang.length">
@@ -452,7 +452,7 @@ export default {
     },
     reportText() {
       const r = this.result
-      return ['《四诊合参辨证报告》', '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '藏象：' + (r.zangxiang || []).map(z => z.name).join('、'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.risk.level === 'high' ? '高风险，已停止推荐' : (r.formulas.join('、') || '暂无')), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
+      return ['《四诊合参辨证报告》', '规则版本：' + (r.kbVersion || '本地规则'), '规则审核：' + (r.kbReviewPending ? '存在待专家审核规则' : '已审核'), '生成时间：' + new Date().toLocaleString(), '基本信息：' + this.basicSummary, '采集完整度：' + r.completeness + '%', '风险：' + r.risk.label, r.risk.reasons.length ? '风险提示：' + r.risk.reasons.join('；') : '', '采集记录：' + r.selected.join('；'), '八纲：' + (r.bagang.join('、') || '信息不足'), '六经：' + (r.meridians.join('、') || '暂不明确'), '藏象：' + (r.zangxiang || []).map(z => z.name).join('、'), '病机：' + (r.patterns.join('；') || '暂无'), '参考方剂：' + (r.risk.level === 'high' ? '高风险，已停止推荐' : (r.formulas.join('、') || '暂无')), '仅供学习参考，不能替代执业医师面诊。'].filter(Boolean).join('\\n')
     },
     copyReport() {
       uni.setClipboardData({ data: this.reportText(), success: () => uni.showToast({ title: '报告已复制', icon: 'none' }) })
