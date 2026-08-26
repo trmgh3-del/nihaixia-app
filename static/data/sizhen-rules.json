@@ -704,6 +704,306 @@
       ],
       "sourceTitle": "真热假寒",
       "sourceId": "liu_65"
+    },
+    {
+      "id": "taiyang-fever",
+      "name": "太阳发热恶风",
+      "meridian": "太阳",
+      "score": 1,
+      "when": [
+        "寒热=恶风"
+      ],
+      "sourceTitle": "太阳病",
+      "sourceId": "liu_2"
+    },
+    {
+      "id": "taiyang-neck",
+      "name": "太阳项背强痛",
+      "meridian": "太阳",
+      "score": 2,
+      "when": [
+        "头身=头痛项强"
+      ],
+      "sourceTitle": "太阳病",
+      "sourceId": "liu_2"
+    },
+    {
+      "id": "yangming-sweat",
+      "name": "阳明大汗",
+      "meridian": "阳明",
+      "score": 1,
+      "when": [
+        "汗=大汗不止"
+      ],
+      "sourceTitle": "阳明病",
+      "sourceId": "liu_9"
+    },
+    {
+      "id": "yangming-hard",
+      "name": "阳明胃家实",
+      "meridian": "阳明",
+      "score": 2,
+      "when": [
+        "大便=便秘"
+      ],
+      "sourceTitle": "阳明病",
+      "sourceId": "liu_9"
+    },
+    {
+      "id": "shaoyang-string",
+      "name": "少阳弦脉",
+      "meridian": "少阳",
+      "score": 2,
+      "when": [
+        "脉形=弦"
+      ],
+      "sourceTitle": "少阳病",
+      "sourceId": "liu_15"
+    },
+    {
+      "id": "shaoyang-throat",
+      "name": "少阳咽干口苦",
+      "meridian": "少阳",
+      "score": 2,
+      "when": [
+        "口渴=口苦咽干"
+      ],
+      "sourceTitle": "少阳病",
+      "sourceId": "liu_15"
+    },
+    {
+      "id": "taiyin-abdomen-full",
+      "name": "太阴腹满",
+      "meridian": "太阴",
+      "score": 2,
+      "when": [
+        "胸腹=腹满"
+      ],
+      "sourceTitle": "太阴病",
+      "sourceId": "liu_22"
+    },
+    {
+      "id": "taiyin-not-thirsty",
+      "name": "太阴不渴",
+      "meridian": "太阴",
+      "score": 1,
+      "when": [
+        "口渴=不渴"
+      ],
+      "sourceTitle": "太阴病",
+      "sourceId": "liu_22"
+    },
+    {
+      "id": "taiyin-food",
+      "name": "太阴食不下",
+      "meridian": "太阴",
+      "score": 2,
+      "when": [
+        "胃口=差/食少"
+      ],
+      "sourceTitle": "太阴病",
+      "sourceId": "liu_22"
+    },
+    {
+      "id": "shaoyin-deep",
+      "name": "少阴沉脉",
+      "meridian": "少阴",
+      "score": 1,
+      "when": [
+        "脉位=沉"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "shaoyin-late",
+      "name": "少阴迟脉",
+      "meridian": "少阴",
+      "score": 1,
+      "when": [
+        "脉率=迟"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "shaoyin-cold-ext",
+      "name": "少阴恶寒厥冷",
+      "meridian": "少阴",
+      "score": 2,
+      "when": [
+        "寒热=恶寒",
+        "手足温度=手脚冰凉"
+      ],
+      "sourceTitle": "少阴病",
+      "sourceId": "liu_29"
+    },
+    {
+      "id": "jueyin-cold-hot",
+      "name": "厥阴寒热并见",
+      "meridian": "厥阴",
+      "score": 2,
+      "when": [
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "sourceTitle": "厥阴病",
+      "sourceId": "liu_39"
+    },
+    {
+      "id": "jueyin-heart",
+      "name": "厥阴心中疼热",
+      "meridian": "厥阴",
+      "score": 2,
+      "when": [
+        "疼痛=气上撞心/心中疼热"
+      ],
+      "sourceTitle": "厥阴病",
+      "sourceId": "liu_39"
+    },
+    {
+      "id": "jueyin-extreme",
+      "name": "厥阴手足厥冷",
+      "meridian": "厥阴",
+      "score": 2,
+      "when": [
+        "手足温度=手脚冰凉",
+        "舌质=红"
+      ],
+      "sourceTitle": "厥阴病",
+      "sourceId": "liu_39"
+    },
+    {
+      "id": "bagang-excess",
+      "name": "实证声音洪亮有力",
+      "meridian": "阳明",
+      "score": 1,
+      "when": [
+        "声音=语声高亢",
+        "脉力=有力"
+      ],
+      "sourceTitle": "七步走",
+      "sourceId": "liu_74"
+    },
+    {
+      "id": "bagang-deficiency",
+      "name": "虚证声音低微无力",
+      "meridian": "太阴、少阴",
+      "score": 1,
+      "when": [
+        "声音=语声低微",
+        "脉力=无力"
+      ],
+      "sourceTitle": "七步走",
+      "sourceId": "liu_74"
+    },
+    {
+      "id": "pulse-float-slow",
+      "name": "浮缓表虚",
+      "meridian": "太阳",
+      "score": 2,
+      "when": [
+        "脉位=浮",
+        "脉率=迟",
+        "汗=有汗自汗"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-float-tight-combo",
+      "name": "浮紧表实",
+      "meridian": "太阳",
+      "score": 2,
+      "when": [
+        "脉位=浮",
+        "脉形=紧",
+        "汗=无汗"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "pulse-string-slow",
+      "name": "弦缓少阳太阴",
+      "meridian": "少阳、太阴",
+      "score": 2,
+      "when": [
+        "脉形=弦",
+        "脉率=迟"
+      ],
+      "sourceTitle": "脉诊速查",
+      "sourceId": "liu_56"
+    },
+    {
+      "id": "tongue-red-white",
+      "name": "舌红苔白寒热错杂",
+      "meridian": "厥阴",
+      "score": 2,
+      "when": [
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "sourceTitle": "舌象组合速查",
+      "sourceId": "liu_72"
+    },
+    {
+      "id": "tongue-pale-white",
+      "name": "舌淡苔白太阴寒湿",
+      "meridian": "太阴",
+      "score": 2,
+      "when": [
+        "舌质=淡白",
+        "舌苔=薄白"
+      ],
+      "sourceTitle": "舌象组合速查",
+      "sourceId": "liu_72"
+    },
+    {
+      "id": "tongue-yellow-dry",
+      "name": "舌红苔燥阳明热",
+      "meridian": "阳明",
+      "score": 2,
+      "when": [
+        "舌质=红",
+        "舌苔=燥裂"
+      ],
+      "sourceTitle": "舌象组合速查",
+      "sourceId": "liu_72"
+    },
+    {
+      "id": "transmission-warning",
+      "name": "脉微细伴嗜睡提示由太阴入少阴",
+      "meridian": "少阴",
+      "score": 1,
+      "when": [
+        "脉形=细",
+        "睡眠=但欲寐"
+      ],
+      "sourceTitle": "传变预警",
+      "sourceId": "liu_63"
+    },
+    {
+      "id": "formula-check-sweat",
+      "name": "有汗麻黄禁忌复核",
+      "meridian": "",
+      "score": 0,
+      "when": [
+        "汗=有汗自汗"
+      ],
+      "sourceTitle": "用药铁律",
+      "sourceId": "liu_61"
+    },
+    {
+      "id": "formula-check-shaoyang",
+      "name": "少阳三禁复核",
+      "meridian": "",
+      "score": 0,
+      "when": [
+        "寒热=往来寒热"
+      ],
+      "sourceTitle": "少阳三禁",
+      "sourceId": "liu_17"
     }
   ],
   "knowledgeItems": [

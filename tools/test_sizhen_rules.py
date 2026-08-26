@@ -18,6 +18,8 @@ for rule in rules['rules']:
     for condition in rule['when']:
         field, sep, value = condition.partition('=')
         assert sep and field in allowed_fields and value, f'unknown condition: {condition}'
+    fields = [condition.split('=', 1)[0] for condition in rule['when']]
+    assert len(fields) == len(set(fields)), f'mutually exclusive duplicate field in rule: {rule["id"]}'
 
 # 标准六经回归样例：只验证规则排序，不宣称医疗诊断。
 cases = [
