@@ -1,5 +1,15 @@
 <template>
   <view class="page" :class="theme === 'dark' ? 'tdark' : 'tlight'">
+    <view class="time-settings card">
+      <view class="calc-title serif">计算时间设置</view>
+      <view class="setting-line"><text>日期</text><input type="date" v-model="manualDate" /></view>
+      <view class="setting-line"><text>时间</text><input type="time" v-model="manualTime" /></view>
+      <view class="setting-line"><text>时区</text><picker :range="timezoneOptions" @change="timezone = timezoneOptions[$event.detail.value]"><view class="setting-value">{{ timezone }} ›</view></picker></view>
+      <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
+      <view class="calc-note">默认使用系统时间。启用真太阳时后按东八区标准经度修正；不同流派的子初换日和真太阳时仍可能存在差异。</view>
+      <view class="snapshot-row"><view class="snapshot-btn" @tap="useSystemTime">使用当前时间</view><view class="snapshot-btn" @tap="tick">重新计算</view></view>
+    </view>
+
     <!-- 当前灵龟开穴 -->
     <view class="lg-now">
       <view class="lg-time-row">
@@ -137,6 +147,7 @@ export default {
   data() {
     return {
       liveClock: '', hourIdx: 0, dayTable: [],
+      manualDate: '', manualTime: '', timezone: 'Asia/Shanghai (UTC+8)', timezoneOptions: ['Asia/Shanghai (UTC+8)', 'Asia/Tokyo (UTC+9)', 'UTC (UTC+0)'], useSolarTime: false,
       openPoint: '', pairPoint: '', trigram: '', pointMeridian: '', confluence: '',
       rem5Mode: '照海', dayGz: '', hourGz: '', calcDetails: { dayGan: 0, dayZhi: 0, hourGan: 0, hourZhi: 0, sum: 0, divisor: 0, remainder: 0 }
     }
@@ -163,8 +174,22 @@ export default {
   onUnload() { clearInterval(this._timer) },
   methods: {
     setRem5(value) { this.rem5Mode = value; this.tick() },
+    getCalcDate() {
+      if (!this.manualDate || !this.manualTime) return new Date()
+      const m = this.timezone.match(/UTC([+-]\\d+)/); const offset = m ? Number(m[1]) : 8
+      const [y, mo, day] = this.manualDate.split('-').map(Number); const [h, min] = this.manualTime.split(':').map(Number)
+      const utc = Date.UTC(y, mo - 1, day, h, min) - offset * 3600000
+      const localOffset = new Date().getTimezoneOffset() * 60000
+      let d = new Date(utc + localOffset)
+      if (this.useSolarTime) d = new Date(d.getTime() + 4 * 60000)
+      return d
+    },
+    useSystemTime() {
+      const d = new Date(); const p = n => (n < 10 ? '0' + n : n)
+      this.manualDate = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; this.manualTime = `${p(d.getHours())}:${p(d.getMinutes())}`; this.tick()
+    },
     tick() {
-      const d = new Date()
+      const d = this.getCalcDate()
       const p = n => (n < 10 ? '0' + n : n)
       this.liveClock = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
       const day = calcDayGanZhi(d)
@@ -230,6 +255,10 @@ export default {
 .lg-pair-pt { font-size: 38rpx; font-weight: 800; color: #F6E7C9; margin-top: 4rpx; }
 .lg-tip { margin-top: 18rpx; font-size: 19rpx; color: rgba(253,248,238,.85); line-height: 1.7; background: rgba(253,248,238,.1); border-radius: 14rpx; padding: 12rpx 18rpx; }
 
+.time-settings { margin: 20rpx 32rpx 0; padding: 22rpx 26rpx; }
+.setting-line { display: flex; align-items: center; justify-content: space-between; padding: 10rpx 0; border-bottom: 1rpx solid var(--line); color: var(--ink); font-size: 21rpx; }
+.setting-line input { text-align: right; color: var(--ink); font-size: 21rpx; }
+.setting-value { color: var(--brand); }
 .calc { margin: 18rpx 32rpx 0; padding: 22rpx 26rpx; }
 .calc-title { color: var(--brand); font-size: 26rpx; font-weight: 800; margin-bottom: 10rpx; }
 .calc-line { color: var(--ink); font-size: 20rpx; line-height: 1.8; }
