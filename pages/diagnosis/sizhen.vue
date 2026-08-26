@@ -227,7 +227,9 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
-import { evaluateKnowledgeAsync, findKnowledgeSources, findSimilarCases, findFormulaDetails, filterFormulaSafety } from '@/utils/sizhen-engine.js'
+import { analyzeSizhen } from '@/utils/sizhen-engine.js'
+import { loadData } from '@/utils/data.js'
+import { openMd, openEntry } from '@/utils/routes.js'
 import { loadData } from '@/utils/data.js'
 import { openMd, openEntry } from '@/utils/routes.js'
 
@@ -399,198 +401,17 @@ export default {
     toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
     async analyze() {
       if (this.analyzing) return
-      if (!Object.keys(this.pick).some(k => this.pick[k])) {
-        uni.showToast({ title: '请至少选择一项体征', icon: 'none' })
-        return
+      if (!Object.keys(this.pick).some(k => Array.isArray(this.pick[k]) ? this.pick[k].length : this.pick[k])) {
+        uni.showToast({ title: '请至少选择一项体征', icon: 'none' }); return
       }
       this.analyzing = true
-      const p = this.pick
-      const bg = new Set()
-      const mer = new Set()
-      const patterns = []
-      const formulas = []
-
-      // 望色
-      if (p['望色']) {
-        if (p['望色'].includes('白')) { bg.add('虚'); bg.add('寒'); patterns.push('面色白主虚寒') }
-        if (p['望色'].includes('赤')) { bg.add('热'); patterns.push('面色赤主热证') }
-        if (p['望色'].includes('黄')) { bg.add('虚'); mer.add('太阴'); patterns.push('面色黄主脾虚湿盛') }
-        if (p['望色'].includes('青')) { bg.add('寒'); patterns.push('面色青主寒主痛主瘀') }
-        if (p['望色'].includes('黑')) { bg.add('肾虚'); mer.add('少阴'); patterns.push('面色黑主肾虚水饮') }
-      }
-      // 舌
-      if (p['舌质'] === '淡白') bg.add('虚')
-      if (p['舌质'] === '红' || p['舌质'] === '绛') bg.add('热')
-      if (p['舌质'] === '紫暗') patterns.push('舌紫暗主瘀血')
-      if (p['舌质'] === '胖大有齿痕') { mer.add('太阴'); patterns.push('舌胖大齿痕主脾虚湿盛') }
-      if (p['舌苔'] === '白腻') { bg.add('寒'); patterns.push('苔白腻主寒湿') }
-      if (p['舌苔'] === '黄' || p['舌苔'] === '黄腻') { bg.add('热'); patterns.push('苔黄主里热') }
-      // 望神
-      if (p['望神'] === '失神' || p['望神'] === '假神') patterns.push('⚠ 神志异常：' + (p['望神'] === '假神' ? '假神为危候' : '失神预后不良'))
-      // 闻诊
-      if (p['声音'] === '语声高亢') bg.add('实')
-      if (p['声音'] === '语声低微' || p['声音'] === '少气懒言') bg.add('虚')
-      if (p['声音'] === '谵语') { bg.add('热'); bg.add('实'); patterns.push('谵语主热扰心神') }
-      if (p['呼吸'] === '短气') bg.add('虚')
-      // 问诊十问
-      if (p['头身'] === '头痛项强' || p['头身'] === '身痛骨节痛') {
-        mer.add('太阳')
-        if (p['头身'] === '头痛项强') patterns.push('头项强痛属太阳表证')
-      }
-      if (p['头身'] === '身重困倦') { mer.add('太阴'); patterns.push('身重困倦多见脾虚湿盛') }
-      if (p['头身'] === '头晕目眩') { mer.add('少阳'); patterns.push('头晕目眩可见少阳或水饮') }
-      if (p['汗'] === '无汗') { mer.add('太阳'); formulas.push('麻黄汤') }
-      if (p['汗'] === '有汗自汗') { mer.add('太阳'); bg.add('表虚'); formulas.push('桂枝汤') }
-      if (p['汗'] === '盗汗') bg.add('阴虚')
-      if (p['汗'] === '大汗不止') { bg.add('阳虚'); patterns.push('大汗不止防亡阳') }
-      if (p['大便'] === '便秘') { bg.add('里'); bg.add('实'); mer.add('阳明'); formulas.push('承气汤类') }
-      if (p['大便'] === '下利清谷') { bg.add('里'); bg.add('寒'); mer.add('少阴'); formulas.push('四逆汤') }
-      if (p['大便'] === '黏滞不爽') { mer.add('太阴'); patterns.push('大便黏滞主湿') }
-      if (p['小便'] === '短赤') bg.add('热')
-      if (p['小便'] === '清长') bg.add('寒')
-      if (p['口渴'] === '渴喜冷饮') { bg.add('热'); formulas.push('白虎汤') }
-      if (p['口渴'] === '渴不欲饮') patterns.push('渴不欲饮主湿或瘀')
-      if (p['口渴'] === '消渴多饮') { mer.add('厥阴'); patterns.push('消渴属厥阴') }
-      if (p['睡眠'] === '但欲寐') { mer.add('少阴'); patterns.push('但欲寐为少阴主证') }
-      if (p['睡眠'] === '彻夜不眠') bg.add('阴虚')
-      if (p['手足温度'] === '手脚冰凉') { bg.add('寒'); mer.add('少阴'); formulas.push('四逆汤') }
-      if (p['手足温度'] === '手心热脚凉') { patterns.push('上热下寒（厥阴）'); mer.add('厥阴'); formulas.push('乌梅丸') }
-      if (p['手足温度'] === '脚凉手温') { patterns.push('脚冷=里寒之兆'); mer.add('太阴') }
-      if (p['胃口'] === '毫无胃口') patterns.push('胃气将绝，亟需重视')
-      if (p['胃口'] === '饥而不欲食') { mer.add('厥阴'); patterns.push('饥而不欲食可见厥阴病') }
-      if (this.hasPick('疼痛', '胸痛彻背')) { patterns.push('胸痛彻背属于红旗表现，需先排除急症'); if (!this.redFlags.includes('胸痛/胸闷')) this.redFlags.push('胸痛/胸闷') }
-      if (this.hasPick('疼痛', '气上撞心/心中疼热')) { mer.add('厥阴'); patterns.push('气上撞心、心中疼热可见厥阴寒热错杂') }
-      if (this.hasPick('疼痛', '胸胁苦满')) { mer.add('少阳'); patterns.push('胸胁苦满为少阳重要证候') }
-      if (p['耳'] === '耳鸣' || p['耳'] === '耳聋') patterns.push('耳鸣耳聋需结合少阳、少阴及肾系资料复核')
-      if (p['妇女'] === '孕期出血或腹痛') { if (!this.redFlags.includes('孕期出血/腹痛')) this.redFlags.push('孕期出血/腹痛') }
-      if (this.hasPick('寒热', '恶寒')) { mer.add('太阳'); bg.add('表') }
-      if (this.hasPick('寒热', '往来寒热')) { mer.add('少阳'); formulas.push('小柴胡汤') }
-      if (this.hasPick('寒热', '但热不寒')) { mer.add('阳明'); bg.add('热') }
-      // 切诊
-      if (p['脉位'] === '浮') bg.add('表')
-      if (p['脉位'] === '沉') bg.add('里')
-      if (p['脉率'] === '迟') bg.add('寒')
-      if (p['脉率'] === '数') bg.add('热')
-      if (p['脉形'] === '弦') mer.add('少阳')
-      if (p['脉形'] === '细') bg.add('虚')
-      if (p['脉形'] === '滑') bg.add('实')
-      if (p['脉形'] === '洪') bg.add('热')
-      if (p['脉力'] === '有力') bg.add('实')
-      if (p['脉力'] === '无力') bg.add('虚')
-
-      // 证据评分：问诊/切诊权重高于一般望闻信息，并保留理由供报告复核。
-      const score = {}; const reasons = {}
-      MERIDIANS.forEach(m => { score[m] = 0; reasons[m] = [] })
-      const addScore = (m, n, why) => { score[m] += n; if (why && !reasons[m].includes(why)) reasons[m].push(why) }
-      const rules = {
-        '望色': { '面色黄': ['太阴', 1, '面色黄'], '面色黑': ['少阴', 1, '面色黑'], '面色赤': ['阳明', 1, '面色赤'] },
-        '舌苔': { '黄': ['阳明', 2, '苔黄'], '黄腻': ['阳明', 1, '苔黄腻'], '白腻': ['太阴', 2, '苔白腻'] },
-        '汗': { '无汗': ['太阳', 2, '无汗'], '有汗自汗': ['太阳', 2, '自汗'], '大汗不止': ['少阴', 2, '大汗不止'] },
-        '寒热': { '恶寒': ['太阳', 3, '恶寒'], '恶风': ['太阳', 2, '恶风'], '往来寒热': ['少阳', 3, '往来寒热'], '但热不寒': ['阳明', 3, '但热不寒'] },
-        '大便': { '便秘': ['阳明', 3, '便秘'], '下利清谷': ['少阴', 3, '下利清谷'], '黏滞不爽': ['太阴', 2, '便黏滞'] },
-        '口渴': { '渴喜冷饮': ['阳明', 2, '渴喜冷饮'], '消渴多饮': ['厥阴', 3, '消渴'] },
-        '睡眠': { '但欲寐': ['少阴', 3, '但欲寐'] },
-        '手足温度': { '手脚冰凉': ['少阴', 3, '手脚冰凉'], '手心热脚凉': ['厥阴', 3, '上热下寒'], '脚凉手温': ['太阴', 2, '脚凉手温'] },
-        '头身': { '头痛项强': ['太阳', 2, '头项强痛'], '身痛骨节痛': ['太阳', 2, '身痛骨节痛'], '身重困倦': ['太阴', 2, '身重困倦'], '头晕目眩': ['少阳', 1, '头晕目眩'] },
-        '脉位': { '浮': ['太阳', 3, '脉浮'], '沉': ['少阴', 2, '脉沉'] },
-        '脉率': { '迟': ['少阴', 2, '脉迟'], '数': ['阳明', 2, '脉数'] },
-        '脉形': { '弦': ['少阳', 2, '脉弦'], '细': ['少阴', 2, '脉细'], '滑': ['阳明', 1, '脉滑'], '洪': ['阳明', 2, '脉洪'] },
-        '脉力': { '有力': ['阳明', 1, '脉有力'], '无力': ['少阴', 2, '脉无力'], '微': ['少阴', 3, '脉微'] }
-      }
-      Object.keys(rules).forEach(k => { const rule = rules[k][p[k]]; if (rule) addScore(rule[0], rule[1], rule[2]) })
-      const complexPulse = COMPLEX_PULSES.find(x => x.k === p['复合脉'])
-      if (complexPulse) { addScore(complexPulse.mer, 3, complexPulse.k); if (complexPulse.k === '微细欲绝') patterns.push('微细欲绝为高风险脉象') }
-      mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
-      const kbEval = await evaluateKnowledgeAsync(p, this.basic)
-      // 编译后的知识库规则是唯一主评分源；仅在规则未命中时使用页面兜底判断。
-      const kbHasScore = MERIDIANS.some(m => (kbEval.scores[m] || 0) > 0)
-      MERIDIANS.forEach(m => { score[m] = kbHasScore ? (kbEval.scores[m] || 0) : score[m] })
-      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score).map((x, i) => ({ ...x, role: i === 0 ? '主证' : i === 1 ? '兼证' : '待排' }))
-      const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
-      const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
-      const completeness = Math.round(completedSteps / STEP_FIELDS.length * 100)
-      const conflicts = []
-      if (p['口渴'] === '渴喜冷饮' && ['白腻', '薄白'].includes(p['舌苔'])) conflicts.push('口渴喜冷饮但舌苔偏寒湿，寒热线索并见')
-      if (p['脉率'] === '迟' && p['舌苔'] === '黄') conflicts.push('脉迟但苔黄，寒热线索并见')
-      if (p['睡眠'] === '但欲寐' && p['脉力'] === '有力') conflicts.push('但欲寐与脉有力需复核')
-      const tongueCold = ['淡白', '紫暗'].includes(p['舌质']) || ['白腻', '薄白'].includes(p['舌苔'])
-      const tongueHeat = ['红', '绛'].includes(p['舌质']) || ['黄', '黄腻', '燥'].some(v => (p['舌苔'] || '').includes(v))
-      if (p['脉率'] === '数' && tongueCold) conflicts.push('脉数但舌偏淡白/白腻，需鉴别真寒假热（以舌为重要参考）')
-      if (p['脉位'] === '沉' && tongueHeat) conflicts.push('脉沉但舌红/苔黄，需鉴别真热假寒')
-      if (p['脉位'] === '浮' && ['白腻', '黄腻'].includes(p['舌苔'])) conflicts.push('脉浮但苔腻，需排除里证为主')
-      const combo = tongueCold && tongueHeat ? '寒热错杂：舌象同时见寒热线索，需结合病程、口渴与二便复核' : (p['复合脉'] ? (complexPulse ? complexPulse.reason : '') : '')
-      const riskReasons = [...conflicts]
-      if (this.redFlags.length) riskReasons.push('红旗症状：' + this.redFlags.join('、'))
-      if (['失神', '假神'].includes(p['望神'])) riskReasons.push('神志异常')
-      if (['大汗不止', '下利清谷'].includes(p['汗']) || p['大便'] === '下利清谷') riskReasons.push('存在脱液或亡阳风险')
-      if (p['手足温度'] === '手脚冰凉' || p['脉力'] === '微') riskReasons.push('阳虚厥逆表现')
-      if (this.basic.pregnant) riskReasons.push('孕期/备孕')
-      if (this.basic.chronic) riskReasons.push('慢性病或正在用药')
-      if (this.basic.duration && /(?:超过|大于|长期|两周|2周|14天)/.test(this.basic.duration)) riskReasons.push('病程较长，不能仅按急性外感判断')
-      if (this.basic.age && (Number(this.basic.age) < 12 || Number(this.basic.age) >= 65)) riskReasons.push('儿童或高龄')
-      if (this.pulseSource !== '医师诊察' && STEP_FIELDS[3].some(k => p[k])) riskReasons.push('切诊来源非医师诊察，脉象可靠性有限')
-      const highRisk = this.redFlags.length > 0 || riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x))
-      const risk = { level: highRisk ? 'high' : riskReasons.length ? 'medium' : 'low', label: highRisk ? '高风险' : riskReasons.length ? '需复核' : '一般', reasons: riskReasons }
-      const formulaSafety = filterFormulaSafety(formulas, p, this.basic, this.redFlags)
-      formulaSafety.warnings.forEach(w => { patterns.unshift(w); if (!risk.reasons.includes(w)) risk.reasons.push(w) })
-      if (formulaSafety.blocked.length && risk.level === 'low') { risk.level = 'medium'; risk.label = '需复核' }
-      if (formulaSafety.blocked.length) patterns.unshift('方剂安全过滤：' + formulaSafety.blocked.map(x => x.name + '（' + x.reason + '）').join('；'))
-
-      const safeFormulas = formulaSafety.formulas.slice(0, 5)
-      let sources = []; let cases = []; let formulaDetails = []
       try {
-        const topMers = scores.slice(0, 3).map(x => x.name)
-        ;[sources, cases] = await Promise.all([findKnowledgeSources(p), findSimilarCases(p, topMers)])
-        formulaDetails = await findFormulaDetails(safeFormulas)
-      } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
-      const ruleSources = kbEval.evidence.filter(e => e.sourceId).map(e => ({ id: e.sourceId, title: e.name, source: e.source }))
-      sources = [...sources, ...ruleSources].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).slice(0, 10)
-      this.analyzing = false
-
-      // 阴阳总判
-      const hasYang = [...bg].some(b => ['表','热','实'].includes(b))
-      const hasYin = [...bg].some(b => ['里','寒','虚'].includes(b))
-      if (hasYang && !hasYin) bg.add('阳')
-      else if (hasYin && !hasYang) bg.add('阴')
-      else if (hasYang && hasYin) bg.add('寒热错杂')
-
-      // 去重
-      if (conflicts.length) patterns.unshift('输入复核：' + conflicts.join('；'))
-      if (!scores.length) patterns.unshift('当前信息不足，暂不能形成明确六经倾向，请补充寒热、汗、二便、胃口及脉象。')
-      const mainMer = scores[0] && scores[0].name
-      const has表 = [...bg].includes('表') || p['脉位'] === '浮'
-      const has里 = [...bg].includes('里') || p['脉位'] === '沉'
-      const sevenSteps = [
-        { k: '定表里', v: has表 && has里 ? '表里同病线索' : has表 ? '偏表' : has里 ? '偏里' : '证据不足' },
-        { k: '分阴阳', v: bg.has('寒热错杂') ? '寒热错杂' : bg.has('阳') ? '偏阳' : bg.has('阴') ? '偏阴' : '证据不足' },
-        { k: '辨寒热', v: bg.has('寒热错杂') ? '寒热并见，需鉴别真寒假热/真热假寒' : bg.has('热') ? '偏热' : bg.has('寒') ? '偏寒' : '证据不足' },
-        { k: '判虚实', v: bg.has('实') && bg.has('虚') ? '虚实夹杂' : bg.has('实') ? '偏实' : bg.has('虚') ? '偏虚' : '证据不足' },
-        { k: '定六经', v: mainMer || '暂不明确' },
-        { k: '合病传变', v: scores.length > 1 ? '可能合病/并病：' + scores.slice(0, 3).map(x => x.name).join('、') : '暂未发现明确合病依据' },
-        { k: '方证复核', v: risk.level === 'high' ? '高风险，停止方剂推荐' : formulas.length ? '需结合方证、禁忌和医师面诊复核' : '暂无明确方证' }
-      ]
-      this.result = {
-        bagang: [...bg],
-        meridians: scores.length ? scores.map(x => x.name) : [...mer],
-        patterns: patterns.slice(0, 8),
-        formulas: [...new Set(safeFormulas)],
-        formulaDetails,
-        scores,
-        selected,
-        completeness,
-        risk,
-        sevenSteps,
-        combination: combo,
-        sources,
-        kbEvidence: kbEval.evidence,
-        kbVersion: kbEval.modelVersion,
-        kbCoverage: kbEval.coverage || 0,
-        kbMatches: kbEval.knowledgeMatchCount || (kbEval.knowledgeMatches || []).length,
-        kbConfidence: kbEval.confidence || '不足',
-        cases
-      }
-      this.clearDraft()
-      this.step = 4
+        this.result = await analyzeSizhen(this.pick, this.basic, this.redFlags, this.pulseSource)
+        this.clearDraft(); this.step = 4
+      } catch (e) {
+        console.error('四诊分析失败', e)
+        uni.showToast({ title: '辨证引擎加载失败，请重试', icon: 'none' })
+      } finally { this.analyzing = false }
     },
     reportText() {
       const r = this.result
