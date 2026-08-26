@@ -23,10 +23,13 @@ function runRules(pick, basic, rules) {
   const vals = values(pick, basic); const scores = {}; const evidence = []
   MERIDIANS.forEach(m => { scores[m] = 0 })
   for (const rule of rules) {
-    const name = Array.isArray(rule) ? rule[0] : rule.name; const score = Array.isArray(rule) ? rule[1] : rule.score; const when = Array.isArray(rule) ? rule[2] : rule.when
-    if (!when.every(x => vals.includes(x))) continue
-    MERIDIANS.filter(m => name.includes(m)).forEach(m => { scores[m] += score })
-    evidence.push({ name, points: score, source: Array.isArray(rule) ? '本地兜底规则' : (rule.sourceTitle || '六经辨证诊断公式'), sourceId: rule.sourceId || '' })
+    const name = Array.isArray(rule) ? rule[0] : rule.name; const score = Array.isArray(rule) ? rule[1] : rule.score; const when = Array.isArray(rule) ? rule[2] : (rule.required || rule.when); const reference = Array.isArray(rule) ? [] : (rule.reference || []); const exclude = Array.isArray(rule) ? [] : (rule.exclude || [])
+    if (!when.every(x => vals.includes(x)) || exclude.some(x => vals.includes(x))) continue
+    const refHits = reference.filter(x => vals.includes(x)).length
+    const effectiveScore = score + refHits
+
+    MERIDIANS.filter(m => name.includes(m)).forEach(m => { scores[m] += effectiveScore })
+    evidence.push({ name, points: effectiveScore, required: when, referenceHits: refHits, source: Array.isArray(rule) ? '本地兜底规则' : (rule.sourceTitle || '六经辨证诊断公式'), sourceId: rule.sourceId || '' })
   }
   return { scores, evidence }
 }

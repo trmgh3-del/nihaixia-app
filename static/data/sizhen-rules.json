@@ -21,7 +21,13 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "脉位=浮",
+        "寒热=恶寒"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-wind",
@@ -42,7 +48,13 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "汗=有汗自汗",
+        "寒热=恶风"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-cold",
@@ -63,7 +75,13 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "汗=无汗",
+        "脉形=紧"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-meridian",
@@ -83,7 +101,13 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "寒热=但热不寒",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-fu",
@@ -103,7 +127,13 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "大便=便秘",
+        "脉形=洪"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-outline",
@@ -124,7 +154,13 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "寒热=往来寒热",
+        "脉形=弦"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-cold",
@@ -145,7 +181,13 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "大便=溏泄",
+        "胃口=差/食少"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-cold",
@@ -169,7 +211,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "睡眠=但欲寐",
+        "脉形=细"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-yangxu",
@@ -193,7 +241,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "手足温度=手脚冰凉",
+        "脉力=微"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-coldheat",
@@ -215,7 +269,13 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "口渴=消渴多饮",
+        "手足温度=手心热脚凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "hebing-taiyang-shaoyang",
@@ -234,7 +294,13 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_28"
+      "sourceId": "liu_28",
+      "required": [
+        "寒热=恶寒",
+        "脉形=弦"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "hebing-shaoyang-yangming",
@@ -253,7 +319,13 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_28"
+      "sourceId": "liu_28",
+      "required": [
+        "寒热=往来寒热",
+        "大便=便秘"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "hebing-shaoyang-taiyin",
@@ -272,7 +344,13 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_28"
+      "sourceId": "liu_28",
+      "required": [
+        "寒热=往来寒热",
+        "大便=溏泄"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "bing-taiyang-shaoyin",
@@ -290,7 +368,13 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_51"
+      "sourceId": "liu_51",
+      "required": [
+        "寒热=恶寒",
+        "脉位=沉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "bing-taiyin-shaoyin",
@@ -309,7 +393,14 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_51"
+      "sourceId": "liu_51",
+      "required": [
+        "大便=溏泄",
+        "脉形=细",
+        "手足温度=手脚冰凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-rehua",
@@ -334,7 +425,14 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "脉率=数",
+        "舌质=红",
+        "睡眠=彻夜不眠"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-wet",
@@ -349,7 +447,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=胖大有齿痕",
+        "舌苔=白腻"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-dry",
@@ -364,7 +468,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=红",
+        "舌苔=燥裂"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-tongue",
@@ -379,7 +489,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-taiyin-wet",
@@ -394,7 +510,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=胖大有齿痕",
+        "舌苔=白腻"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-yangming-dry",
@@ -409,7 +531,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=红",
+        "舌苔=燥裂"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-shaoyin-cold",
@@ -424,7 +552,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=紫暗",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-shaoyin-hot",
@@ -440,7 +574,14 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌质=红",
+        "舌苔=剥落",
+        "睡眠=彻夜不眠"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "true-cold-false-hot",
@@ -459,7 +600,14 @@
         "liu_68",
         "liu_69"
       ],
-      "sourceId": "liu_65"
+      "sourceId": "liu_65",
+      "required": [
+        "舌质=淡白",
+        "口渴=渴不欲饮",
+        "小便=清长"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "true-hot-false-cold",
@@ -479,7 +627,15 @@
         "liu_68",
         "liu_69"
       ],
-      "sourceId": "liu_65"
+      "sourceId": "liu_65",
+      "required": [
+        "舌质=红",
+        "舌苔=燥裂",
+        "口渴=渴喜冷饮",
+        "小便=短赤"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "hebing-taiyang-yangming",
@@ -499,7 +655,14 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_28"
+      "sourceId": "liu_28",
+      "required": [
+        "汗=无汗",
+        "寒热=恶寒",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "bing-shaoyin-jueyin",
@@ -518,7 +681,14 @@
         "liu_53",
         "liu_54"
       ],
-      "sourceId": "liu_51"
+      "sourceId": "liu_51",
+      "required": [
+        "手足温度=手脚冰凉",
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "transmission-taiyin-shaoyin",
@@ -534,7 +704,14 @@
       "sourceIds": [
         "liu_74"
       ],
-      "sourceId": "liu_74"
+      "sourceId": "liu_74",
+      "required": [
+        "头身=身重困倦",
+        "脉形=细",
+        "睡眠=但欲寐"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "rule-no-mahuang-with-sweat",
@@ -548,7 +725,12 @@
       "sourceIds": [
         "liu_61"
       ],
-      "sourceId": "liu_61"
+      "sourceId": "liu_61",
+      "required": [
+        "汗=有汗自汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "rule-no-guizhi-without-sweat",
@@ -562,7 +744,12 @@
       "sourceIds": [
         "liu_61"
       ],
-      "sourceId": "liu_61"
+      "sourceId": "liu_61",
+      "required": [
+        "汗=无汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "rule-shaoyang-three禁",
@@ -576,7 +763,12 @@
       "sourceIds": [
         "liu_61"
       ],
-      "sourceId": "liu_61"
+      "sourceId": "liu_61",
+      "required": [
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "rule-shaoyin-no-sweat",
@@ -591,7 +783,13 @@
       "sourceIds": [
         "liu_61"
       ],
-      "sourceId": "liu_61"
+      "sourceId": "liu_61",
+      "required": [
+        "睡眠=但欲寐",
+        "脉形=细"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "wen-deficiency",
@@ -604,7 +802,13 @@
       ],
       "sourceTitle": "诊病十问",
       "sourceIds": [],
-      "sourceId": null
+      "sourceId": null,
+      "required": [
+        "声音=语声低微",
+        "呼吸=呼吸微弱"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "wen-excess",
@@ -617,7 +821,13 @@
       ],
       "sourceTitle": "诊病十问",
       "sourceIds": [],
-      "sourceId": null
+      "sourceId": null,
+      "required": [
+        "声音=语声高亢",
+        "呼吸=呼吸气粗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-chest",
@@ -638,7 +848,13 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "疼痛=胸胁苦满",
+        "口渴=口苦咽干"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-no-thirst",
@@ -660,7 +876,14 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "口渴=不渴",
+        "大便=溏泄",
+        "胃口=差/食少"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-lower-urine",
@@ -684,7 +907,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "小便=清长",
+        "手足温度=手脚冰凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-chong",
@@ -707,7 +936,14 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "口渴=消渴多饮",
+        "胃口=饥而不欲食",
+        "疼痛=气上撞心/心中疼热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-ge",
@@ -728,7 +964,13 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "头身=头痛项强",
+        "汗=无汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-body",
@@ -749,7 +991,13 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "头身=身痛骨节痛",
+        "寒热=恶寒"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-four",
@@ -771,7 +1019,15 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "寒热=但热不寒",
+        "汗=大汗不止",
+        "口渴=渴喜冷饮",
+        "脉形=洪"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-urine",
@@ -791,7 +1047,13 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "小便=短赤",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-mouth",
@@ -812,7 +1074,13 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "口渴=口苦咽干",
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-dizziness",
@@ -833,7 +1101,13 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "头身=头晕目眩",
+        "脉形=弦"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-abdomen",
@@ -854,7 +1128,13 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "腹满=腹满",
+        "胃口=差/食少"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-white",
@@ -869,7 +1149,13 @@
       "sourceIds": [
         "liu_57"
       ],
-      "sourceId": "liu_57"
+      "sourceId": "liu_57",
+      "required": [
+        "舌苔=白腻",
+        "口渴=不渴"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-sleep",
@@ -894,7 +1180,14 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "睡眠=但欲寐",
+        "脉形=细",
+        "脉力=微"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-urine",
@@ -918,7 +1211,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "小便=清长",
+        "手足温度=手脚冰凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-heart",
@@ -942,7 +1241,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "胸腹=心悸",
+        "脉力=无力"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-thirst",
@@ -964,7 +1269,13 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "口渴=消渴多饮",
+        "胃口=饥而不欲食"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-float-tight",
@@ -978,7 +1289,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=浮紧"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-sunken-late",
@@ -992,7 +1308,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=沉迟"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-sunken-weak",
@@ -1006,7 +1327,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=沉微"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-string-fast",
@@ -1020,7 +1346,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=弦数"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-weak-fine",
@@ -1034,7 +1365,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=微细欲绝"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-knotted",
@@ -1048,7 +1384,12 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "复合脉=结代"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "cold-false-hot",
@@ -1067,7 +1408,14 @@
         "liu_68",
         "liu_69"
       ],
-      "sourceId": "liu_65"
+      "sourceId": "liu_65",
+      "required": [
+        "舌质=淡白",
+        "脉率=数",
+        "口渴=渴不欲饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "hot-false-cold",
@@ -1086,7 +1434,14 @@
         "liu_68",
         "liu_69"
       ],
-      "sourceId": "liu_65"
+      "sourceId": "liu_65",
+      "required": [
+        "舌质=红",
+        "脉位=沉",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-fever",
@@ -1106,7 +1461,12 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "寒热=恶风"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyang-neck",
@@ -1126,7 +1486,12 @@
         "liu_7",
         "liu_8"
       ],
-      "sourceId": "liu_2"
+      "sourceId": "liu_2",
+      "required": [
+        "头身=头痛项强"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-sweat",
@@ -1145,7 +1510,12 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "汗=大汗不止"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "yangming-hard",
@@ -1164,7 +1534,12 @@
         "liu_13",
         "liu_14"
       ],
-      "sourceId": "liu_9"
+      "sourceId": "liu_9",
+      "required": [
+        "大便=便秘"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-string",
@@ -1184,7 +1559,12 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "脉形=弦"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyang-throat",
@@ -1204,7 +1584,12 @@
         "liu_20",
         "liu_21"
       ],
-      "sourceId": "liu_15"
+      "sourceId": "liu_15",
+      "required": [
+        "口渴=口苦咽干"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-abdomen-full",
@@ -1224,7 +1609,12 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "胸腹=腹满"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-not-thirsty",
@@ -1244,7 +1634,12 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "口渴=不渴"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-food",
@@ -1264,7 +1659,12 @@
         "liu_27",
         "liu_28"
       ],
-      "sourceId": "liu_22"
+      "sourceId": "liu_22",
+      "required": [
+        "胃口=差/食少"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-deep",
@@ -1287,7 +1687,12 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "脉位=沉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-late",
@@ -1310,7 +1715,12 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "脉率=迟"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-cold-ext",
@@ -1334,7 +1744,13 @@
         "liu_37",
         "liu_38"
       ],
-      "sourceId": "liu_29"
+      "sourceId": "liu_29",
+      "required": [
+        "寒热=恶寒",
+        "手足温度=手脚冰凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-cold-hot",
@@ -1356,7 +1772,13 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-heart",
@@ -1377,7 +1799,12 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "疼痛=气上撞心/心中疼热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jueyin-extreme",
@@ -1399,7 +1826,13 @@
         "liu_45",
         "liu_46"
       ],
-      "sourceId": "liu_39"
+      "sourceId": "liu_39",
+      "required": [
+        "手足温度=手脚冰凉",
+        "舌质=红"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "bagang-excess",
@@ -1414,7 +1847,13 @@
       "sourceIds": [
         "liu_74"
       ],
-      "sourceId": "liu_74"
+      "sourceId": "liu_74",
+      "required": [
+        "声音=语声高亢",
+        "脉力=有力"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "bagang-deficiency",
@@ -1429,7 +1868,13 @@
       "sourceIds": [
         "liu_74"
       ],
-      "sourceId": "liu_74"
+      "sourceId": "liu_74",
+      "required": [
+        "声音=语声低微",
+        "脉力=无力"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-float-slow",
@@ -1445,7 +1890,14 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "脉位=浮",
+        "脉率=迟",
+        "汗=有汗自汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-float-tight-combo",
@@ -1461,7 +1913,14 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "脉位=浮",
+        "脉形=紧",
+        "汗=无汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-string-slow",
@@ -1476,7 +1935,13 @@
       "sourceIds": [
         "liu_56"
       ],
-      "sourceId": "liu_56"
+      "sourceId": "liu_56",
+      "required": [
+        "脉形=弦",
+        "脉率=迟"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-red-white",
@@ -1491,7 +1956,13 @@
       "sourceIds": [
         "liu_72"
       ],
-      "sourceId": "liu_72"
+      "sourceId": "liu_72",
+      "required": [
+        "舌质=红",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-pale-white",
@@ -1506,7 +1977,13 @@
       "sourceIds": [
         "liu_72"
       ],
-      "sourceId": "liu_72"
+      "sourceId": "liu_72",
+      "required": [
+        "舌质=淡白",
+        "舌苔=薄白"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "tongue-yellow-dry",
@@ -1521,7 +1998,13 @@
       "sourceIds": [
         "liu_72"
       ],
-      "sourceId": "liu_72"
+      "sourceId": "liu_72",
+      "required": [
+        "舌质=红",
+        "舌苔=燥裂"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "transmission-warning",
@@ -1536,7 +2019,13 @@
       "sourceIds": [
         "liu_63"
       ],
-      "sourceId": "liu_63"
+      "sourceId": "liu_63",
+      "required": [
+        "脉形=细",
+        "睡眠=但欲寐"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-check-sweat",
@@ -1550,7 +2039,12 @@
       "sourceIds": [
         "liu_61"
       ],
-      "sourceId": "liu_61"
+      "sourceId": "liu_61",
+      "required": [
+        "汗=有汗自汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-check-shaoyang",
@@ -1564,7 +2058,12 @@
       "sourceIds": [
         "liu_17"
       ],
-      "sourceId": "liu_17"
+      "sourceId": "liu_17",
+      "required": [
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "kai-taiyang",
@@ -1578,7 +2077,12 @@
       "sourceIds": [
         "liu_1"
       ],
-      "sourceId": "liu_1"
+      "sourceId": "liu_1",
+      "required": [
+        "脉位=浮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shu-shaoyang",
@@ -1592,7 +2096,12 @@
       "sourceIds": [
         "liu_1"
       ],
-      "sourceId": "liu_1"
+      "sourceId": "liu_1",
+      "required": [
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "he-yangming",
@@ -1606,7 +2115,12 @@
       "sourceIds": [
         "liu_1"
       ],
-      "sourceId": "liu_1"
+      "sourceId": "liu_1",
+      "required": [
+        "寒热=但热不寒"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-yangming-diff",
@@ -1621,7 +2135,13 @@
       "sourceIds": [
         "liu_25"
       ],
-      "sourceId": "liu_25"
+      "sourceId": "liu_25",
+      "required": [
+        "大便=溏泄",
+        "口渴=不渴"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-yangming-hot",
@@ -1636,7 +2156,13 @@
       "sourceIds": [
         "liu_25"
       ],
-      "sourceId": "liu_25"
+      "sourceId": "liu_25",
+      "required": [
+        "大便=便秘",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "taiyin-shaoyin-border",
@@ -1651,7 +2177,13 @@
       "sourceIds": [
         "liu_73"
       ],
-      "sourceId": "liu_73"
+      "sourceId": "liu_73",
+      "required": [
+        "头身=身重困倦",
+        "睡眠=但欲寐"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jue-re-progress",
@@ -1665,7 +2197,12 @@
       "sourceIds": [
         "liu_45"
       ],
-      "sourceId": "liu_45"
+      "sourceId": "liu_45",
+      "required": [
+        "厥热胜复=厥多热少（病进）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jue-re-recover",
@@ -1679,7 +2216,12 @@
       "sourceIds": [
         "liu_45"
       ],
-      "sourceId": "liu_45"
+      "sourceId": "liu_45",
+      "required": [
+        "厥热胜复=热多厥少（病退）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jue-re-stable",
@@ -1693,7 +2235,12 @@
       "sourceIds": [
         "liu_45"
       ],
-      "sourceId": "liu_45"
+      "sourceId": "liu_45",
+      "required": [
+        "厥热胜复=厥热相等（病稳）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "transmission-warning-solar",
@@ -1708,7 +2255,13 @@
       "sourceIds": [
         "liu_63"
       ],
-      "sourceId": "liu_63"
+      "sourceId": "liu_63",
+      "required": [
+        "duration=超过2周",
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "mistreat-lizhong",
@@ -1722,7 +2275,12 @@
       "sourceIds": [
         "liu_62"
       ],
-      "sourceId": "liu_62"
+      "sourceId": "liu_62",
+      "required": [
+        "misTreatment=表证误下·利不止"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "mistreat-siyin",
@@ -1736,7 +2294,12 @@
       "sourceIds": [
         "liu_62"
       ],
-      "sourceId": "liu_62"
+      "sourceId": "liu_62",
+      "required": [
+        "misTreatment=少阴误汗·亡阳"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "misc-chibi",
@@ -1750,7 +2313,12 @@
       "sourceIds": [
         "liu_75"
       ],
-      "sourceId": "liu_75"
+      "sourceId": "liu_75",
+      "required": [
+        "miscDisease=胸痹"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "misc-tan-yin",
@@ -1764,7 +2332,12 @@
       "sourceIds": [
         "liu_75"
       ],
-      "sourceId": "liu_75"
+      "sourceId": "liu_75",
+      "required": [
+        "miscDisease=痰饮咳嗽"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "misc-xulao",
@@ -1778,7 +2351,12 @@
       "sourceIds": [
         "liu_75"
       ],
-      "sourceId": "liu_75"
+      "sourceId": "liu_75",
+      "required": [
+        "miscDisease=虚劳"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "misc-xiaoke",
@@ -1792,7 +2370,12 @@
       "sourceIds": [
         "liu_75"
       ],
-      "sourceId": "liu_75"
+      "sourceId": "liu_75",
+      "required": [
+        "miscDisease=消渴"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "misc-lijie",
@@ -1806,7 +2389,12 @@
       "sourceIds": [
         "liu_75"
       ],
-      "sourceId": "liu_75"
+      "sourceId": "liu_75",
+      "required": [
+        "miscDisease=历节"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-reheat-outline",
@@ -1824,7 +2412,13 @@
         "liu_49",
         "liu_50"
       ],
-      "sourceId": "liu_47"
+      "sourceId": "liu_47",
+      "required": [
+        "脉率=数",
+        "睡眠=彻夜不眠"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "shaoyin-cold-hot-diff",
@@ -1840,7 +2434,14 @@
       "sourceIds": [
         "liu_49"
       ],
-      "sourceId": "liu_49"
+      "sourceId": "liu_49",
+      "required": [
+        "脉形=细",
+        "脉率=数",
+        "舌质=红"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "quick-flow-solar",
@@ -1855,7 +2456,13 @@
       "sourceIds": [
         "liu_55"
       ],
-      "sourceId": "liu_55"
+      "sourceId": "liu_55",
+      "required": [
+        "寒热=恶寒",
+        "脉位=浮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "quick-flow-shaoyin",
@@ -1870,7 +2477,13 @@
       "sourceIds": [
         "liu_55"
       ],
-      "sourceId": "liu_55"
+      "sourceId": "liu_55",
+      "required": [
+        "寒热=恶寒",
+        "脉位=沉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "quick-flow-yangming",
@@ -1884,7 +2497,12 @@
       "sourceIds": [
         "liu_55"
       ],
-      "sourceId": "liu_55"
+      "sourceId": "liu_55",
+      "required": [
+        "寒热=但热不寒"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "kaihe-sanyin",
@@ -1898,7 +2516,12 @@
       "sourceIds": [
         "liu_58"
       ],
-      "sourceId": "liu_58"
+      "sourceId": "liu_58",
+      "required": [
+        "手足温度=手脚冰凉"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "transmission-solar-yangming",
@@ -1914,7 +2537,14 @@
       "sourceIds": [
         "liu_59"
       ],
-      "sourceId": "liu_59"
+      "sourceId": "liu_59",
+      "required": [
+        "duration=超过2周",
+        "口渴=渴喜冷饮",
+        "大便=便秘"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "transmission-mistreat",
@@ -1928,7 +2558,12 @@
       "sourceIds": [
         "liu_60"
       ],
-      "sourceId": "liu_60"
+      "sourceId": "liu_60",
+      "required": [
+        "misTreatment=表证误下·利不止"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-tongue-float-thick",
@@ -1943,7 +2578,13 @@
       "sourceIds": [
         "liu_70"
       ],
-      "sourceId": "liu_70"
+      "sourceId": "liu_70",
+      "required": [
+        "脉位=浮",
+        "舌苔=白腻"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-tongue-deep-red",
@@ -1959,7 +2600,14 @@
       "sourceIds": [
         "liu_70"
       ],
-      "sourceId": "liu_70"
+      "sourceId": "liu_70",
+      "required": [
+        "脉位=沉",
+        "舌质=红",
+        "舌苔=黄"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-combo-floating-slow",
@@ -1973,7 +2621,12 @@
       "sourceIds": [
         "liu_71"
       ],
-      "sourceId": "liu_71"
+      "sourceId": "liu_71",
+      "required": [
+        "复合脉=浮缓"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-combo-deep-late",
@@ -1987,7 +2640,12 @@
       "sourceIds": [
         "liu_71"
       ],
-      "sourceId": "liu_71"
+      "sourceId": "liu_71",
+      "required": [
+        "复合脉=沉迟"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "pulse-combo-fine",
@@ -2001,7 +2659,12 @@
       "sourceIds": [
         "liu_71"
       ],
-      "sourceId": "liu_71"
+      "sourceId": "liu_71",
+      "required": [
+        "复合脉=微细欲绝"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jingui-qi-bi",
@@ -2018,7 +2681,12 @@
         "liu_78",
         "liu_79"
       ],
-      "sourceId": "liu_76"
+      "sourceId": "liu_76",
+      "required": [
+        "miscDisease=胸痹"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jingui-cough",
@@ -2035,7 +2703,12 @@
         "liu_78",
         "liu_79"
       ],
-      "sourceId": "liu_76"
+      "sourceId": "liu_76",
+      "required": [
+        "miscDisease=痰饮咳嗽"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jingui-deficiency",
@@ -2052,7 +2725,12 @@
         "liu_78",
         "liu_79"
       ],
-      "sourceId": "liu_76"
+      "sourceId": "liu_76",
+      "required": [
+        "miscDisease=虚劳"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jingui-joint",
@@ -2070,7 +2748,13 @@
         "liu_78",
         "liu_79"
       ],
-      "sourceId": "liu_76"
+      "sourceId": "liu_76",
+      "required": [
+        "miscDisease=历节",
+        "疼痛=冷痛"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "jingui-pain",
@@ -2088,7 +2772,13 @@
         "liu_78",
         "liu_79"
       ],
-      "sourceId": "liu_76"
+      "sourceId": "liu_76",
+      "required": [
+        "miscDisease=胸痹",
+        "疼痛=胸痛彻背"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "clinical-no-attack",
@@ -2106,7 +2796,14 @@
         "liu_81",
         "liu_82"
       ],
-      "sourceId": "liu_80"
+      "sourceId": "liu_80",
+      "required": [
+        "脉位=浮",
+        "寒热=恶寒",
+        "大便=便秘"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "clinical-shaoyang-single",
@@ -2122,7 +2819,12 @@
         "liu_81",
         "liu_82"
       ],
-      "sourceId": "liu_80"
+      "sourceId": "liu_80",
+      "required": [
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "clinical-yangming-stop",
@@ -2138,7 +2840,12 @@
         "liu_81",
         "liu_82"
       ],
-      "sourceId": "liu_80"
+      "sourceId": "liu_80",
+      "required": [
+        "寒热=但热不寒"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "clinical-liver-spleen",
@@ -2153,7 +2860,13 @@
       "sourceIds": [
         "liu_82"
       ],
-      "sourceId": "liu_82"
+      "sourceId": "liu_82",
+      "required": [
+        "miscDisease=虚劳",
+        "胃口=差/食少"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "clinical-warm-phlegm",
@@ -2168,7 +2881,13 @@
       "sourceIds": [
         "liu_82"
       ],
-      "sourceId": "liu_82"
+      "sourceId": "liu_82",
+      "required": [
+        "miscDisease=痰饮咳嗽",
+        "舌苔=白腻"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "lung-phlegm",
@@ -2190,7 +2909,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "呼吸=喘",
+        "胸腹=胸腹胀满"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "spleen-wet",
@@ -2212,7 +2937,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "胸腹=腹满",
+        "头身=身重困倦"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "heart-pain-itch",
@@ -2234,7 +2965,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "疼痛=灼痛",
+        "舌质=红"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "lower-jiao",
@@ -2256,7 +2993,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "手足温度=手脚冰凉",
+        "小便=不利/癃闭"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "upper-middle",
@@ -2278,7 +3021,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "呼吸=喘",
+        "胃口=食入即吐"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "fire-spasm",
@@ -2300,7 +3049,13 @@
         "exp_13",
         "exp_14"
       ],
-      "sourceId": "exp_7"
+      "sourceId": "exp_7",
+      "required": [
+        "望神=失神",
+        "脉率=数"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "time-taiyang",
@@ -2314,7 +3069,12 @@
       "sourceIds": [
         "liu_64"
       ],
-      "sourceId": "liu_64"
+      "sourceId": "liu_64",
+      "required": [
+        "symptomTime=中午（巳至未）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "time-yangming",
@@ -2328,7 +3088,12 @@
       "sourceIds": [
         "liu_64"
       ],
-      "sourceId": "liu_64"
+      "sourceId": "liu_64",
+      "required": [
+        "symptomTime=黄昏（申至戌）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "time-shaoyang",
@@ -2342,7 +3107,12 @@
       "sourceIds": [
         "liu_64"
       ],
-      "sourceId": "liu_64"
+      "sourceId": "liu_64",
+      "required": [
+        "symptomTime=清晨（寅至辰）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "time-sanyin",
@@ -2356,7 +3126,12 @@
       "sourceIds": [
         "liu_64"
       ],
-      "sourceId": "liu_64"
+      "sourceId": "liu_64",
+      "required": [
+        "symptomTime=深夜（子至寅）"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-gui-zhi-source",
@@ -2376,7 +3151,12 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "汗=有汗自汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-ma-huang-source",
@@ -2396,7 +3176,12 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "汗=无汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-ge-gen-source",
@@ -2416,7 +3201,12 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "头身=头痛项强"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-da-qing-long-source",
@@ -2437,7 +3227,13 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "汗=无汗",
+        "口渴=渴喜冷饮"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-xiao-qing-long-source",
@@ -2458,7 +3254,13 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "呼吸=喘",
+        "汗=无汗"
+      ],
+      "reference": [],
+      "exclude": []
     },
     {
       "id": "formula-xiao-chai-hu-source",
@@ -2478,7 +3280,12 @@
         "exp_5",
         "exp_6"
       ],
-      "sourceId": "exp_0"
+      "sourceId": "exp_0",
+      "required": [
+        "寒热=往来寒热"
+      ],
+      "reference": [],
+      "exclude": []
     }
   ],
   "knowledgeItems": [

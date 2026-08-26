@@ -169,6 +169,10 @@ for rule in rules:
     candidates = [x for x in items if rule['sourceTitle'] in x['title']]
     rule['sourceIds'] = [x['id'] for x in candidates]
     rule['sourceId'] = candidates[0]['id'] if candidates else None
+    # 统一规则协议：required 必选信号，reference 参考信号，exclude 排除信号。
+    rule['required'] = rule['when']
+    rule.setdefault('reference', [])
+    rule.setdefault('exclude', [])
 rule_source_ids = {sid for rule in rules for sid in rule.get('sourceIds', []) if sid}
 context_items = [item for item in items if item.get('id') not in rule_source_ids]
 out = {'version':'2026.08.26', 'source':'static/data/diagnosis.json', 'rules':rules, 'knowledgeItems':items, 'contextItems':context_items}
