@@ -115,6 +115,13 @@
       </view>
     </view>
 
+    <!-- 六十甲子日学习表 -->
+    <view class="sec">
+      <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">六十甲子日 · 日干支速查</text></view>
+      <view class="cycle-grid"><view v-for="d in sexagenaryDays" :key="d.index" class="cycle-chip" :class="{ on: d.index === dayCycleIndex }" @tap="selectCycleDay(d)">{{ d.name }}</view></view>
+      <view class="calc-note">当前日：{{ dayGz }}。点击仅用于学习查看，不会修改系统日期。</view>
+    </view>
+
     <!-- 依据 -->
     <view class="basis card">
       <view class="bs-t serif">◈ 计算依据</view>
@@ -171,7 +178,7 @@ const HOUR_TO_MER = {
 export default {
   data() {
     return {
-      dayGanIdx: 0, hourIdx: 0, nowHour: 0,
+      dayGanIdx: 0, dayZhiIdx: 0, dayCycleIndex: 0, hourIdx: 0, nowHour: 0,
       najiaPoint: '', najiaMeta: '', najiaOpen: false,
       liveClock: '', fullDay: [], najiaTable: [], dayGz: '', hourGz: '', manualDate: '', manualTime: '', timezone: 'Asia/Shanghai (UTC+8)', timezoneOptions: ['Asia/Shanghai (UTC+8)', 'Asia/Tokyo (UTC+9)', 'UTC (UTC+0)'], ziChuChange: false, useSolarTime: false
     }
@@ -182,6 +189,7 @@ export default {
     dayMeridian() { return GAN_MERIDIAN[this.dayGanIdx] },
     dayType() { return this.dayGanIdx % 2 === 0 ? '阳' : '阴' },
     hourName() { return ZHI[this.hourIdx] },
+    sexagenaryDays() { return Array.from({ length: 60 }, (_, i) => ({ index: i, name: GAN[i % 10] + ZHI[i % 12] })) },
     hourRangeFmt() {
       const h = HOURS[this.hourIdx]
       if (!h) return ''
@@ -249,6 +257,8 @@ export default {
       const dayForGan = this.ziChuChange && d.getHours() >= 23 ? new Date(d.getTime() + 24 * 3600000) : d
       this.dayGanIdx = this.calcDayGan(dayForGan)
       const dayZhiIdx = this.calcDayZhi(dayForGan)
+      this.dayZhiIdx = dayZhiIdx
+      this.dayCycleIndex = Array.from({ length: 60 }, (_, i) => [i % 10, i % 12]).findIndex(x => x[0] === this.dayGanIdx && x[1] === dayZhiIdx)
       const hourGanIdx = (this.dayGanIdx * 2 + this.getHourIdx(d.getHours())) % 10
       this.dayGz = GAN[this.dayGanIdx] + ZHI[dayZhiIdx]
       this.hourGz = GAN[hourGanIdx] + ZHI[this.getHourIdx(d.getHours())]
@@ -291,6 +301,9 @@ export default {
       }
       this.najiaTable = rows
     },
+    selectCycleDay(d) {
+      uni.showToast({ title: `${d.name}日：请在上方输入具体公历日期复盘`, icon: 'none', duration: 2200 })
+    },
     buildFullDay() {
       const rows = []
       for (let i = 0; i < 12; i++) {
@@ -322,6 +335,9 @@ export default {
 .calc-title { color: var(--brand); font-size: 26rpx; font-weight: 800; margin-bottom: 10rpx; }
 .calc-note { color: var(--ink2); font-size: 18rpx; margin-top: 8rpx; line-height: 1.6; }
 .calc-line { color: var(--ink); font-size: 20rpx; line-height: 1.8; margin-top: 6rpx; }
+.cycle-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10rpx; padding: 18rpx; background: var(--card); border-radius: 16rpx; }
+.cycle-chip { text-align: center; color: var(--ink2); background: var(--zebra-bg); border-radius: 10rpx; padding: 10rpx 0; font-size: 21rpx; }
+.cycle-chip.on { background: var(--brand); color: #fff; font-weight: 700; }
 .snapshot-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
 .snapshot-btn { flex: 1; text-align: center; border: 1rpx solid var(--line); border-radius: 24rpx; padding: 9rpx 0; color: var(--brand); font-size: 20rpx; }
 
