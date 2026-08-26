@@ -178,7 +178,7 @@
           <view class="basic-hint">藏象倾向不等同于现代医学器官疾病诊断。</view>
         </view>
         <view class="r-sec" v-if="result.acupoints.length">
-          <view class="rs-t">相关经络/穴位学习（仅供学习）</view
+          <view class="rs-t">相关经络/穴位学习（仅供学习）</view>
           <view class="r-line acupoint-line" v-for="a in result.acupoints" :key="a.id" @tap="openAcupoint(a)">● {{ a.title }}：{{ a.excerpt }} ›</view>
           <view class="basic-hint">穴位资料用于经络学习，不构成针刺、放血、艾灸或自行操作建议。</view>
         </view>
@@ -240,8 +240,6 @@
 <script>
 import { store, applyTheme } from '@/utils/store.js'
 import { analyzeSizhen } from '@/utils/sizhen-engine.js'
-import { loadData } from '@/utils/data.js'
-import { openMd, openEntry } from '@/utils/routes.js'
 import { loadData } from '@/utils/data.js'
 import { openMd, openEntry } from '@/utils/routes.js'
 
