@@ -83,7 +83,7 @@
 
     <!-- ===== 3 问诊（倪师十问） ===== -->
     <view v-if="step === 2" class="tab-body fade-in">
-      <view class="ten-tip card">倪师诊病十问——按倪海厦人纪教学法：每一问都直指阴阳表里寒热虚实</view>
+      <view class="ten-tip card">倪师诊病十问扩展——寒热、汗、头身、二便、饮食、胸腹、耳、口渴及妇女情况，均需结合整体辨证</view>
       <view class="grp card" v-for="q in tenQ" :key="q.k">
         <view class="g-t serif">{{ q.k }}</view>
         <view class="opts">
@@ -134,7 +134,7 @@
       </view>
       <view class="nav-row">
         <view class="nav-btn" @tap="step = 2">‹ 上一步</view>
-        <view class="nav-btn main" @tap="analyze">⟡ 生成辨证报告</view>
+        <view class="nav-btn main" :class="{ disabled: analyzing }" @tap="analyze">{{ analyzing ? '正在读取知识库…' : '⟡ 生成辨证报告' }}</view>
       </view>
     </view>
 
@@ -153,6 +153,10 @@
         </view>
         <view class="r-sec" v-if="result.combination">
           <view class="rs-t">脉舌/合病鉴别</view><view class="r-line">{{ result.combination }}</view>
+        </view>
+        <view class="r-sec" v-if="result.sources.length">
+          <view class="rs-t">知识库依据</view>
+          <view class="r-line" v-for="s in result.sources" :key="s.id">● {{ s.source }}：{{ s.title }}</view>
         </view>
         <view class="r-sec">
           <view class="rs-t">基本信息</view>
@@ -204,6 +208,7 @@
 
 <script>
 import { store, applyTheme } from '@/utils/store.js'
+import { evaluateKnowledge, findKnowledgeSources } from '@/utils/sizhen-engine.js'
 
 /* ===== 望诊数据 ===== */
 const WANG_SE = [
@@ -248,7 +253,9 @@ const TEN_Q = [
   { k: '睡眠', opts: ['正常', '入睡难', '易醒', '彻夜不眠', '但欲寐'] },
   { k: '手足温度', opts: ['手脚温热', '脚凉手温', '手脚冰凉', '手心热脚凉'] },
   { k: '胃口', opts: ['正常', '亢进', '差/食少', '毫无胃口', '食入即吐'] },
-  { k: '疼痛', opts: ['无', '胀痛', '刺痛', '隐痛', '冷痛', '灼痛'] },
+  { k: '疼痛', opts: ['无', '胸腹胀痛', '胸痛彻背', '刺痛', '隐痛', '冷痛', '灼痛'] },
+  { k: '耳', opts: ['无明显异常', '耳鸣', '耳聋', '耳胀痛'] },
+  { k: '妇女', opts: ['不适用/未说明', '经期正常', '经量异常', '带下异常', '孕期出血或腹痛'] },
   { k: '寒热', opts: ['恶寒', '恶风', '发热', '往来寒热', '但热不寒', '无寒热'] }
 ]
 
@@ -274,7 +281,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '' })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -302,6 +309,7 @@ export default {
       pulseSources: PULSE_SOURCES,
       pulseSource: '不确定',
       savedReports: [],
+      analyzing: false,
       result: EMPTY_RESULT(),
       wangSe: WANG_SE, wangShe: WANG_SHE, wangTai: WANG_TAI, wangShen: WANG_SHEN,
       wenVoice: WEN_VOICE, wenBreath: WEN_BREATH,
@@ -343,11 +351,13 @@ export default {
     },
     reset() { this.pick = {}; this.basic = { age: '', sex: '未说明', duration: '', caseType: '不确定', pregnant: false, chronic: false }; this.redFlags = []; this.pulseSource = '不确定'; this.result = EMPTY_RESULT(); this.step = 0; this.clearDraft() },
     toggleRedFlag(v) { const i = this.redFlags.indexOf(v); if (i >= 0) this.redFlags.splice(i, 1); else this.redFlags.push(v) },
-    analyze() {
+    async analyze() {
+      if (this.analyzing) return
       if (!Object.keys(this.pick).some(k => this.pick[k])) {
         uni.showToast({ title: '请至少选择一项体征', icon: 'none' })
         return
       }
+      this.analyzing = true
       const p = this.pick
       const bg = new Set()
       const mer = new Set()
@@ -401,6 +411,9 @@ export default {
       if (p['手足温度'] === '手心热脚凉') { patterns.push('上热下寒（厥阴）'); mer.add('厥阴'); formulas.push('乌梅丸') }
       if (p['手足温度'] === '脚凉手温') { patterns.push('脚冷=里寒之兆'); mer.add('太阴') }
       if (p['胃口'] === '毫无胃口') patterns.push('胃气将绝，亟需重视')
+      if (p['疼痛'] === '胸痛彻背') { patterns.push('胸痛彻背属于红旗表现，需先排除急症'); if (!this.redFlags.includes('胸痛/胸闷')) this.redFlags.push('胸痛/胸闷') }
+      if (p['耳'] === '耳鸣' || p['耳'] === '耳聋') patterns.push('耳鸣耳聋需结合少阳、少阴及肾系资料复核')
+      if (p['妇女'] === '孕期出血或腹痛') { if (!this.redFlags.includes('孕期出血/腹痛')) this.redFlags.push('孕期出血/腹痛') }
       if (p['寒热'] === '恶寒') { mer.add('太阳'); bg.add('表') }
       if (p['寒热'] === '往来寒热') { mer.add('少阳'); formulas.push('小柴胡汤') }
       if (p['寒热'] === '但热不寒') { mer.add('阳明'); bg.add('热') }
@@ -439,7 +452,12 @@ export default {
       const complexPulse = COMPLEX_PULSES.find(x => x.k === p['复合脉'])
       if (complexPulse) { addScore(complexPulse.mer, 3, complexPulse.k); if (complexPulse.k === '微细欲绝') patterns.push('微细欲绝为高风险脉象') }
       mer.forEach(m => { if (!score[m]) addScore(m, 1, '其他四诊信息') })
-      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: reasons[name].slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+      const kbEval = evaluateKnowledge(p, this.basic)
+      MERIDIANS.forEach(m => { score[m] += kbEval.scores[m] || 0 })
+      const scores = MERIDIANS.map(name => ({ name, score: score[name], reason: [...reasons[name], ...kbEval.evidence.filter(e => e.name.includes(name)).map(e => e.name)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3).join('、') })).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+      let sources = []
+      try { sources = await findKnowledgeSources(p) } catch (e) { patterns.push('知识库索引暂不可用，以下为本地规则兜底结果') }
+      this.analyzing = false
       const selected = Object.keys(p).filter(k => p[k]).map(k => k + '：' + p[k])
       const completedSteps = STEP_FIELDS.filter(fields => fields.some(k => p[k])).length
       const completeness = Math.round(completedSteps / STEP_FIELDS.length * 100)
@@ -498,7 +516,8 @@ export default {
         completeness,
         risk,
         sevenSteps,
-        combination: combo
+        combination: combo,
+        sources
       }
       this.clearDraft()
       this.step = 4
@@ -569,6 +588,7 @@ export default {
 .nav-row { display: flex; gap: 16rpx; margin: 20rpx 0; }
 .nav-btn { flex: 1; text-align: center; border-radius: 44rpx; padding: 20rpx 0; font-size: 25rpx; font-weight: 700; border: 2rpx solid var(--line); color: var(--ink2); }
 .nav-btn.main { background: linear-gradient(135deg, var(--brand), var(--brand-deep)); color: #FDF8EE; border-color: transparent; }
+.nav-btn.disabled { opacity: .55; pointer-events: none; }
 
 /* 报告 */
 .report { padding: 32rpx 30rpx; }
