@@ -543,7 +543,7 @@ export default {
         kbEvidence: kbEval.evidence,
         kbVersion: kbEval.modelVersion,
         kbCoverage: kbEval.coverage || 0,
-        kbMatches: (kbEval.knowledgeMatches || []).length,
+        kbMatches: kbEval.knowledgeMatchCount || (kbEval.knowledgeMatches || []).length,
         kbConfidence: kbEval.confidence || '不足',
         cases
       }

@@ -56,14 +56,14 @@ export async function evaluateKnowledgeAsync(pick, basic = {}) {
     const compiled = await loadData('sizhen-rules')
     const result = runRules(pick, basic, compiled.rules || [])
     const terms = values(pick).map(x => x.split('=').slice(1)[0]).filter(x => x.length > 1)
-    const knowledgeMatches = (compiled.knowledgeItems || []).map(item => {
+    const allKnowledgeMatches = (compiled.knowledgeItems || []).map(item => {
       const hay = item.title + ' ' + item.excerpt
       const hits = terms.filter(t => hay.includes(t))
       return { id: item.id, title: item.title, group: item.group, hits, score: hits.length }
-    }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 12)
-    return { ...result, knowledgeMatches, modelVersion: compiled.version || 'unknown' }
+    }).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
+    return { ...result, knowledgeMatches: allKnowledgeMatches.slice(0, 12), knowledgeMatchCount: allKnowledgeMatches.length, modelVersion: compiled.version || 'unknown' }
   } catch (e) {
-    return { ...runRules(pick, basic, RULES), knowledgeMatches: [], modelVersion: 'fallback-local' }
+    return { ...runRules(pick, basic, RULES), knowledgeMatches: [], knowledgeMatchCount: 0, modelVersion: 'fallback-local' }
   }
 }
 
