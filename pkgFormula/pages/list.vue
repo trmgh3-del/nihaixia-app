@@ -14,6 +14,10 @@
       <view class="j-chip" :class="{ on: jing === '' }" @tap="jing = ''">全部 {{ items.length }}</view>
       <view v-for="j in jings" :key="j.k" class="j-chip" :class="{ on: jing === j.k }" @tap="jing = j.k">{{ j.k }} {{ j.n }}</view>
     </view>
+    <view class="catbar" v-if="!cmpMode && categories.length">
+      <view class="cat-chip" :class="{ on: category === '' }" @tap="category = ''">分类不限</view>
+      <view v-for="c in categories" :key="c" class="cat-chip" :class="{ on: category === c }" @tap="category = category === c ? '' : c">{{ c }}</view>
+    </view>
     <view class="cmp-bar" v-if="cmpMode">
       <text class="cmp-tip">对比模式：已选 {{ cmpSel.length }}/2</text>
       <view class="cmp-btn go" v-if="cmpSel.length === 2" @tap="doCompare">开始对比</view>
@@ -73,7 +77,7 @@ export default {
   onShow() { applyTheme() },
   data() {
     return {
-      q: '', items: [], jing: '', cmpMode: false, cmpSel: [], cmpView: null,
+      q: '', items: [], jing: '', category: '', cmpMode: false, cmpSel: [], cmpView: null,
       cmpFields: [
         { k: '主症关键', v: 'zhizhi' }, { k: '组成', v: 'composition' }, { k: '原方剂量', v: 'origin' },
         { k: '倪师临床', v: 'clinical' }, { k: '逐味剂量', v: 'doses' }, { k: '备注', v: 'note' }
@@ -92,9 +96,13 @@ export default {
       const order = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴']
       return order.filter(k => map[k]).map(k => ({ k, n: map[k] }))
     },
+    categories() {
+      return [...new Set(this.items.map(it => it.category).filter(Boolean))].slice(0, 18)
+    },
     shown() {
       let list = this.items
       if (this.jing) list = list.filter(it => this.fJing(it) === this.jing)
+      if (this.category) list = list.filter(it => it.category === this.category)
       const q = this.q.trim()
       if (q) list = list.filter(it => (it.n + (it.alias || '') + (Array.isArray(it.keywords) ? it.keywords.join('') : '') + (it.category || '') + (it.meridian || '') + (it.zhizhi || '') + (it.clinical || '') + (it.origin || '') + (it.composition || '') + (it.note || '') + (it.doses || '')).includes(q))
       return list
@@ -167,6 +175,9 @@ export default {
 .sbar2 { background: var(--card); padding: 0 32rpx 18rpx; display: flex; justify-content: flex-end; }
 .f-srcbar { display: flex; align-items: center; font-size: 22rpx; color: var(--gold); border: 1rpx solid var(--gold); border-radius: 26rpx; padding: 6rpx 22rpx; }
 .f-srcbar .ico-s { margin-right: 8rpx; }
+.catbar { display: flex; flex-wrap: wrap; padding: 4rpx 24rpx 14rpx; background: var(--card); }
+.cat-chip { font-size: 20rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 24rpx; padding: 7rpx 18rpx; margin: 0 10rpx 8rpx 0; }
+.cat-chip.on { background: var(--gold); color: #fff; }
 .cmp-bar { display: flex; align-items: center; background: var(--card); padding: 14rpx 32rpx; border-bottom: 1rpx solid var(--line); }
 .cmp-tip { flex: 1; font-size: 24rpx; color: var(--brand); font-weight: 700; }
 .cmp-btn { font-size: 22rpx; color: var(--ink2); border: 1rpx solid var(--line); border-radius: 26rpx; padding: 8rpx 26rpx; margin-left: 14rpx; }
