@@ -20,6 +20,15 @@
       <view class="lg-tip">灵龟八法按时取八脉交会穴：「{{ openPoint }}」主穴，可配「{{ pairPoint }}」同用</view>
     </view>
 
+    <view class="calc card">
+      <view class="calc-title serif">计算过程与流派设置</view>
+      <view class="calc-line">日干支：{{ dayGz }}　时干支：{{ hourGz }}</view>
+      <view class="calc-line">日干 {{ calcDetails.dayGan }} + 日支 {{ calcDetails.dayZhi }} + 时干 {{ calcDetails.hourGan }} + 时支 {{ calcDetails.hourZhi }} = {{ calcDetails.sum }}</view>
+      <view class="calc-line">{{ calcDetails.divisor === 9 ? '阳日除9' : '阴日除6' }}，余数：{{ calcDetails.remainder }} → {{ openPoint }}</view>
+      <view class="calc-setting"><text>余数5流派：</text><view v-for="o in ['照海', '内关']" :key="o" class="setting-chip" :class="{ on: rem5Mode === o }" @tap="setRem5(o)">{{ o }}</view></view>
+      <view class="calc-note">余数5在不同典籍有不同取法；本设置仅影响余数5，不代表临床处方。</view>
+    </view>
+
     <!-- 八脉交会穴表 -->
     <view class="sec">
       <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">八脉交会穴 · 洛书配卦</text></view>
@@ -121,14 +130,15 @@ function calcLingGui(dayGan, dayZhi, hourGan, hourZhi, isYangDay) {
   }
   // 映射到八穴
   const mapping = { 1: '申脉', 2: '照海', 3: '外关', 4: '临泣', 5: '照海', 6: '公孙', 7: '后溪', 8: '内关', 9: '列缺' }
-  return { num, point: mapping[num] || '列缺' }
+  return { num, point: num === 5 ? null : (mapping[num] || '列缺') }
 }
 
 export default {
   data() {
     return {
       liveClock: '', hourIdx: 0, dayTable: [],
-      openPoint: '', pairPoint: '', trigram: '', pointMeridian: '', confluence: ''
+      openPoint: '', pairPoint: '', trigram: '', pointMeridian: '', confluence: '',
+      rem5Mode: '照海', dayGz: '', hourGz: '', calcDetails: { dayGan: 0, dayZhi: 0, hourGan: 0, hourZhi: 0, sum: 0, divisor: 0, remainder: 0 }
     }
   },
   computed: {
@@ -152,6 +162,7 @@ export default {
   onHide() { clearInterval(this._timer) },
   onUnload() { clearInterval(this._timer) },
   methods: {
+    setRem5(value) { this.rem5Mode = value; this.tick() },
     tick() {
       const d = new Date()
       const p = n => (n < 10 ? '0' + n : n)
@@ -161,8 +172,13 @@ export default {
       const h = d.getHours()
       this.hourIdx = h === 23 || h === 0 ? 0 : Math.floor((h + 1) / 2)
       const hourGZ = calcHourGanZhi(day.ganIdx, h)
-      const result = calcLingGui(day.gan, day.zhi, hourGZ.gan, hourGZ.zhi, isYang)
+      const raw = calcLingGui(day.gan, day.zhi, hourGZ.gan, hourGZ.zhi, isYang)
+      const point = raw.point || this.rem5Mode
+      const result = { ...raw, point }
       const info = BAGUA.find(b => b.pt === result.point) || BAGUA[8]
+      this.dayGz = day.gan + day.zhi
+      this.hourGz = hourGZ.gan + hourGZ.zhi
+      this.calcDetails = { dayGan: dayGanNum(day.gan), dayZhi: dayZhiNum(day.zhi), hourGan: hourGanNum(hourGZ.gan), hourZhi: hourZhiNum(hourGZ.zhi), sum: dayGanNum(day.gan) + dayZhiNum(day.zhi) + hourGanNum(hourGZ.gan) + hourZhiNum(hourGZ.zhi), divisor: isYang ? 9 : 6, remainder: raw.num }
       this.openPoint = result.point
       this.pairPoint = info.pair
       this.trigram = info.tri
@@ -177,12 +193,13 @@ export default {
         const [a, b] = h.range.split('-')
         const hourGZ = calcHourGanZhi(day.ganIdx, h.hr)
         const r = calcLingGui(day.gan, day.zhi, hourGZ.gan, hourGZ.zhi, isYang)
-        const info = BAGUA.find(x => x.pt === r.point) || BAGUA[8]
+        const point = r.point || this.rem5Mode
+        const info = BAGUA.find(x => x.pt === point) || BAGUA[8]
         rows.push({
           hour: h.h,
           time: `${a.padStart(2, '0')}:00~${b.padStart(2, '0')}:00`,
           trigram: info.tri,
-          pt: r.point,
+          pt: point,
           isNow: i === this.hourIdx
         })
       }
@@ -213,6 +230,13 @@ export default {
 .lg-pair-pt { font-size: 38rpx; font-weight: 800; color: #F6E7C9; margin-top: 4rpx; }
 .lg-tip { margin-top: 18rpx; font-size: 19rpx; color: rgba(253,248,238,.85); line-height: 1.7; background: rgba(253,248,238,.1); border-radius: 14rpx; padding: 12rpx 18rpx; }
 
+.calc { margin: 18rpx 32rpx 0; padding: 22rpx 26rpx; }
+.calc-title { color: var(--brand); font-size: 26rpx; font-weight: 800; margin-bottom: 10rpx; }
+.calc-line { color: var(--ink); font-size: 20rpx; line-height: 1.8; }
+.calc-setting { display: flex; align-items: center; gap: 10rpx; margin-top: 10rpx; font-size: 20rpx; color: var(--ink2); }
+.setting-chip { padding: 6rpx 14rpx; border: 1rpx solid var(--line); border-radius: 20rpx; color: var(--ink2); }
+.setting-chip.on { color: #fff; background: var(--brand); border-color: var(--brand); }
+.calc-note { color: var(--ink2); font-size: 18rpx; margin-top: 8rpx; line-height: 1.6; }
 .sec { margin: 26rpx 32rpx 0; }
 .sec-head { display: flex; align-items: center; margin-bottom: 16rpx; }
 .sec-orn { color: var(--gold); font-size: 22rpx; margin-right: 10rpx; }
