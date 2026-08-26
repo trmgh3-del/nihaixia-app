@@ -29,7 +29,7 @@ function values(pick) { return Object.keys(pick || {}).filter(k => pick[k]).map(
 function matchRule(rule, vals) { return rule[2].every(x => vals.includes(x)) }
 
 function runRules(pick, basic, rules) {
-  const vals = values(pick)
+  const vals = values(pick).concat(Object.keys(basic || {}).filter(k => basic[k]).map(k => k + '=' + basic[k]))
   const scores = {}; const evidence = []
   MERIDIANS.forEach(m => { scores[m] = 0 })
   rules.forEach(rule => {
