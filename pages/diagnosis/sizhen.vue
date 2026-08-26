@@ -480,7 +480,9 @@ export default {
     formatReportTime(ts) { return new Date(ts).toLocaleString() },
     viewReport(item) {
       if (!item || !item.text) return
-      uni.showModal({ title: '历史辨证报告', content: item.text.slice(0, 1800), showCancel: false, confirmText: '关闭' })
+      const long = item.text.length > 1800
+      if (long) uni.setClipboardData({ data: item.text })
+      uni.showModal({ title: '历史辨证报告', content: item.text.slice(0, 1800) + (long ? '\n\n（报告较长，完整内容已复制到剪贴板）' : ''), showCancel: false, confirmText: '关闭' })
     },
     removeReport(i) {
       const list = this.savedReports.slice(); list.splice(i, 1); this.savedReports = list
