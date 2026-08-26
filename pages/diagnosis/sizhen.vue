@@ -30,6 +30,7 @@
         <view class="sub-lab">红旗症状（如有请立即就医）</view>
         <view class="opts"><view v-for="o in redFlagOptions" :key="o" class="opt sm danger-opt" :class="{ on: redFlags.includes(o) }" @tap="toggleRedFlag(o)">{{ o }}</view></view>
         <view class="basic-hint">基本信息仅用于风险提示，不会替代四诊判断；涉及孕期、儿童、高龄、慢性病或正在用药，请优先咨询执业医师。</view>
+        <view class="snapshot-row"><view class="snapshot-btn" @tap="saveSnapshot">保存快照</view><view class="snapshot-btn" v-if="snapshots.length" @tap="restoreSnapshot">恢复最近快照</view></view>
       </view>
       <view class="grp card">
         <view class="g-t serif">⟡ 望色（面色）</view>
@@ -342,6 +343,7 @@ export default {
       pulseSources: PULSE_SOURCES,
       pulseSource: '不确定',
       savedReports: [],
+      snapshots: [],
       analyzing: false,
       result: EMPTY_RESULT(),
       wangSe: WANG_SE, wangShe: WANG_SHE, wangTai: WANG_TAI, wangShen: WANG_SHEN,
@@ -367,12 +369,24 @@ export default {
       }
     } catch (e) {}
   },
-  onShow() {
+    onShow() {
     applyTheme()
-    try { this.savedReports = uni.getStorageSync('nx_sizhen_reports') || [] } catch (e) { this.savedReports = [] }
+    try { this.savedReports = uni.getStorageSync('nx_sizhen_reports') || []; this.snapshots = uni.getStorageSync('nx_sizhen_snapshots') || [] } catch (e) { this.savedReports = []; this.snapshots = [] }
   },
   onHide() { if (this.step < 4) this.saveDraft() },
   methods: {
+    saveSnapshot() {
+      try {
+        const next = [{ ts: Date.now(), pick: JSON.parse(JSON.stringify(this.pick)), basic: { ...this.basic }, redFlags: [...this.redFlags], pulseSource: this.pulseSource }, ...(this.snapshots || [])].slice(0, 5)
+        this.snapshots = next; uni.setStorageSync('nx_sizhen_snapshots', next); uni.showToast({ title: '快照已保存', icon: 'success' })
+      } catch (e) { uni.showToast({ title: '快照保存失败', icon: 'none' }) }
+    },
+    restoreSnapshot() {
+      const s = this.snapshots && this.snapshots[0]
+      if (!s) return
+      this.pick = JSON.parse(JSON.stringify(s.pick || {})); this.basic = Object.assign(this.basic, s.basic || {}); this.redFlags = s.redFlags || []; this.pulseSource = s.pulseSource || '不确定'; this.step = 0
+      uni.showToast({ title: '已恢复最近快照', icon: 'none' })
+    },
     setPick(k, v) { this.pick[k] = this.pick[k] === v ? '' : v },
     isPicked(k, v) { return MULTI_FIELDS.includes(k) ? (Array.isArray(this.pick[k]) && this.pick[k].includes(v)) : this.pick[k] === v },
     toggleOption(k, v) {
@@ -466,6 +480,8 @@ export default {
 .basic-row { display: flex; gap: 14rpx; }
 .basic-input { flex: 1; height: 68rpx; line-height: 68rpx; padding: 0 18rpx; box-sizing: border-box; border-radius: 12rpx; background: var(--zebra-bg); color: var(--ink); font-size: 22rpx; }
 .basic-hint { margin-top: 14rpx; color: var(--ink2); font-size: 19rpx; line-height: 1.6; }
+.snapshot-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
+.snapshot-btn { flex: 1; text-align: center; border: 1rpx solid var(--line); border-radius: 24rpx; padding: 9rpx 0; color: var(--brand); font-size: 20rpx; }
 .danger-opt { color: #9A2E1F; border-color: rgba(154,46,31,.2); }
 .danger-opt.on { background: #9A2E1F; color: #fff; }
 .basic-row .basic-input { margin-bottom: 2rpx; }
