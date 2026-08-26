@@ -17,6 +17,10 @@
         <view class="k-v" :style="{ fontSize: fs }">{{ f.v }}</view>
       </view>
 
+      <view class="related card fade-in" v-if="relatedFormulas.length">
+        <view class="k-head"><text class="k-orn">▍</text><text class="k-t serif">含此药材的方剂</text></view>
+        <view class="related-item" v-for="f in relatedFormulas" :key="f.id" @tap="openFormula(f)"><text>{{ f.n }}</text><text class="related-arrow">›</text></view>
+      </view>
       <view class="kv card fade-in" v-if="h['口述']">
         <view class="k-head">
           <text class="k-orn">▍</text>
@@ -38,11 +42,12 @@
 
 <script>
 import { store, isFav, toggleFav, pushHistory , applyTheme } from '@/utils/store.js'
+import { loadData } from '@/utils/data.js'
 
 export default {
   onShow() { applyTheme() },
   data() {
-    return { favState: false }
+    return { favState: false, relatedFormulas: [] }
   },
   computed: {
     theme() { return store.theme },
@@ -69,10 +74,18 @@ export default {
     if (this.h) {
       uni.setNavigationBarTitle({ title: this.h.n , fail: () => {} })
       pushHistory({ f: 'bencao', i: this.h.id, t: this.h.n, c: 'herb' })
+      loadData('formulas').then(d => {
+        const name = this.h.n
+        this.relatedFormulas = (d.items || []).filter(f => String(f.composition || f.origin || '').includes(name)).slice(0, 8)
+      }).catch(() => {})
     }
   },
   methods: {
     goBack() { uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) }) },
+    openFormula(f) {
+      store.readerItem = { kind: 'formula', item: f }
+      uni.navigateTo({ url: '/pkgFormula/pages/detail' })
+    },
     doFav() {
       const added = toggleFav({ f: 'bencao', i: this.h.id, t: this.h.n, s: (this.h['主治'] || '').slice(0, 60), c: 'herb' })
       uni.showToast({ title: added ? '已收藏' : '已取消', icon: 'none' })
@@ -93,6 +106,9 @@ export default {
 .h-tag { font-size: 22rpx; border-radius: 10rpx; padding: 6rpx 18rpx; background: rgba(253,248,238,.2); color: #FDF8EE; border: 1rpx solid rgba(253,248,238,.5); }
 .h-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
 .body { margin-top: -26rpx; padding: 0 32rpx; }
+.related { padding: 24rpx 30rpx; margin-bottom: 22rpx; }
+.related-item { display: flex; justify-content: space-between; border-top: 1rpx dashed var(--line); padding: 14rpx 0; color: var(--brand); font-size: 23rpx; }
+.related-arrow { font-size: 28rpx; color: var(--ink2); }
 .kv { padding: 28rpx 30rpx; margin-bottom: 22rpx; }
 .k-head { display: flex; align-items: center; margin-bottom: 14rpx; }
 .k-orn { color: var(--brand); font-size: 26rpx; }
