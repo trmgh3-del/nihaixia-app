@@ -506,7 +506,8 @@ export default {
       const highRisk = this.redFlags.length > 0 || riskReasons.some(x => ['神志异常', '存在脱液或亡阳风险'].includes(x))
       const risk = { level: highRisk ? 'high' : riskReasons.length ? 'medium' : 'low', label: highRisk ? '高风险' : riskReasons.length ? '需复核' : '一般', reasons: riskReasons }
       const formulaSafety = filterFormulaSafety(formulas, p, this.basic, this.redFlags)
-      formulaSafety.warnings.forEach(w => patterns.unshift(w))
+      formulaSafety.warnings.forEach(w => { patterns.unshift(w); if (!risk.reasons.includes(w)) risk.reasons.push(w) })
+      if (formulaSafety.blocked.length && risk.level === 'low') { risk.level = 'medium'; risk.label = '需复核' }
       if (formulaSafety.blocked.length) patterns.unshift('方剂安全过滤：' + formulaSafety.blocked.map(x => x.name + '（' + x.reason + '）').join('；'))
 
       // 阴阳总判
