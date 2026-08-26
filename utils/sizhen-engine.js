@@ -52,9 +52,16 @@ export function evaluateKnowledge(pick, basic = {}) { return runRules(pick, basi
 export async function evaluateKnowledgeAsync(pick, basic = {}) {
   try {
     const compiled = await loadData('sizhen-rules')
-    return { ...runRules(pick, basic, compiled.rules || []), modelVersion: compiled.version || 'unknown' }
+    const result = runRules(pick, basic, compiled.rules || [])
+    const terms = values(pick).map(x => x.split('=').slice(1)[0]).filter(x => x.length > 1)
+    const knowledgeMatches = (compiled.knowledgeItems || []).map(item => {
+      const hay = item.title + ' ' + item.excerpt
+      const hits = terms.filter(t => hay.includes(t))
+      return { id: item.id, title: item.title, group: item.group, hits, score: hits.length }
+    }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 12)
+    return { ...result, knowledgeMatches, modelVersion: compiled.version || 'unknown' }
   } catch (e) {
-    return { ...runRules(pick, basic, RULES), modelVersion: 'fallback-local' }
+    return { ...runRules(pick, basic, RULES), knowledgeMatches: [], modelVersion: 'fallback-local' }
   }
 }
 

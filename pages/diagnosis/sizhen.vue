@@ -158,6 +158,7 @@
           <view class="rs-t">知识库依据</view>
           <view class="r-line source-link" v-for="s in result.sources" :key="s.id" @tap="openSource(s)">● {{ s.source }}：{{ s.title }} ›</view>
           <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }}）</view>
+          <view class="r-line">知识库匹配条目：{{ result.kbMatches }} 条（仅作为学习证据，不等同于诊断）</view>
         </view>
         <view class="r-sec" v-if="result.cases.length">
           <view class="rs-t">相似医案（仅供学习）</view>
@@ -292,7 +293,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, cases: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbCoverage: 0, kbMatches: 0, cases: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -542,6 +543,7 @@ export default {
         kbEvidence: kbEval.evidence,
         kbVersion: kbEval.modelVersion,
         kbCoverage: kbEval.coverage || 0,
+        kbMatches: (kbEval.knowledgeMatches || []).length,
         cases
       }
       this.clearDraft()
