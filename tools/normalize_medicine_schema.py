@@ -17,9 +17,20 @@ for f in fd.get('items', []):
     if not f.get('zhizhi'): f['zhizhi'] = f.get('clinical', '')
     if not f.get('composition'): f['composition'] = f.get('origin', '')
     if not f.get('contraindication') and '禁忌：' in str(f.get('note', '')): f['contraindication'] = str(f['note']).split('禁忌：', 1)[1]
+hp = ROOT / 'static/data/bencao.json'; hd = json.loads(hp.read_text(encoding='utf-8'))
+herb_names = sorted({str(h.get('n','')) for h in hd.get('herbs', []) if h.get('n')}, key=len, reverse=True)
+herb_aliases = {'芍药': '白芍', '生地': '干地黄', '熟地': '熟地黄', '附子': '生附子', '炙甘草': '甘草'}
+for f in fd.get('items', []):
+    if not f.get('components'):
+        text = str(f.get('origin','')) + ' ' + str(f.get('composition',''))
+        found = []
+        for name in herb_names:
+            if name in text and name not in found: found.append(name)
+        for alias, canonical in herb_aliases.items():
+            if alias in text and canonical not in found: found.append(canonical)
+        f['components'] = [{'name': n, 'dosage': ''} for n in found]
 fp.write_text(json.dumps(fd, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
-hp = ROOT / 'static/data/bencao.json'; hd = json.loads(hp.read_text(encoding='utf-8'))
 for h in hd.get('herbs', []):
     h.setdefault('canonicalName', h.get('n', ''))
     h.setdefault('processing', '')
