@@ -150,6 +150,7 @@ export default {
         uni.hideLoading()
         const it = (d.items || []).find(x => x.n === name)
         if (!it) { uni.showToast({ title: '未收录该方', icon: 'none' }); return }
+        store.readerReturn = { kind: 'md', item: this.item }
         store.readerItem = { kind: 'formula', item: it }
         uni.navigateTo({ url: '/pkgFormula/pages/detail' })
       } catch (e) { uni.hideLoading() }

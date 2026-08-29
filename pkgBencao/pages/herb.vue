@@ -87,7 +87,10 @@ export default {
     }
   },
   methods: {
-    goBack() { uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) }) },
+    goBack() {
+      if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+      uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) })
+    },
     openFormula(f) {
       store.readerItem = { kind: 'formula', item: f }
       uni.navigateTo({ url: '/pkgFormula/pages/detail' })

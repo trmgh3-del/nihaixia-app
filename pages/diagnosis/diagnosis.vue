@@ -268,7 +268,6 @@ export default {
   mounted() {
     this.init()
     this.ensureFang()
-    uni.$on('open-fang', this.onOpenFang)
     uni.$on('diag-focus', name => { this.jumpMeridian(name) })
     uni.$on('diag-group', gid => {
       this.tab = 'gongshi'
@@ -277,7 +276,6 @@ export default {
     })
   },
   beforeUnmount() {
-    uni.$off('open-fang', this.onOpenFang)
     uni.$off('diag-focus')
     uni.$off('diag-group')
   },
@@ -331,15 +329,6 @@ export default {
         const d = await loadData('formulas')
         setFangNames([...new Set((d.items || []).map(x => x.n))])
       } catch (e) { /* noop */ }
-    },
-    async onOpenFang(name) {
-      try {
-        const d = await loadData('formulas')
-        const it = (d.items || []).find(x => x.n === name || name.includes(x.n) || x.n.includes(name))
-        if (!it) { uni.showToast({ title: '未找到方剂详情', icon: 'none' }); return }
-        store.readerItem = { kind: 'formula', item: it }
-        uni.navigateTo({ url: '/pkgFormula/pages/detail' })
-      } catch (e) { uni.showToast({ title: '方剂库加载失败', icon: 'none' }) }
     },
     jumpMeridian(name) {
       this.tab = 'gongshi'
@@ -428,7 +417,8 @@ export default {
 <style scoped>
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
 .banner { position: relative; overflow: hidden; background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 40rpx 36rpx 44rpx; }
-.b-taiji { position: absolute; right: -30rpx; top: -30rpx; width: 220rpx; height: 220rpx; opacity: .16; transform: rotate(-18deg); }
+.b-taiji { position: absolute; right: -30rpx; top: -30rpx; width: 220rpx; height: 220rpx; opacity: .16; transform: rotate(-18deg); pointer-events: none; }
+.b-cb { z-index: 2; }
 .b-cb { position: static; display: flex; align-items: center; width: max-content; height: 48rpx; margin: 18rpx 0 0 auto; font-size: 20rpx; color: #FDF8EE; background: rgba(253,248,238,.16); border: 1rpx solid rgba(253,248,238,.4); border-radius: 26rpx; padding: 0 22rpx; }
 .b-title { font-size: 42rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
 .b-sub { font-size: 21rpx; color: rgba(253,248,238,.85); margin-top: 10rpx; }
