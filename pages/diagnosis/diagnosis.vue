@@ -327,7 +327,7 @@ export default {
     async ensureFang() {
       if (getFangNames().length) return
       try {
-        const d = await import('@/utils/data.js').then(m => m.loadData('formulas'))
+        const d = await loadData('formulas')
         setFangNames([...new Set((d.items || []).map(x => x.n))])
       } catch (e) { /* noop */ }
     },
