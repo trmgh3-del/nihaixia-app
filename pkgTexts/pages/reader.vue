@@ -56,7 +56,7 @@
 
 <script>
 import { store, isFav, toggleFav, pushHistory , applyTheme } from '@/utils/store.js'
-import { parseMd, setFangNames, getFangNames } from '@/utils/md.js'
+import { parseMd, setFangNames } from '@/utils/md.js'
 import { FILE_LABEL } from '@/utils/routes.js'
 
 export default {
@@ -135,7 +135,7 @@ export default {
   methods: {
     goBack() { uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) }) },
     async ensureFang() {
-      if (getFangNames().length) return true
+      // 每次进入阅读器都刷新一次词典，避免旧的 nx_fang_cache 遗漏新增方剂。
       try {
         const d = await loadData('formulas')
         const names = [...new Set((d.items || []).map(x => x.n))]
@@ -148,7 +148,8 @@ export default {
         uni.showLoading({ title: '打开方剂' })
         const d = await loadData('formulas')
         uni.hideLoading()
-        const it = (d.items || []).find(x => x.n === name)
+        const clean = String(name || '').replace(/[「」“”\s]/g, '')
+        const it = (d.items || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
         if (!it) { uni.showToast({ title: '未收录该方', icon: 'none' }); return }
         store.readerReturn = { kind: 'md', item: this.item }
         store.readerItem = { kind: 'formula', item: it }
