@@ -118,6 +118,7 @@ python3 tools/test_sizhen_rules.py                     # 规则结构+六经回�
 python3 tools/test_sizhen_architecture.py              # 检查页面是否仍有旧辨证逻辑
 node --experimental-default-type=module tools/test_sizhen_safety.mjs # 方剂安全过滤回归检查
 node --experimental-default-type=module tools/test_sizhen_runtime.mjs # 编译规则运行时回归检查
+node --experimental-default-type=module tools/test_formula_links.mjs # 医典方剂互链检查
 python3 tools/check_upstream_sync.py                   # 检查上游 main 是否有新提交
 python3 tools/report_sizhen_coverage.py                # 查看知识条目到规则的引用覆盖率
 python3 tools/report_rule_review.py                    # 输出规则专家审核队列

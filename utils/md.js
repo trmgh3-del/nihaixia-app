@@ -44,8 +44,9 @@ export function inlineSegs(s) {
 function linkify(segs, FANG_NAMES) {
   const out = []
   segs.forEach(seg => {
-    // 仅处理纯文本段，且需含方剂后缀字（汤/丸/散/丹/饮/膏）才尝试匹配
-    if (seg.t !== 'txt' || !/[汤丸散丹饮膏]/.test(seg.v)) { out.push(seg); return }
+    // 处理纯文本和加粗文本段；医典常用 **桂枝汤** 标注方剂，不能因加粗而失去互链。
+    if (!['txt', 'b'].includes(seg.t) || !/[汤丸散丹饮膏]/.test(seg.v)) { out.push(seg); return }
+    const sourceType = seg.t
     let rest = seg.v
     const buf = []
     let guard = 0
@@ -55,8 +56,8 @@ function linkify(segs, FANG_NAMES) {
         const at = rest.indexOf(n)
         if (at >= 0) { hit = { n, at }; break }
       }
-      if (!hit) { buf.push({ t: 'txt', v: rest }); break }
-      if (hit.at > 0) buf.push({ t: 'txt', v: rest.slice(0, hit.at) })
+      if (!hit) { buf.push({ t: sourceType, v: rest }); break }
+      if (hit.at > 0) buf.push({ t: sourceType, v: rest.slice(0, hit.at) })
       buf.push({ t: 'fang', v: hit.n })
       rest = rest.slice(hit.at + hit.n.length)
     }
