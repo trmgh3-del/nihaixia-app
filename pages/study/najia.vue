@@ -21,7 +21,7 @@
     <view class="time-settings card">
       <view class="calc-title serif">计算时间设置</view>
       <view class="setting-line"><text>日期</text><picker mode="date" :value="manualDate" start="1900-01-01" end="2100-12-31" @change="manualDate = $event.detail.value; tick()"><view class="setting-value">{{ manualDate || '选择日期' }} ›</view></picker></view>
-      <view class="setting-line"><text>时间</text><picker mode="time" :value="manualTime" @change="manualTime = $event.detail.value; tick()"><view class="setting-value">{{ manualTime || '选择时间' }} ›</view></picker></view
+      <view class="setting-line"><text>时间</text><picker mode="time" :value="manualTime" @change="manualTime = $event.detail.value; tick()"><view class="setting-value">{{ manualTime || '选择时间' }} ›</view></picker></view>
       <view class="setting-line"><text>时区</text><picker :range="timezoneOptions" @change="timezone = timezoneOptions[$event.detail.value]; tick()"><view class="setting-value">{{ timezone }} ›</view></picker></view>
       <view class="setting-line"><text>子初换日</text><switch :checked="ziChuChange" @change="ziChuChange = $event.detail.value; tick()" color="#9A2E1F" /></view>
       <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
