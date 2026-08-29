@@ -78,6 +78,7 @@
         <view class="tr th">
           <view class="td">时辰</view>
           <view class="td time">时间</view>
+          <view class="td">时干支</view>
           <view class="td">开穴</view>
           <view class="td">五输</view>
           <view class="td">状态</view>
@@ -85,6 +86,7 @@
         <view class="tr" v-for="r in najiaTable" :key="r.hour" :class="{ now: r.isNow }">
           <view class="td serif">{{ r.hour }}</view>
           <view class="td time">{{ r.time }}</view>
+          <view class="td serif">{{ r.ganzhi }}</view>
           <view class="td hl serif">{{ r.pt }}</view>
           <view class="td">{{ r.shu }}</view>
           <view class="td">
@@ -299,6 +301,7 @@ export default {
         rows.push({
           hour: h.h,
           time: `${a.padStart(2, '0')}:00~${b.padStart(2, '0')}:00`,
+          ganzhi: GAN[(this.dayGanIdx * 2 + i) % 10] + ZHI[i],
           pt: entry ? entry.p : '—',
           shu: entry ? entry.s : '—',
           open: !!entry,
