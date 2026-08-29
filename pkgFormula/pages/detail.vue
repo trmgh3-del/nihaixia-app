@@ -173,11 +173,12 @@ export default {
 .es-t { font-size: 25rpx; color: var(--ink2); margin-top: 30rpx; }
 .es-btn { margin-top: 40rpx; font-size: 24rpx; color: var(--brand); border: 2rpx solid var(--brand); border-radius: 40rpx; padding: 12rpx 60rpx; font-weight: 700; }
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
-.hero { background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 52rpx; display: flex; align-items: center; }
-.f-name { flex: 1; min-width: 0; font-size: 46rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 3rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.f-alias { margin-top: 8rpx; color: rgba(253,248,238,.78); font-size: 19rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.f-flags { flex-shrink: 0; max-width: 46%; }
-.f-flags { margin-left: auto; display: flex; align-items: center; }
+.hero { background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 52rpx; display: block; }
+.f-name { display: block; width: 100%; font-size: 46rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 3rpx; line-height: 1.35; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+.f-alias { margin-top: 10rpx; color: rgba(253,248,238,.78); font-size: 20rpx; line-height: 1.55; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+.f-flags { width: 100%; margin-top: 18rpx; display: flex; align-items: center; flex-wrap: wrap; gap: 10rpx; }
+.f-tag { margin: 0; }
+.f-fav { margin-left: auto; }
 .f-tag { font-size: 19rpx; color: #FDF8EE; background: rgba(253,248,238,.18); border: 1rpx solid rgba(253,248,238,.45); border-radius: 10rpx; padding: 6rpx 16rpx; }
 .f-tag.review { color: #F6E7C9; }
 .f-fav { margin-left: 20rpx; font-size: 44rpx; color: #F6E7C9; }
