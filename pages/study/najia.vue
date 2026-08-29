@@ -10,7 +10,7 @@
       <view class="on-main">
         <view class="on-left">
           <view class="on-label">{{ dayType }}日 · {{ dayMeridian }} · 纳甲法</view>
-          <view class="open-pt serif">{{ najiaPoint }}</view>
+          <view class="open-pt serif" @tap="goPoint(najiaPoint)">{{ najiaPoint }}</view>
           <view class="open-meta">{{ najiaMeta }}</view>
         </view>
         <view class="on-seal serif" v-if="najiaOpen">开</view>
@@ -87,7 +87,7 @@
           <view class="td serif">{{ r.hour }}</view>
           <view class="td time">{{ r.time }}</view>
           <view class="td serif">{{ r.ganzhi }}</view>
-          <view class="td hl serif">{{ r.pt }}</view>
+          <view class="td hl serif" @tap="goPoint(r.pt)">{{ r.pt }}</view>
           <view class="td">{{ r.shu }}</view>
           <view class="td">
             <text v-if="r.open" class="st-open">开</text>
@@ -224,6 +224,10 @@ export default {
     copyCalculation() {
       const text = `子午流注纳甲法\n日干支：${this.dayGz}\n时干支：${this.hourGz}\n日干：${this.dayGan}（${this.dayType}日）\n时辰：${this.hourName}时\n开穴：${this.najiaPoint || '当前闭穴'}\n依据：${this.najiaMeta || '纳支法原穴代用'}\n仅供学习参考。`
       uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '计算过程已复制', icon: 'none' }) })
+    },
+    goPoint(name) {
+      const point = String(name || '').split('/')[0]
+      if (point && point !== '—') uni.navigateTo({ url: '/pkgZhenjiu/pages/list?pt=' + encodeURIComponent(point) })
     },
     goLinggui() { uni.navigateTo({ url: '/pages/study/linggui' }) },
     getCalcDate() {

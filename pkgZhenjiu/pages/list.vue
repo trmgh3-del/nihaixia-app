@@ -84,7 +84,10 @@ export default {
       this.data = d
       if (this._pendingPt) {
         this.tab = 'points'
-        this.q = this._pendingPt
+        const needle = this._pendingPt
+        const point = (this.data.points || []).find(it => it.t === needle || it.t.startsWith(needle) || needle.includes(it.t))
+        if (point) { this.q = ''; this.$nextTick(() => this.open(point)) }
+        else this.q = needle
       }
     }).catch(() => {})
   },

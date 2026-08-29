@@ -238,7 +238,7 @@ export default {
       this.dayTable = rows
     },
     showDetail(b) {
-      uni.showToast({ title: `${b.pt}（${b.meridian}）通${b.confluence}·配${b.pair}`, icon: 'none', duration: 2500 })
+      uni.navigateTo({ url: '/pkgZhenjiu/pages/list?pt=' + encodeURIComponent(b.pt) })
     }
   }
 }
