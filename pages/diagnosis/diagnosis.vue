@@ -429,7 +429,7 @@ export default {
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
 .banner { position: relative; overflow: hidden; background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 40rpx 36rpx 44rpx; }
 .b-taiji { position: absolute; right: -30rpx; top: -30rpx; width: 220rpx; height: 220rpx; opacity: .16; transform: rotate(-18deg); }
-.b-cb { position: absolute; right: 32rpx; bottom: 20rpx; display: flex; align-items: center; height: 48rpx; font-size: 20rpx; color: #FDF8EE; background: rgba(253,248,238,.16); border: 1rpx solid rgba(253,248,238,.4); border-radius: 26rpx; padding: 0 22rpx; }
+.b-cb { position: static; display: flex; align-items: center; width: max-content; height: 48rpx; margin: 18rpx 0 0 auto; font-size: 20rpx; color: #FDF8EE; background: rgba(253,248,238,.16); border: 1rpx solid rgba(253,248,238,.4); border-radius: 26rpx; padding: 0 22rpx; }
 .b-title { font-size: 42rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
 .b-sub { font-size: 21rpx; color: rgba(253,248,238,.85); margin-top: 10rpx; }
 .tabs { display: flex; background: var(--card); border-radius: 0 0 28rpx 28rpx; margin: 0 0; padding: 0 20rpx; box-shadow: 0 6rpx 20rpx rgba(60,44,22,.05); }
