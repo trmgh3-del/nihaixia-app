@@ -277,6 +277,7 @@ export default {
     })
   },
   beforeUnmount() {
+    uni.$off('open-fang', this.onOpenFang)
     uni.$off('diag-focus')
     uni.$off('diag-group')
   },
