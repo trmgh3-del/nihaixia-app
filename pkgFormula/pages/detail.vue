@@ -174,8 +174,9 @@ export default {
 .es-btn { margin-top: 40rpx; font-size: 24rpx; color: var(--brand); border: 2rpx solid var(--brand); border-radius: 40rpx; padding: 12rpx 60rpx; font-weight: 700; }
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
 .hero { background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 52rpx; display: flex; align-items: center; }
-.f-name { font-size: 46rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 3rpx; }
-.f-alias { margin-top: 8rpx; color: rgba(253,248,238,.78); font-size: 19rpx; }
+.f-name { flex: 1; min-width: 0; font-size: 46rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 3rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.f-alias { margin-top: 8rpx; color: rgba(253,248,238,.78); font-size: 19rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.f-flags { flex-shrink: 0; max-width: 46%; }
 .f-flags { margin-left: auto; display: flex; align-items: center; }
 .f-tag { font-size: 19rpx; color: #FDF8EE; background: rgba(253,248,238,.18); border: 1rpx solid rgba(253,248,238,.45); border-radius: 10rpx; padding: 6rpx 16rpx; }
 .f-tag.review { color: #F6E7C9; }
