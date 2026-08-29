@@ -332,7 +332,15 @@ export default {
         setFangNames([...new Set((d.items || []).map(x => x.n))])
       } catch (e) { /* noop */ }
     },
-    onOpenFang() { uni.navigateTo({ url: '/pkgFormula/pages/list' }) },
+    async onOpenFang(name) {
+      try {
+        const d = await loadData('formulas')
+        const it = (d.items || []).find(x => x.n === name || name.includes(x.n) || x.n.includes(name))
+        if (!it) { uni.showToast({ title: '未找到方剂详情', icon: 'none' }); return }
+        store.readerItem = { kind: 'formula', item: it }
+        uni.navigateTo({ url: '/pkgFormula/pages/detail' })
+      } catch (e) { uni.showToast({ title: '方剂库加载失败', icon: 'none' }) }
+    },
     jumpMeridian(name) {
       this.tab = 'gongshi'
       const tryJump = () => {
