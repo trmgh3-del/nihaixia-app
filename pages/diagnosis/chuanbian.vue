@@ -2,7 +2,7 @@
   <view class="page" :class="theme === 'dark' ? 'tdark' : 'tlight'">
     <!-- 传变路径图 -->
     <view class="chain card">
-      <view class="c-title serif">⟡ 六经传变路径（由表入里）</view>
+      <view class="c-title serif">⟡ 六经传变路径（主线与阳明分支）</view>
       <view class="nodes">
         <view class="node-wrap" v-for="(n, i) in chain" :key="n.k">
           <view class="node" :style="{ background: n.bg, color: n.fg }">
@@ -58,8 +58,8 @@ import { parseMd } from '@/utils/md.js'
 
 const CHAIN = [
   { k: '太阳', s: '表 · 一关', bg: '#FBEAE3', fg: '#9A2E1F' },
-  { k: '阳明', s: '里热 · 无死证', bg: '#FCF3DC', fg: '#8A6414' },
-  { k: '少阳', s: '半表半里', bg: '#E8F0E4', fg: '#3F6B37' },
+  { k: '少阳', s: '枢 · 半表半里', bg: '#E8F0E4', fg: '#3F6B37' },
+  { k: '阳明', s: '阖 · 里热（病位可停）', bg: '#FCF3DC', fg: '#8A6414' }
   { k: '太阴', s: '脾虚寒湿', bg: '#E9F1F2', fg: '#2F5D62' },
   { k: '少阴', s: '心肾阳虚', bg: '#EDE9F4', fg: '#54427C' },
   { k: '厥阴', s: '寒热错杂', bg: '#F5E8E8', fg: '#833B3B' }
@@ -72,7 +72,7 @@ export default {
       items: [],
       opened: {},
       ways: [
-        { k: '循经传', p: '依次传递', color: '#9A2E1F', d: '按太阳→阳明→少阳→太阴→少阴→厥阴次序依次传递，病势渐进，正气渐衰。' },
+        { k: '循经传', p: '依次传递', color: '#9A2E1F', d: '常见主线为太阳→少阳→太阴→少阴→厥阴；太阳进入阳明后病位可停，具体仍须以四诊和条文证据判断，不是机械必经顺序。' },
         { k: '越经传', p: '隔经而传', color: '#8A6414', d: '不按次序，隔一经或隔二经而传（如太阳直入少阳、太阳越传太阴），多因误治伤正或邪气亢盛。' },
         { k: '表里传', p: '表里相注', color: '#2F5D62', d: '相表里的经直接互传，如太阳传入少阴（表寒直入里虚）——最凶险，医者当先察「有表证兼见里虚」者先温里。' },
         { k: '直中', p: '不经三阳', color: '#54427C', d: '体素虚弱或阳衰之人，邪气不经三阳径中三阴：一起病即见但欲寐、下利清谷、四肢厥逆，急温之（四逆辈）。' }
