@@ -59,7 +59,7 @@ import { parseMd } from '@/utils/md.js'
 const CHAIN = [
   { k: '太阳', s: '表 · 一关', bg: '#FBEAE3', fg: '#9A2E1F' },
   { k: '少阳', s: '枢 · 半表半里', bg: '#E8F0E4', fg: '#3F6B37' },
-  { k: '阳明', s: '阖 · 里热（病位可停）', bg: '#FCF3DC', fg: '#8A6414' }
+  { k: '阳明', s: '阖 · 里热（病位可停）', bg: '#FCF3DC', fg: '#8A6414' },
   { k: '太阴', s: '脾虚寒湿', bg: '#E9F1F2', fg: '#2F5D62' },
   { k: '少阴', s: '心肾阳虚', bg: '#EDE9F4', fg: '#54427C' },
   { k: '厥阴', s: '寒热错杂', bg: '#F5E8E8', fg: '#833B3B' }
