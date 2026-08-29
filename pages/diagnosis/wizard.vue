@@ -4,7 +4,7 @@
 
     <!-- 问诊进行中 -->
     <view class="ask card fade-in" v-if="!result">
-      <view class="a-step">问 {{ stepNo }} / {{ totalSteps }}</view>
+      <view class="a-step">第 {{ stepNo }} 问 · 本路径最多 {{ totalSteps }} 问</view>
       <view class="a-q serif">{{ node.q }}</view>
       <view class="a-sub" v-if="node.sub">{{ node.sub }}</view>
       <view class="a-opts">
@@ -18,7 +18,7 @@
       <view class="r-hero">
         <view class="r-mer serif">{{ result.mer }}病方向</view>
         <view class="r-name serif">{{ result.fang }}</view>
-        <view class="r-sub">根据你的回答推断的经方方向（仅供学习参考）</view>
+        <view class="r-sub">本路径已完成，共回答 {{ path.length + 1 }} 个问题；根据你的回答推断的经方方向（仅供学习参考）</view>
       </view>
       <view class="r-card card" v-if="result.detail">
         <view class="rc-row" v-if="result.detail.zhizhi"><text class="rc-k">主症</text><text class="rc-v">{{ result.detail.zhizhi }}</text></view>
