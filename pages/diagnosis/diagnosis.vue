@@ -138,9 +138,8 @@
 <script>
 import { store , applyTheme } from '@/utils/store.js'
 import { loadData } from '@/utils/data.js'
-import { parseMd } from '@/utils/md.js'
+import { parseMd, setFangNames, getFangNames } from '@/utils/md.js'
 import { openMd } from '@/utils/routes.js'
-import { setFangNames, getFangNames } from '@/utils/md.js'
 
 const SYMPTOMS = [
   { name: '寒热', opts: [
