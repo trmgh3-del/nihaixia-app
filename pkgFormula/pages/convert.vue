@@ -9,6 +9,7 @@
           <view class="c-unit">{{ unit }}<text class="c-caret">▾</text></view>
         </picker>
       </view>
+      <view class="quick-row"><text class="quick-label">常用：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
       <view class="c-out" v-if="result">
         <view class="o-line">
           <text class="o-k">汉制·考证</text>
@@ -18,9 +19,9 @@
           <text class="o-k">台湾钱制</text>
           <view class="o-v serif">{{ result.qian }} <text class="o-u">钱</text><text class="o-u2">（{{ result.qianG }} 克）</text></view>
         </view>
-        <view class="o-line" v-if="unit === '两'">
-          <text class="o-k">倪师习惯</text>
-          <view class="o-v serif hl">古方 {{ num }}两 → 临床 {{ num }}钱（{{ result.qianG }} 克）</view>
+        <view class="o-line" v-if="result.niQian !== null">
+          <text class="o-k">倪师换算</text>
+          <view class="o-v serif hl">{{ result.niLabel }} → 临床 {{ result.niQian }}钱（约 {{ result.niQianG }} 克）</view>
         </view>
         <view class="o-note" v-if="cur && cur.note">{{ cur.note }}</view>
       </view>
@@ -130,8 +131,10 @@ export default {
       const gR = Math.round(g * 100) / 100
       const qian = Math.round(g / 3.75 * 100) / 100
       const qianG = Math.round(qian * 3.75 * 100) / 100
-      this.result = { g: gR, qian, qianG }
+      const niQian = u.k === '两' ? n : u.k === '钱' ? n : null
+      this.result = { g: gR, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
+    setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 4; this.calc() },
     async openRef() {
       try {
         const d = await loadData('formulas')
@@ -155,6 +158,8 @@ export default {
 .c-picker { flex-shrink: 0; }
 .c-unit { background: var(--zebra-bg); border-radius: 16rpx; height: 88rpx; line-height: 88rpx; padding: 0 30rpx; font-size: 29rpx; color: var(--ink); display: flex; align-items: center; }
 .c-caret { margin-left: 12rpx; color: var(--ink2); }
+.quick-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10rpx; margin-top: 16rpx; }
+.quick-label { font-size: 21rpx; color: var(--ink2); }.quick-chip { font-size: 20rpx; color: var(--brand); border: 1rpx solid var(--line); background: var(--zebra-bg); border-radius: 22rpx; padding: 7rpx 16rpx; }
 .c-out { margin-top: 26rpx; background: var(--zebra-bg); border-radius: 18rpx; padding: 8rpx 26rpx; }
 .o-line { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx dashed var(--line); }
 .o-line:last-of-type { border-bottom: none; }
