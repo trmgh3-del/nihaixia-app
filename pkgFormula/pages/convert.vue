@@ -14,7 +14,7 @@
       <view class="quick-row"><text class="quick-label tang">唐制：</text><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 4)">1 斤</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 5)">1 两</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 6)">1 铢</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 7)">1 分</view></view>
       <view class="c-out" v-if="result">
         <view class="o-line">
-          <text class="o-k">公制折算</text>
+          <text class="o-k">{{ result.gLabel }}</text>
           <view class="o-v serif">{{ result.g }} <text class="o-u">{{ result.gUnit }}</text></view>
         </view>
         <view class="o-line" v-if="result.mass">
@@ -202,7 +202,15 @@ export default {
       const qian = u.mass ? Math.round(g / 3.75 * 100) / 100 : 0
       const qianG = u.mass ? Math.round(qian * 3.75 * 100) / 100 : 0
       const niQian = u.k === '两' ? n : u.k === '钱' ? n : null
-      this.result = { g: gR, gUnit: u.out || '克', mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
+      this.result = { g: gR, gUnit: u.out || '克', gLabel: this.metricLabel(u), mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
+    },
+    metricLabel(u) {
+      if (u.k === '钱') return '台制公制折算'
+      if (u.k.indexOf('唐制') === 0) return '唐制公制折算'
+      if (u.k === '升(液体)' || u.k === '合(液体)') return '古制容量折算'
+      if (u.k === '升(半夏)' || u.k === '合') return '药材专属折算'
+      if (u.k.indexOf('枚') === 0 || u.k.indexOf('个') === 0 || u.k === '方寸匕' || u.k === '钱匕') return '实物参考折算'
+      return '汉制公制折算'
     },
     setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 8; this.calc() },
     setUnitQuick(n, idx) { this.num = String(n); this.unitIdx = idx; this.unit = UNITS[idx].k; this.calc() },
