@@ -5,14 +5,23 @@
 </template>
 
 <script>
+import { store } from '@/utils/store.js'
+import { loadData } from '@/utils/data.js'
+
 export default {
   name: 'seg',
-  props: {
-    segs: { type: Array, default: () => [{ t: 'txt', v: '' }] }
-  },
+  props: { segs: { type: Array, default: () => [{ t: 'txt', v: '' }] } },
   methods: {
-    tapFang(name) {
-      uni.$emit('open-fang', name)
+    async tapFang(name) {
+      try {
+        const d = await loadData('formulas')
+        const clean = String(name || '').replace(/[「」“”\s]/g, '')
+        const item = (d.items || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
+        if (!item) { uni.showToast({ title: '未找到方剂详情', icon: 'none' }); return }
+        if (store.readerItem && store.readerItem.kind === 'md') store.readerReturn = store.readerItem
+        store.readerItem = { kind: 'formula', item }
+        uni.navigateTo({ url: '/pkgFormula/pages/detail' })
+      } catch (e) { uni.showToast({ title: '方剂库加载失败', icon: 'none' }) }
     }
   }
 }
