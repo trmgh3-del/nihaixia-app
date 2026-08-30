@@ -90,9 +90,9 @@ const UNITS = [
 export default {
   data() {
     return {
-      num: '3',
-      unit: '两',
-      unitIdx: 0,
+      num: '1',
+      unit: '钱',
+      unitIdx: 4,
       result: null,
       table: [
         ['附子大者1枚', '20-30克（中者15克；倪师口述一枚≈3-4钱）'],
