@@ -100,7 +100,7 @@ export default {
       const stack = store.readerStack || []
       for (let i = stack.length - 1; i >= 0; i--) if (stack[i] && stack[i].kind === 'md') return stack[i].item
       return null
-    }
+    },
     pathLabel() {
       const it = this.item
       if (!it) return ''
