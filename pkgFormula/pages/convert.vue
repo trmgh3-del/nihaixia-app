@@ -51,6 +51,24 @@
       </view>
     </view>
 
+    <!-- 药物特殊换算：枚数→重量 -->
+    <view class="sec">
+      <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">药物特殊换算（枚数→重量）</text></view>
+      <view class="tblwrap card"><view class="tbl-caption">以枚/个计的药物重量参考</view><view class="tr th"><view class="td">药物</view><view class="td">数量</view><view class="td">重量</view></view><view class="tr" v-for="(r, i) in countTable" :key="r[0]" :class="{ zebra: i % 2 === 1 }"><view class="td">{{ r[0] }}</view><view class="td">{{ r[1] }}</view><view class="td">{{ r[2] }}</view></view></view>
+    </view>
+
+    <!-- 容积换算 -->
+    <view class="sec">
+      <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">药物特殊换算（容积→重量）</text></view>
+      <view class="tblwrap card"><view class="tbl-caption">同一升的重量因药物密度不同而不同</view><view class="tr th"><view class="td">药物</view><view class="td">容积</view><view class="td">重量</view></view><view class="tr" v-for="(r, i) in volumeTable" :key="r[0]" :class="{ zebra: i % 2 === 1 }"><view class="td">{{ r[0] }}</view><view class="td">{{ r[1] }}</view><view class="td">{{ r[2] }}</view></view></view>
+    </view>
+
+    <!-- 倪师临床剂量参考 -->
+    <view class="sec">
+      <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">剂量参考（倪海厦）</text></view>
+      <view class="dose-ref card"><view v-for="r in doseReference" :key="r[0]" class="dose-line"><text class="dose-k">{{ r[0] }}</text><text>{{ r[1] }}</text></view></view>
+    </view>
+
     <!-- 实物单位表 -->
     <view class="sec">
       <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">实物单位速查</text></view>
@@ -111,6 +129,20 @@ export default {
         ['1钱匕', '≈1.5-1.8克'],
         ['1分', '≈3.9-4.2克'],
         ['1寸', '2.31厘米（长度）']
+      ],
+      countTable: [
+        ['附子（大者）', '1枚', '20～30g'], ['附子（中者）', '1枚', '约15g'],
+        ['强乌头（小者）', '1枚', '约3g'], ['强乌头（大者）', '1枚', '约5～6g'],
+        ['杏仁（大者）', '10枚', '约4g'], ['枳实', '1枚', '约14.4g'],
+        ['瓜蒌', '1枚', '约46g'], ['栀子', '10枚', '约15g'],
+        ['石膏（鸡蛋大）', '1枚', '约40g'], ['厚朴', '1斤', '约30g'], ['竹叶', '一握', '约12g']
+      ],
+      volumeTable: [
+        ['半夏', '1升', '约130g'], ['蜀椒', '1升', '约50g'], ['吴茱萸', '1升', '约50g'],
+        ['五味子', '1升', '约50g'], ['蛴螬/虫类', '1升', '约16g'], ['葶苈子', '1升', '约60g']
+      ],
+      doseReference: [
+        ['胖子', '五钱起'], ['普通人', '三钱'], ['小孩', '半钱～一钱'], ['甘草·病人', '五钱'], ['甘草·刚得病', '二钱']
       ]
     }
   },
@@ -185,8 +217,10 @@ export default {
 .s-t { font-size: 24rpx; font-weight: 800; color: var(--brand); margin-bottom: 12rpx; }
 .s-d { font-size: 22rpx; color: var(--ink); line-height: 1.9; }
 .s-u { font-size: 18rpx; color: var(--ink2); margin-top: 12rpx; }
-.tblwrap { padding: 10rpx 0; }
+.tblwrap { padding: 10rpx 0; overflow: hidden; }
+.tbl-caption { padding: 16rpx 22rpx 8rpx; color: var(--ink2); font-size: 20rpx; }
 .tr { display: flex; }
+.dose-ref { padding: 12rpx 26rpx; }.dose-line { display: flex; padding: 14rpx 0; border-bottom: 1rpx solid var(--line); color: var(--ink); font-size: 23rpx; }.dose-line:last-child { border-bottom: none; }.dose-k { width: 180rpx; color: var(--brand); font-weight: 700; }
 .th { background: linear-gradient(135deg, rgba(154,46,31,.92), rgba(124,58,33,.92)); border-radius: 12rpx 12rpx 0 0; }
 .th .td { color: #FDF8EE; font-weight: 700; border-top: none; }
 .td { flex: 1; padding: 14rpx 22rpx; font-size: 22rpx; color: var(--ink); border-top: 1rpx solid var(--line); line-height: 1.7; }
