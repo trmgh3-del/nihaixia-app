@@ -13,9 +13,9 @@
       <view class="c-out" v-if="result">
         <view class="o-line">
           <text class="o-k">公制折算</text>
-          <view class="o-v serif">{{ result.g }} <text class="o-u">克</text></view>
+          <view class="o-v serif">{{ result.g }} <text class="o-u">{{ result.gUnit }}</text></view>
         </view>
-        <view class="o-line">
+        <view class="o-line" v-if="result.mass">
           <text class="o-k">台湾钱制</text>
           <view class="o-v serif">{{ result.qian }} <text class="o-u">钱</text><text class="o-u2">（{{ result.qianG }} 克）</text></view>
         </view>
@@ -71,22 +71,23 @@ import { openMd } from '@/utils/routes.js'
 import { loadData } from '@/utils/data.js'
 
 const UNITS = [
-  { k: '两', g: 15.625, note: '汉朝度量衡：1两=24铢≈15.625克（1斤=16两≈248克）' },
-  { k: '斤', g: 248, note: '汉制约248克（16两）' },
-  { k: '铢', g: 0.651, note: '24铢=1两' },
-  { k: '分', g: 4.05, note: '约3.9-4.2克' },
-  { k: '钱', g: 3.75, note: '台湾度量衡：1钱=10分≈3.75克（1两=10钱）' },
-  { k: '升(液体)', g: 200, note: '1升=200毫升（液体计）' },
-  { k: '升(半夏)', g: 130, note: '半夏一升≈130克；五味子/吴茱萸/蜀椒一升≈50克；葶苈子一升≈60克' },
-  { k: '合', g: 20, note: '10合=1升，约20毫升' },
-  { k: '枚(附子大)', g: 25, note: '附子大者1枚20-30克（中者15克）；倪师口述一枚≈3-4钱' },
-  { k: '枚(杏仁)', g: 0.4, note: '杏仁10枚≈4克；桃仁比例相近' },
-  { k: '枚(枳实)', g: 14.4, note: '枳实1枚≈14.4克；瓜蒌1枚≈46克' },
-  { k: '枚(乌头)', g: 4, note: '乌头小者≈3克、大者≈5-6克' },
-  { k: '个(石膏鸡子大)', g: 40, note: '石膏鸡子大1枚≈40克' },
-  { k: '方寸匕', g: 2, note: '约2克（金石类约2.74克）' },
-  { k: '钱匕', g: 1.65, note: '约1.5-1.8克' },
-  { k: '克', g: 1, note: '' }
+  { k: '两', g: 15.625, out: '克', mass: true, note: '汉朝度量衡：1两=24铢≈15.625克（1斤=16两≈248克）' },
+  { k: '斤', g: 248, out: '克', mass: true, note: '汉制约248克（16两）' },
+  { k: '铢', g: 0.651, out: '克', mass: true, note: '汉制约0.65克；24铢=1两' },
+  { k: '分（汉制）', g: 4.05, out: '克', mass: true, note: '汉制约3.9-4.2克；不要与近现代1钱=10分混用' },
+  { k: '钱', g: 3.75, out: '克', mass: true, note: '近现代/台湾钱制：1钱=10分≈3.75克（1两=10钱）' },
+  { k: '升(液体)', g: 200, out: '毫升', mass: false, note: '容量单位：1升≈200毫升，不应标为克' },
+  { k: '升(半夏)', g: 130, out: '克', mass: true, note: '半夏一升≈130克；五味子/吴茱萸/蜀椒一升≈50克；葶苈子一升≈60克' },
+  { k: '合(液体)', g: 20, out: '毫升', mass: false, note: '容量单位：10合=1升，约20毫升' },
+  { k: '合', g: 20, out: '克', mass: true, note: '固体容量/重量需按具体药材和原文核对' },
+  { k: '枚(附子大)', g: 25, out: '克', mass: true, range: '20-30', note: '附子大者1枚20-30克（中者约15克；倪师口述约3-4钱）' },
+  { k: '枚(杏仁)', g: 0.4, out: '克', mass: true, note: '杏仁10枚≈4克；桃仁比例相近' },
+  { k: '枚(枳实)', g: 14.4, out: '克', mass: true, note: '枳实1枚≈14.4克；瓜蒌1枚≈46克' },
+  { k: '枚(乌头)', g: 4, out: '克', mass: true, range: '3-6', note: '乌头小者约3克、大者约5-6克，必须严格炮制并遵医嘱' },
+  { k: '个(石膏鸡子大)', g: 40, out: '克', mass: true, note: '石膏鸡子大约40克，具体按原文核对' },
+  { k: '方寸匕', g: 2, out: '克', mass: true, note: '药末约1-2克，金石类约2.74克，不能一概而论' },
+  { k: '钱匕', g: 1.65, out: '克', mass: true, range: '1.5-1.8', note: '约1.5-1.8克' },
+  { k: '克', g: 1, out: '克', mass: true, note: '' }
 ]
 
 export default {
@@ -130,10 +131,10 @@ export default {
       const u = UNITS[this.unitIdx]
       const g = n * u.g
       const gR = Math.round(g * 100) / 100
-      const qian = Math.round(g / 3.75 * 100) / 100
-      const qianG = Math.round(qian * 3.75 * 100) / 100
+      const qian = u.mass ? Math.round(g / 3.75 * 100) / 100 : 0
+      const qianG = u.mass ? Math.round(qian * 3.75 * 100) / 100 : 0
       const niQian = u.k === '两' ? n : u.k === '钱' ? n : null
-      this.result = { g: gR, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
+      this.result = { g: gR, gUnit: u.out || '克', mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
     setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 4; this.calc() },
     async openRef() {
