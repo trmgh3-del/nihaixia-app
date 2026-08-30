@@ -150,7 +150,8 @@ export default {
         const d = await loadData('formulas')
         uni.hideLoading()
         const clean = String(name || '').replace(/[「」“”\s]/g, '')
-        const it = (d.items || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
+        const all = d.items || []
+        const it = all.find(x => x.n === name || x.n === clean) || all.filter(x => clean.includes(x.n) || x.n.includes(clean)).sort((a, b) => b.n.length - a.n.length)[0]
         if (!it) { uni.showToast({ title: '未收录该方', icon: 'none' }); return }
         store.readerReturn = { kind: 'md', item: this.item }
         store.readerItem = { kind: 'formula', item: it }

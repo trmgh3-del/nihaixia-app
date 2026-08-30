@@ -14,7 +14,7 @@ export default {
   methods: {
     async tapFang(name) {
       const clean = String(name || '').replace(/[「」“”\s]/g, '')
-      const find = list => (list || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
+      const find = list => { const all = list || []; const exact = all.find(x => x.n === name || x.n === clean); if (exact) return exact; return all.filter(x => clean.includes(x.n) || x.n.includes(clean)).sort((a, b) => b.n.length - a.n.length)[0] }
       // 阅读器进入时已预加载方剂索引，命中时同步跳转，避免点击后出现等待页。
       let item = find(globalThis.__NX_FORMULA_ITEMS__)
       try {
