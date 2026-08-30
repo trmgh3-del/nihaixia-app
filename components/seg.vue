@@ -13,10 +13,12 @@ export default {
   props: { segs: { type: Array, default: () => [{ t: 'txt', v: '' }] } },
   methods: {
     async tapFang(name) {
+      const clean = String(name || '').replace(/[「」“”\s]/g, '')
+      const find = list => (list || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
+      // 阅读器进入时已预加载方剂索引，命中时同步跳转，避免点击后出现等待页。
+      let item = find(globalThis.__NX_FORMULA_ITEMS__)
       try {
-        const d = await loadData('formulas')
-        const clean = String(name || '').replace(/[「」“”\s]/g, '')
-        const item = (d.items || []).find(x => x.n === name || x.n === clean || clean.includes(x.n) || x.n.includes(clean))
+        if (!item) { const d = await loadData('formulas'); item = find(d.items) }
         if (!item) { uni.showToast({ title: '未找到方剂详情', icon: 'none' }); return }
         if (store.readerItem && store.readerItem.kind === 'md') store.readerReturn = store.readerItem
         store.readerItem = { kind: 'formula', item }

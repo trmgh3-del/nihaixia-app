@@ -327,6 +327,7 @@ export default {
       if (getFangNames().length) return
       try {
         const d = await loadData('formulas')
+        globalThis.__NX_FORMULA_ITEMS__ = d.items || []
         setFangNames([...new Set((d.items || []).map(x => x.n))])
       } catch (e) { /* noop */ }
     },

@@ -93,7 +93,7 @@ export default {
         { img: '/static/icons/sound-brand.png', fn: () => { if (self.speaking) self.fabOpen = false; self.toggleSpeak() } }
       ]
     },
-    item() { const r = store.readerItem; return r && r.kind === 'md' ? r.item : null },
+    item() { const r = store.readerItem; return r && r.kind === 'md' ? r.item : (store.readerReturn && store.readerReturn.kind === 'md' ? store.readerReturn.item : null) },
     pathLabel() {
       const it = this.item
       if (!it) return ''
@@ -139,6 +139,7 @@ export default {
       try {
         const d = await loadData('formulas')
         const names = [...new Set((d.items || []).map(x => x.n))]
+        globalThis.__NX_FORMULA_ITEMS__ = d.items || []
         setFangNames(names)
         return true
       } catch (e) { return false }
