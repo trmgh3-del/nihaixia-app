@@ -11,6 +11,7 @@
       </view>
       <view class="quick-row"><text class="quick-label">台湾/临床：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
       <view class="quick-row"><text class="quick-label han">汉制：</text><view class="quick-chip han-chip" @tap="setUnitQuick(1, 0)">1 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(3, 0)">3 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 2)">1 铢</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 3)">1 分</view></view>
+      <view class="quick-row"><text class="quick-label tang">唐制：</text><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 4)">1 斤</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 5)">1 两</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 6)">1 铢</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 7)">1 分</view></view>
       <view class="c-out" v-if="result">
         <view class="o-line">
           <text class="o-k">公制折算</text>
@@ -69,6 +70,18 @@
       <view class="dose-ref card"><view v-for="r in doseReference" :key="r[0]" class="dose-line"><text class="dose-k">{{ r[0] }}</text><text>{{ r[1] }}</text></view></view>
     </view>
 
+    <!-- 换算常数参考：完整收录截图中的重量、容量、长度单位 -->
+    <view class="sec">
+      <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">换算常数参考</text></view>
+      <view class="tblwrap card">
+        <view class="tbl-caption">三套度量衡与容量、长度参考；不同体系不可直接混用</view>
+        <view class="tr th"><view class="td">类别</view><view class="td">原单位</view><view class="td">参考换算</view></view>
+        <view class="tr" v-for="(r, i) in referenceTable" :key="r[0] + r[1]" :class="{ zebra: i % 2 === 1 }">
+          <view class="td">{{ r[0] }}</view><view class="td">{{ r[1] }}</view><view class="td">{{ r[2] }}</view>
+        </view>
+      </view>
+    </view>
+
     <!-- 实物单位表 -->
     <view class="sec">
       <view class="sec-head"><text class="sec-orn">❖</text><text class="sec-title serif">实物单位速查</text></view>
@@ -94,6 +107,10 @@ const UNITS = [
   { k: '斤', g: 248, out: '克', mass: true, note: '汉制约248克（16两）' },
   { k: '铢', g: 0.651, out: '克', mass: true, note: '汉制约0.65克；24铢=1两' },
   { k: '分（汉制）', g: 4.05, out: '克', mass: true, note: '汉制约3.9-4.2克；不要与近现代1钱=10分混用' },
+  { k: '唐制斤', g: 220, out: '克', mass: true, note: '唐制参考：1斤约220克；不同考证值可能有差异' },
+  { k: '唐制两', g: 13.75, out: '克', mass: true, note: '唐制参考：1两约13.75克' },
+  { k: '唐制铢', g: 0.573, out: '克', mass: true, note: '按唐制1两约13.75克、24铢折算，约0.57克' },
+  { k: '唐制分', g: 1.375, out: '克', mass: true, note: '按唐制1两约13.75克、10分折算，约1.375克；考证值有差异' },
   { k: '钱', g: 3.75, out: '克', mass: true, note: '近现代/台湾钱制：1钱=10分≈3.75克（1两=10钱）' },
   { k: '升(液体)', g: 200, out: '毫升', mass: false, note: '容量单位：1升≈200毫升，不应标为克' },
   { k: '升(半夏)', g: 130, out: '克', mass: true, note: '半夏一升≈130克；五味子/吴茱萸/蜀椒一升≈50克；葶苈子一升≈60克' },
@@ -114,7 +131,7 @@ export default {
     return {
       num: '1',
       unit: '钱',
-      unitIdx: 4,
+      unitIdx: 8,
       result: null,
       table: [
         ['附子大者1枚', '20-30克（中者15克；倪师口述一枚≈3-4钱）'],
@@ -128,7 +145,25 @@ export default {
         ['1方寸匕', '≈2克（金石类2.74克）'],
         ['1钱匕', '≈1.5-1.8克'],
         ['1分', '≈3.9-4.2克'],
+        ['1尺', '23.1厘米（长度）'],
         ['1寸', '2.31厘米（长度）']
+      ],
+      referenceTable: [
+        ['汉制重量', '1石', '1石=120斤=29760克'],
+        ['汉制重量', '1斤', '1斤=16两=248克'],
+        ['汉制重量', '1两', '1两=24铢≈15.625克'],
+        ['汉制重量', '1铢', '1铢≈0.65克'],
+        ['台制重量', '1斤', '1斤=600克'],
+        ['台制重量', '1两', '1两=10钱=37.5克'],
+        ['台制重量', '1钱', '1钱=10分=3.75克'],
+        ['唐制重量', '1斤', '唐制参考约220克（不同考证值可能有差异）'],
+        ['唐制重量', '1两', '唐制参考约13.75克'],
+        ['容量', '1升', '约200毫升'],
+        ['容量', '1合', '约20毫升'],
+        ['容量', '1撮', '约2毫升'],
+        ['容量', '1圭', '约0.5毫升'],
+        ['长度', '1尺', '23.1厘米'],
+        ['长度', '1寸', '2.31厘米']
       ],
       countTable: [
         ['附子（大者）', '1枚', '20～30g'], ['附子（中者）', '1枚', '约15g'],
@@ -169,7 +204,7 @@ export default {
       const niQian = u.k === '两' ? n : u.k === '钱' ? n : null
       this.result = { g: gR, gUnit: u.out || '克', mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
-    setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 4; this.calc() },
+    setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 8; this.calc() },
     setUnitQuick(n, idx) { this.num = String(n); this.unitIdx = idx; this.unit = UNITS[idx].k; this.calc() },
     async openRef() {
       try {
