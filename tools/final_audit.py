@@ -1,5 +1,5 @@
 import json, os, re
-SRC='/tmp/repo'
+SRC=os.environ.get('NIHAIXIA_SRC', '/tmp/repo')
 OUT=os.path.join(os.path.dirname(__file__), '..', 'static', 'data')
 rd=lambda p: open(os.path.join(SRC,p),encoding='utf-8').read().replace('\r\n','\n')
 app=[]

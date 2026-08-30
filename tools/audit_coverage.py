@@ -3,7 +3,7 @@
 """完整度审计：源仓库每个文件 vs App 数据收录率"""
 import json, os, re, sys
 
-SRC = '/tmp/repo'
+SRC = os.environ.get('NIHAIXIA_SRC', '/tmp/repo')
 OUT = os.path.join(os.path.dirname(__file__), '..', 'static', 'data')
 
 def rd(p):

@@ -133,7 +133,7 @@ python3 tools/test_medicine_dataset.py                 # 验证 351 首方剂和
 python3 tools/report_medicine_quality.py                # 输出方剂/本草详情字段完整率
 python3 tools/validate_expert_blind.py tools/expert_blind_cases.schema.json # 验证专家盲测数据格式
 python3 tools/score_expert_blind.py tools/expert_blind_cases.schema.json # 有真实结果后统计一致率
-python3 tools/final_audit.py
+NIHAIXIA_SRC=/tmp/repo python3 tools/final_audit.py
 # HBuilderX 真机验收请按 tools/HBUILDERX_TEST_CHECKLIST.md 执行                           # 逐行审计（应为 0 缺失）
 ```
 

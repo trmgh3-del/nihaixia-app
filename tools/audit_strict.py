@@ -3,7 +3,7 @@
 """加强版完整性审计 v2：阈值降到2字（覆盖药名/短词），规范化标题编号，全行覆盖"""
 import json, os, re
 
-SRC = '/tmp/repo'
+SRC = os.environ.get('NIHAIXIA_SRC', '/tmp/repo')
 OUT = os.path.join(os.path.dirname(__file__), '..', 'static', 'data')
 
 def rd(p):
