@@ -9,7 +9,8 @@
           <view class="c-unit">{{ unit }}<text class="c-caret">▾</text></view>
         </picker>
       </view>
-      <view class="quick-row"><text class="quick-label">常用：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
+      <view class="quick-row"><text class="quick-label">台湾/临床：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
+      <view class="quick-row"><text class="quick-label han">汉制：</text><view class="quick-chip han-chip" @tap="setUnitQuick(1, 0)">1 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(3, 0)">3 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 2)">1 铢</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 3)">1 分</view></view>
       <view class="c-out" v-if="result">
         <view class="o-line">
           <text class="o-k">公制折算</text>
@@ -137,6 +138,7 @@ export default {
       this.result = { g: gR, gUnit: u.out || '克', mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
     setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 4; this.calc() },
+    setUnitQuick(n, idx) { this.num = String(n); this.unitIdx = idx; this.unit = UNITS[idx].k; this.calc() },
     async openRef() {
       try {
         const d = await loadData('formulas')
@@ -161,7 +163,7 @@ export default {
 .c-unit { background: var(--zebra-bg); border-radius: 16rpx; height: 88rpx; line-height: 88rpx; padding: 0 30rpx; font-size: 29rpx; color: var(--ink); display: flex; align-items: center; }
 .c-caret { margin-left: 12rpx; color: var(--ink2); }
 .quick-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10rpx; margin-top: 16rpx; }
-.quick-label { font-size: 21rpx; color: var(--ink2); }.quick-chip { font-size: 20rpx; color: var(--brand); border: 1rpx solid var(--line); background: var(--zebra-bg); border-radius: 22rpx; padding: 7rpx 16rpx; }
+.quick-label { font-size: 21rpx; color: var(--ink2); }.quick-label.han { color: #8A6414; }.quick-chip { font-size: 20rpx; color: var(--brand); border: 1rpx solid var(--line); background: var(--zebra-bg); border-radius: 22rpx; padding: 7rpx 16rpx; }.han-chip { color: #8A6414; border-color: #D8BD7A; }
 .c-out { margin-top: 26rpx; background: var(--zebra-bg); border-radius: 18rpx; padding: 8rpx 26rpx; }
 .o-line { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx dashed var(--line); }
 .o-line:last-of-type { border-bottom: none; }
