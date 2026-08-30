@@ -13,7 +13,7 @@
         <view class="g-s">{{ snippet(it) }}</view>
       </view>
     </view>
-    <view v-if="!shown.length" class="none">无匹配篇目</view>
+    <view v-if="loaded && !shown.length" class="none">无匹配篇目</view>
   </view>
 </template>
 
@@ -25,7 +25,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', chapters: [] }
+    return { loaded: false, q: '', chapters: [] }
   },
   computed: {
     theme() { return store.theme },
@@ -36,7 +36,7 @@ export default {
     }
   },
   mounted() {
-    loadData('neijing').then(d => { this.chapters = d.chapters || [] }).catch(() => {})
+    loadData('neijing').then(d => { this.chapters = d.chapters || []; this.loaded = true }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     snippet(it) { return (it.b || '').replace(/[#>*`|]/g, '').replace(/\s+/g, ' ').slice(0, 64) },

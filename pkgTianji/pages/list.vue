@@ -13,7 +13,7 @@
         <view class="t-t serif">{{ it.t }}</view>
         <view class="t-s">{{ snippet(it) }}</view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配内容</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配内容</view>
     </view>
   </view>
 </template>
@@ -26,7 +26,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { g: '', sections: [] }
+    return { loaded: false, g: '', sections: [] }
   },
   computed: {
     theme() { return store.theme },
@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted() {
-    loadData('tianji').then(d => { this.sections = d.sections || [] }).catch(() => {})
+    loadData('tianji').then(d => { this.sections = d.sections || []; this.loaded = true }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     snippet(it) { return (it.b || '').replace(/[#>*`|]/g, '').replace(/\s+/g, ' ').slice(0, 80) },

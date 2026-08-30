@@ -34,7 +34,7 @@
         </view>
         <view class="l-s">{{ snippet(it) }}</view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配内容</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配内容</view>
     </view>
   </view>
 </template>
@@ -52,7 +52,7 @@ export default {
     }
   },
   data() {
-    return {
+    return { loaded: false,
       q: '', tab: 'tutorial', jing: '',
       tabs: [
         { k: 'tutorial', label: '教程' }, { k: 'quickref', label: '速查' },
@@ -81,7 +81,7 @@ export default {
   },
   mounted() {
     loadData('zhenjiu').then(d => {
-      this.data = d
+      this.data = d; this.loaded = true
       if (this._pendingPt) {
         this.tab = 'points'
         const needle = this._pendingPt
@@ -89,7 +89,7 @@ export default {
         if (point) { this.q = ''; this.$nextTick(() => this.open(point)) }
         else this.q = needle
       }
-    }).catch(() => {})
+    }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     numOf(k) { return (this.data[k] || []).length },

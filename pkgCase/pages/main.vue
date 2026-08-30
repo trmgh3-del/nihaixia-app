@@ -36,7 +36,7 @@
           <view class="c-row" v-if="r.fangji"><text class="c-k">方剂</text><text class="c-v hl">{{ r.fangji }}</text></view>
           <view class="c-mark" v-if="r.result">{{ mark(r.result) }}</view>
         </view>
-        <view v-if="!shownRows.length" class="none">无匹配医案</view>
+        <view v-if="loaded && !shownRows.length" class="none">无匹配医案</view>
       </view>
     </scroll-view>
 
@@ -59,7 +59,7 @@
           </view>
           <view class="c-s">{{ (it.b || '').replace(/[#>*`|-]/g, '').replace(/\s+/g, ' ').slice(0, 90) }}</view>
         </view>
-        <view v-if="!shownNarr.length" class="none">无匹配医案</view>
+        <view v-if="loaded && !shownNarr.length" class="none">无匹配医案</view>
       </view>
     </scroll-view>
 
@@ -77,7 +77,7 @@
           </view>
           <view class="c-s">{{ (it.b || '').replace(/[#>*`|-]/g, '').replace(/\s+/g, ' ').slice(0, 90) }}</view>
         </view>
-        <view v-if="!shownYian.length" class="none">无匹配医案</view>
+        <view v-if="loaded && !shownYian.length" class="none">无匹配医案</view>
       </view>
     </scroll-view>
 
@@ -130,7 +130,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return {
+    return { loaded: false,
       q: '', tab: 'tbl', yearF: '', grpF: '', resF: '',
       rows: [], groups: [], yian: []
     }
@@ -202,9 +202,11 @@ export default {
     }
   },
   mounted() {
-    loadData('cases_table').then(d => { this.rows = d.rows || [] }).catch(() => {})
-    loadData('cases_narr').then(d => { this.groups = d.groups || [] }).catch(() => {})
-    loadData('yian').then(d => { this.yian = d.items || [] }).catch(() => {})
+    Promise.all([
+      loadData('cases_table').then(d => { this.rows = d.rows || [] }),
+      loadData('cases_narr').then(d => { this.groups = d.groups || [] }),
+      loadData('yian').then(d => { this.yian = d.items || [] })
+    ]).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     yearCount(y) { return this.rows.filter(r => String(r.date || '').includes(y)).length },

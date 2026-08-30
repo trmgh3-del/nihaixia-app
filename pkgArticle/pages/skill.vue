@@ -15,7 +15,7 @@
         <view class="s-t">{{ it.t }}</view>
         <view class="s-h2">{{ it.h2 }}</view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配内容</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配内容</view>
     </view>
   </view>
 </template>
@@ -28,7 +28,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', h2: '', units: [] }
+    return { loaded: false, q: '', h2: '', units: [] }
   },
   computed: {
     theme() { return store.theme },
@@ -46,7 +46,7 @@ export default {
     }
   },
   mounted() {
-    loadData('skill_units').then(d => { this.units = d.units || [] }).catch(() => {})
+    loadData('skill_units').then(d => { this.units = d.units || []; this.loaded = true }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     open(it) {

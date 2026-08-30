@@ -42,7 +42,7 @@
           <view class="h-zz">{{ (h['主治'] || h['原文'] || '').slice(0, 40) }}</view>
         </view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配药物</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配药物</view>
     </scroll-view>
   </view>
 </template>
@@ -55,7 +55,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', g: '', jing: '', category: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
+    return { loaded: false, q: '', g: '', jing: '', category: '', herbs: [], intro: [], xw: '', xws: ['寒', '热', '温', '凉', '平', '有毒'] }
   },
   computed: {
     theme() { return store.theme },
@@ -85,7 +85,7 @@ export default {
     loadData('bencao').then(d => {
       this.herbs = d.herbs || []
       this.intro = d.intro || []
-    }).catch(() => {})
+    }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     count(g) { return this.herbs.filter(h => h.g === g).length },

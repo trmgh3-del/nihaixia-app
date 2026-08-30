@@ -26,7 +26,7 @@
         </view>
         <view class="l-s">{{ snippet(it) }}</view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配条目</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配条目</view>
     </view>
   </view>
 </template>
@@ -39,7 +39,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', tab: 'sun', sun: [], que: [], wujing: [], loading: true }
+    return { loaded: false, q: '', tab: 'sun', sun: [], que: [], wujing: [], loading: true }
   },
   computed: {
     theme() { return store.theme },
@@ -60,6 +60,7 @@ export default {
         this.wujing = d.wujing || []
       } catch (e) { uni.showToast({ title: '加载失败', icon: 'none' }) }
       this.loading = false
+      this.loaded = true
     },
     switchTab(t) { this.tab = t },
     titleOf(it) { return it.t },

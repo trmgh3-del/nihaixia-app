@@ -41,7 +41,7 @@
           <view class="f-row" v-if="!it.clinical && it.doses"><text class="f-k">剂量</text><text class="f-v">{{ it.doses }}</text></view>
         </view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配方剂</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配方剂</view>
     </view>
 
     <!-- 对比浮层 -->
@@ -76,7 +76,7 @@ import { loadData } from '@/utils/data.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return {
+    return { loaded: false,
       q: '', items: [], jing: '', category: '', cmpMode: false, cmpSel: [], cmpView: null,
       cmpFields: [
         { k: '主症关键', v: 'zhizhi' }, { k: '组成', v: 'composition' }, { k: '原方剂量', v: 'origin' },
@@ -115,7 +115,7 @@ export default {
         if (!map.has(it.n)) map.set(it.n, it)
       }
       this.items = [...map.values()]
-    }).catch(() => {})
+    }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     fJing(it) {

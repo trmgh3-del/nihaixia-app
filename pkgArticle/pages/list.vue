@@ -16,7 +16,7 @@
         <view class="a-meta"><text class="a-src">{{ it.src }}</text></view>
         <view class="a-s">{{ snippet(it) }}</view>
       </view>
-      <view v-if="!shown.length" class="none">无匹配文章</view>
+      <view v-if="loaded && !shown.length" class="none">无匹配文章</view>
     </view>
   </view>
 </template>
@@ -29,7 +29,7 @@ import { openMd } from '@/utils/routes.js'
 export default {
   onShow() { applyTheme() },
   data() {
-    return { q: '', g: '', items: [] }
+    return { loaded: false, q: '', g: '', items: [] }
   },
   computed: {
     theme() { return store.theme },
@@ -47,7 +47,7 @@ export default {
     }
   },
   mounted() {
-    loadData('articles').then(d => { this.items = d.items || [] }).catch(() => {})
+    loadData('articles').then(d => { this.items = d.items || []; this.loaded = true }).catch(() => {}).finally(() => { this.loaded = true })
   },
   methods: {
     snippet(it) { return (it.b || '').replace(/[#>*`|]/g, '').replace(/\s+/g, ' ').slice(0, 76) },
