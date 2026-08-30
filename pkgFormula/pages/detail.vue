@@ -104,6 +104,9 @@ export default {
     others() { return this.all.filter(x => x.n === (this.current && this.current.n) && x.id !== this.current.id) },
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
+  onUnload() {
+    if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+  },
   mounted() {
     const r = store.readerItem
     if (r && r.kind === 'formula') {

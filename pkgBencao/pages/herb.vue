@@ -71,6 +71,9 @@ export default {
     gradeClass() { return this.h && this.h.g === '上经' ? 'up' : this.h && this.h.g === '中经' ? 'mid' : 'down' },
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
+  onUnload() {
+    if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+  },
   mounted() {
     if (this.h) {
       uni.setNavigationBarTitle({ title: this.h.n , fail: () => {} })
