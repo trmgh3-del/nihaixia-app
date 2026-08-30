@@ -52,7 +52,13 @@ export default {
   },
   computed: {
     theme() { return store.theme },
-    h() { const r = store.readerItem; return r && r.kind === 'herb' ? r.item : null },
+    h() {
+      const r = store.readerItem
+      if (r && r.kind === 'herb') return r.item
+      const stack = store.readerStack || []
+      for (let i = stack.length - 1; i >= 0; i--) if (stack[i] && stack[i].kind === 'herb') return stack[i].item
+      return null
+    },
     fav() { return this.h ? isFav('bencao', this.h.id) : false },
     fields() {
       const h = this.h
@@ -72,6 +78,7 @@ export default {
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
   onUnload() {
+    if (this._didRestore) return
     const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
     if (previous) { store.readerItem = previous; store.readerReturn = null }
   },
@@ -92,6 +99,7 @@ export default {
   },
   methods: {
     goBack() {
+      this._didRestore = true
       const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
       if (previous) { store.readerItem = previous; store.readerReturn = null }
       uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) })

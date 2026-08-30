@@ -99,12 +99,20 @@ export default {
   },
   computed: {
     theme() { return store.theme },
-    f() { return this.current },
+    f() {
+      if (this.current) return this.current
+      const r = store.readerItem
+      if (r && r.kind === 'formula') return r.item
+      const stack = store.readerStack || []
+      for (let i = stack.length - 1; i >= 0; i--) if (stack[i] && stack[i].kind === 'formula') return stack[i].item
+      return null
+    },
     fav() { return this.current ? isFav('formulas', this.current.id) : false },
     others() { return this.all.filter(x => x.n === (this.current && this.current.n) && x.id !== this.current.id) },
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
   onUnload() {
+    if (this._didRestore) return
     const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
     if (previous) { store.readerItem = previous; store.readerReturn = null }
   },
@@ -120,6 +128,7 @@ export default {
   },
   methods: {
     goBack() {
+      this._didRestore = true
       const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
       if (previous) { store.readerItem = previous; store.readerReturn = null }
       uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) })
