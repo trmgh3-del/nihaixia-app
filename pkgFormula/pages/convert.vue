@@ -12,7 +12,7 @@
       <view class="quick-row"><text class="quick-label">常用：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
       <view class="c-out" v-if="result">
         <view class="o-line">
-          <text class="o-k">汉制·考证</text>
+          <text class="o-k">公制折算</text>
           <view class="o-v serif">{{ result.g }} <text class="o-u">克</text></view>
         </view>
         <view class="o-line">
@@ -24,6 +24,7 @@
           <view class="o-v serif hl">{{ result.niLabel }} → 临床 {{ result.niQian }}钱（约 {{ result.niQianG }} 克）</view>
         </view>
         <view class="o-note" v-if="cur && cur.note">{{ cur.note }}</view>
+        <view class="o-warning" v-if="unit === '钱'">注意：1钱≈3.75克是近现代/台湾钱制；汉代原方通常按1两=24铢、1两≈15.625克考证，不能把“汉制1钱”直接等同3.75克。</view>
       </view>
     </view>
 
@@ -169,6 +170,7 @@ export default {
 .o-u { font-size: 22rpx; color: var(--ink2); font-weight: 400; }
 .o-u2 { font-size: 20rpx; color: var(--ink2); font-weight: 400; }
 .o-note { font-size: 20rpx; color: var(--ink2); line-height: 1.7; padding: 12rpx 0 20rpx; }
+.o-warning { font-size: 20rpx; color: #9A2E1F; line-height: 1.7; background: #F5E8E8; border-radius: 10rpx; padding: 12rpx 16rpx; margin: 4rpx 0 16rpx; }
 .sec { margin: 30rpx 32rpx 0; }
 .sec-head { display: flex; align-items: center; margin-bottom: 18rpx; }
 .sec-orn { color: var(--gold); font-size: 22rpx; margin-right: 10rpx; }
