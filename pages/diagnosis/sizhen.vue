@@ -172,6 +172,11 @@
           <view class="r-line" v-for="e in result.kbEvidence" :key="e.name">● 匹配规则：{{ e.name }}（{{ e.source }} · {{ e.reviewStatus === 'approved' ? '已审核' : '待专家审核' }}）</view>
           <view class="r-line">知识库匹配条目：{{ result.kbMatches }} 条（仅作为学习证据，不等同于诊断）</view>
         </view>
+        <view class="r-sec" v-if="result.inspectionEvidence.length || result.pulseEvidence.length">
+          <view class="rs-t">望诊/脉诊知识依据</view>
+          <view class="r-line" v-for="x in result.inspectionEvidence" :key="x.kind + x.name">● {{ x.kind }}：{{ x.name }}（{{ x.note }}）</view>
+          <view class="r-line" v-for="x in result.pulseEvidence" :key="x.kind + x.name">● 脉诊：{{ x.name }}（{{ x.note }}）</view>
+        </view>
         <view class="r-sec" v-if="result.zangxiang.length">
           <view class="rs-t">藏象倾向（仅供学习）</view>
           <view class="r-line" v-for="z in result.zangxiang" :key="z.name">● {{ z.name }}：{{ z.hits.join('、') }}（{{ z.meridians.join('、') }}）</view>
@@ -315,7 +320,7 @@ const STEP_FIELDS = [
   TEN_Q.map(q => q.k),
   ['脉位', '脉率', '脉形', '脉力', '复合脉']
 ]
-const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbReviewPending: 0, kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [], acupoints: [], zangxiang: [] })
+const EMPTY_RESULT = () => ({ bagang: [], meridians: [], patterns: [], formulas: [], formulaDetails: [], scores: [], selected: [], completeness: 0, risk: { level: 'low', label: '一般', reasons: [] }, sevenSteps: [], combination: '', sources: [], kbEvidence: [], kbVersion: '', kbReviewPending: 0, kbCoverage: 0, kbConfidence: '不足', kbMatches: 0, cases: [], acupoints: [], zangxiang: [], pulseEvidence: [], inspectionEvidence: [] })
 const RED_FLAGS = ['胸痛/胸闷', '呼吸困难', '意识异常/抽搐', '呕血/便血', '持续高热不退', '严重脱水']
 const DURATIONS = ['当天', '2-3天', '4-7天', '1-2周', '超过2周', '反复发作']
 const PULSE_SOURCES = ['医师诊察', '自己触摸估计', '不确定']
@@ -443,7 +448,7 @@ export default {
       try {
         const raw = await analyzeSizhen(this.pick, this.basic, this.redFlags, this.pulseSource)
         this.result = Object.assign(EMPTY_RESULT(), raw, {
-          sources: raw.sources || [], kbEvidence: raw.kbEvidence || [], scores: raw.scores || [], meridians: raw.meridians || [], patterns: raw.patterns || [], formulas: raw.formulas || [], formulaDetails: raw.formulaDetails || [], cases: raw.cases || [], acupoints: raw.acupoints || [], zangxiang: raw.zangxiang || [], risk: raw.risk || EMPTY_RESULT().risk
+          sources: raw.sources || [], kbEvidence: raw.kbEvidence || [], scores: raw.scores || [], meridians: raw.meridians || [], patterns: raw.patterns || [], formulas: raw.formulas || [], formulaDetails: raw.formulaDetails || [], cases: raw.cases || [], acupoints: raw.acupoints || [], zangxiang: raw.zangxiang || [], pulseEvidence: raw.pulseEvidence || [], inspectionEvidence: raw.inspectionEvidence || [], risk: raw.risk || EMPTY_RESULT().risk
         })
         this.clearDraft(); this.step = 4
       } catch (e) {

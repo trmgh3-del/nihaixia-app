@@ -86,8 +86,19 @@ export async function findZangxiangEvidence(pick) {
   try {
     const data = await loadData('zangxiang')
     const text = values(pick).join(' ')
-    return (data.organs || []).map(o => ({ ...o, hits: (o.evidence || []).filter(x => text.includes(x)), score: (o.evidence || []).filter(x => text.includes(x)).length })).filter(o => o.score > 0).sort((a, b) => b.score - a.score).slice(0, 3)
+    return (data.organs || []).map(o => ({ ...o, hits: (o.evidence || []).filter(x => text.includes(x)), score: (o.evidence || []).filter(x => text.includes(x)).length })).filter(o => o.score > 0).sort((a, b) => b.score - a.score).slice(0, 5)
   } catch (e) { return [] }
+}
+
+export async function findPulseInspectionEvidence(pick) {
+  try {
+    const [pulse, inspection] = await Promise.all([loadData('pulse'), loadData('inspection')])
+    const text = values(pick).join(' ')
+    const pulses = (pulse.pulses || []).filter(x => text.includes(x.name)).slice(0, 5).map(x => ({ ...x, kind: '脉诊' }))
+    const colors = (inspection.colors || []).filter(x => text.includes(x.name)).slice(0, 5).map(x => ({ ...x, kind: '望色' }))
+    const spirit = (inspection.spirit || []).filter(x => text.includes(x.name)).slice(0, 5).map(x => ({ ...x, kind: '望神' }))
+    return { pulses, inspection: colors.concat(spirit) }
+  } catch (e) { return { pulses: [], inspection: [] } }
 }
 
 export async function analyzeSizhen(pick, basic = {}, redFlags = [], pulseSource = '不确定') {
@@ -105,6 +116,6 @@ export async function analyzeSizhen(pick, basic = {}, redFlags = [], pulseSource
   const hasHigh = effectiveFlags.length || ['神志异常', '存在脱液或亡阳风险'].some(x => riskReasons.includes(x)); const risk = { level: hasHigh ? 'high' : riskReasons.length || safety.blocked.length ? 'medium' : 'low', label: hasHigh ? '高风险' : riskReasons.length || safety.blocked.length ? '需复核' : '一般', reasons: [...new Set(riskReasons.concat(safety.warnings))] }
   const selected = values(pick).concat(Object.keys(basic).filter(k => basic[k]).map(k => k + '：' + basic[k])).map(x => x.replace('=', '：')); const completedSteps = STEP_FIELDS.filter(fs => fs.some(k => pick[k])).length
   const topMeridians = scores.slice(0, 3).map(x => x.name)
-  const [sourceList, cases, formulaDetails, acupoints, zangxiang] = await Promise.all([findKnowledgeSources(pick), findSimilarCases(pick, topMeridians), findFormulaDetails(safety.formulas), findRelatedAcupoints(topMeridians), findZangxiangEvidence(pick)])
-  return { bagang: [...bg], meridians: scores.map(x => x.name), formulas: safety.formulas, formulaDetails, scores, selected, completeness: Math.round(completedSteps / STEP_FIELDS.length * 100), risk, sevenSteps: [{ k: '定表里', v: bg.has('表') && bg.has('里') ? '表里同病' : bg.has('表') ? '偏表' : bg.has('里') ? '偏里' : '证据不足' }, { k: '分阴阳', v: bg.has('寒') && bg.has('热') ? '寒热错杂' : bg.has('寒') ? '偏阴' : bg.has('热') ? '偏阳' : '证据不足' }, { k: '辨寒热', v: bg.has('寒') && bg.has('热') ? '寒热并见，需鉴别真伪' : bg.has('寒') ? '偏寒' : bg.has('热') ? '偏热' : '证据不足' }, { k: '判虚实', v: bg.has('虚') && bg.has('实') ? '虚实夹杂' : bg.has('虚') ? '偏虚' : bg.has('实') ? '偏实' : '证据不足' }, { k: '定六经', v: scores[0] ? scores[0].name : '暂不明确' }, { k: '合病传变', v: scores.length > 1 ? '需复核：' + scores.slice(0, 3).map(x => x.name).join('、') : '暂未发现明确依据' }, { k: '方证复核', v: risk.level === 'high' ? '高风险，停止方剂推荐' : '需结合禁忌和医师面诊' }], combination: conflicts.join('；'), sources: sourceList, kbEvidence: kb.evidence, kbVersion: kb.modelVersion, kbReviewPending: kb.reviewPending || 0, kbCoverage: kb.ruleCount ? Math.round((kb.matchedRules || 0) / kb.ruleCount * 100) : 0, kbMatches: sourceList.length, cases, acupoints, zangxiang }
+  const [sourceList, cases, formulaDetails, acupoints, zangxiang, pulseInspection] = await Promise.all([findKnowledgeSources(pick), findSimilarCases(pick, topMeridians), findFormulaDetails(safety.formulas), findRelatedAcupoints(topMeridians), findZangxiangEvidence(pick), findPulseInspectionEvidence(pick)])
+  return { bagang: [...bg], meridians: scores.map(x => x.name), formulas: safety.formulas, formulaDetails, scores, selected, completeness: Math.round(completedSteps / STEP_FIELDS.length * 100), risk, sevenSteps: [{ k: '定表里', v: bg.has('表') && bg.has('里') ? '表里同病' : bg.has('表') ? '偏表' : bg.has('里') ? '偏里' : '证据不足' }, { k: '分阴阳', v: bg.has('寒') && bg.has('热') ? '寒热错杂' : bg.has('寒') ? '偏阴' : bg.has('热') ? '偏阳' : '证据不足' }, { k: '辨寒热', v: bg.has('寒') && bg.has('热') ? '寒热并见，需鉴别真伪' : bg.has('寒') ? '偏寒' : bg.has('热') ? '偏热' : '证据不足' }, { k: '判虚实', v: bg.has('虚') && bg.has('实') ? '虚实夹杂' : bg.has('虚') ? '偏虚' : bg.has('实') ? '偏实' : '证据不足' }, { k: '定六经', v: scores[0] ? scores[0].name : '暂不明确' }, { k: '合病传变', v: scores.length > 1 ? '需复核：' + scores.slice(0, 3).map(x => x.name).join('、') : '暂未发现明确依据' }, { k: '方证复核', v: risk.level === 'high' ? '高风险，停止方剂推荐' : '需结合禁忌和医师面诊' }], combination: conflicts.join('；'), sources: sourceList, kbEvidence: kb.evidence, kbVersion: kb.modelVersion, kbReviewPending: kb.reviewPending || 0, kbCoverage: kb.ruleCount ? Math.round((kb.matchedRules || 0) / kb.ruleCount * 100) : 0, kbMatches: sourceList.length, cases, acupoints, zangxiang, pulseEvidence: pulseInspection.pulses, inspectionEvidence: pulseInspection.inspection }
 }
