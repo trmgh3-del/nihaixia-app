@@ -142,6 +142,8 @@ export default {
     goArticles() { uni.navigateTo({ url: '/pkgFormula/pages/articles' }) },
     goConvert() { uni.navigateTo({ url: '/pkgFormula/pages/convert' }) },
     open(it) {
+      store.readerStack = []
+      store.readerReturn = null
       store.readerItem = { kind: 'formula', item: it }
       uni.navigateTo({ url: '/pkgFormula/pages/detail' })
     },

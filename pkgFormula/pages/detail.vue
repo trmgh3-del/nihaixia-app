@@ -105,7 +105,8 @@ export default {
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
   onUnload() {
-    if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+    const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
+    if (previous) { store.readerItem = previous; store.readerReturn = null }
   },
   mounted() {
     const r = store.readerItem
@@ -119,7 +120,8 @@ export default {
   },
   methods: {
     goBack() {
-      if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+      const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
+      if (previous) { store.readerItem = previous; store.readerReturn = null }
       uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) })
     },
     loadCases() {
@@ -141,7 +143,7 @@ export default {
       try {
         const d = await loadData('bencao')
         const herb = (d.herbs || []).find(h => h.n === name || h.canonicalName === name || (h.aliases || []).includes(name))
-        if (herb) { store.readerReturn = { kind: 'formula', item: this.current }; store.readerItem = { kind: 'herb', item: herb }; uni.navigateTo({ url: '/pkgBencao/pages/herb' }) }
+        if (herb) { store.readerStack.push({ kind: 'formula', item: this.current }); store.readerItem = { kind: 'herb', item: herb }; uni.navigateTo({ url: '/pkgBencao/pages/herb' }) }
         else uni.showToast({ title: '未找到本草条目', icon: 'none' })
       } catch (e) { uni.showToast({ title: '本草库加载失败', icon: 'none' }) }
     },

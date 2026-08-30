@@ -92,6 +92,8 @@ export default {
     gradeClass(g) { return g === '上经' ? 'up' : g === '中经' ? 'mid' : 'down' },
     snippet(b) { return (b || '').replace(/[#>*`|]/g, '').replace(/\s+/g, ' ').slice(0, 60) },
     open(h) {
+      store.readerStack = []
+      store.readerReturn = null
       store.readerItem = { kind: 'herb', item: h }
       uni.navigateTo({ url: '/pkgBencao/pages/herb' })
     },

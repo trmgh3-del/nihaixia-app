@@ -20,7 +20,7 @@ export default {
       try {
         if (!item) { const d = await loadData('formulas'); item = find(d.items) }
         if (!item) { uni.showToast({ title: '未找到方剂详情', icon: 'none' }); return }
-        if (store.readerItem && store.readerItem.kind === 'md') store.readerReturn = store.readerItem
+        if (store.readerItem) store.readerStack.push(store.readerItem)
         store.readerItem = { kind: 'formula', item }
         uni.navigateTo({ url: '/pkgFormula/pages/detail' })
       } catch (e) { uni.showToast({ title: '方剂库加载失败', icon: 'none' }) }

@@ -153,7 +153,7 @@ export default {
         const all = d.items || []
         const it = all.find(x => x.n === name || x.n === clean) || all.filter(x => clean.includes(x.n) || x.n.includes(clean)).sort((a, b) => b.n.length - a.n.length)[0]
         if (!it) { uni.showToast({ title: '未收录该方', icon: 'none' }); return }
-        store.readerReturn = { kind: 'md', item: this.item }
+        store.readerStack.push({ kind: 'md', item: this.item })
         store.readerItem = { kind: 'formula', item: it }
         uni.navigateTo({ url: '/pkgFormula/pages/detail' })
       } catch (e) { uni.hideLoading() }

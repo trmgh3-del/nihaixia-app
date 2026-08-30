@@ -72,7 +72,8 @@ export default {
     fs() { return Math.round(26 * (store.fontScale || 1)) + 'rpx' }
   },
   onUnload() {
-    if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+    const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
+    if (previous) { store.readerItem = previous; store.readerReturn = null }
   },
   mounted() {
     if (this.h) {
@@ -91,10 +92,12 @@ export default {
   },
   methods: {
     goBack() {
-      if (store.readerReturn) { store.readerItem = store.readerReturn; store.readerReturn = null }
+      const previous = store.readerStack.length ? store.readerStack.pop() : store.readerReturn
+      if (previous) { store.readerItem = previous; store.readerReturn = null }
       uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/index/index' }) })
     },
     openFormula(f) {
+      store.readerStack.push({ kind: 'herb', item: this.h })
       store.readerItem = { kind: 'formula', item: f }
       uni.navigateTo({ url: '/pkgFormula/pages/detail' })
     },
