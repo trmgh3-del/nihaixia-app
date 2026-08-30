@@ -93,7 +93,14 @@ export default {
         { img: '/static/icons/sound-brand.png', fn: () => { if (self.speaking) self.fabOpen = false; self.toggleSpeak() } }
       ]
     },
-    item() { const r = store.readerItem; return r && r.kind === 'md' ? r.item : (store.readerReturn && store.readerReturn.kind === 'md' ? store.readerReturn.item : null) },
+    item() {
+      const r = store.readerItem
+      if (r && r.kind === 'md') return r.item
+      if (store.readerReturn && store.readerReturn.kind === 'md') return store.readerReturn.item
+      const stack = store.readerStack || []
+      for (let i = stack.length - 1; i >= 0; i--) if (stack[i] && stack[i].kind === 'md') return stack[i].item
+      return null
+    }
     pathLabel() {
       const it = this.item
       if (!it) return ''
