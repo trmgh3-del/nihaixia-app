@@ -417,14 +417,15 @@ export default {
 
 <style scoped>
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
-.banner { position: relative; overflow: hidden; background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 40rpx 36rpx 44rpx; }
+.banner { position: relative; overflow: hidden; background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 42rpx 36rpx 34rpx; }
 .b-taiji { position: absolute; right: -30rpx; top: -30rpx; width: 220rpx; height: 220rpx; opacity: .16; transform: rotate(-18deg); pointer-events: none; }
-.b-cb { z-index: 2; }
-.b-cb { position: static; display: flex; align-items: center; width: max-content; height: 48rpx; margin: 18rpx 0 0 auto; font-size: 20rpx; color: #FDF8EE; background: rgba(253,248,238,.16); border: 1rpx solid rgba(253,248,238,.4); border-radius: 26rpx; padding: 0 22rpx; }
-.b-title { font-size: 42rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
-.b-sub { font-size: 21rpx; color: rgba(253,248,238,.85); margin-top: 10rpx; }
-.tabs { display: flex; background: var(--card); border-radius: 0 0 28rpx 28rpx; margin: 0 0; padding: 0 20rpx; box-shadow: 0 6rpx 20rpx rgba(60,44,22,.05); }
-.tab { flex: 1; text-align: center; padding: 26rpx 0 20rpx; font-size: 27rpx; color: var(--ink2); border-bottom: 6rpx solid transparent; position: relative; }
+.b-title, .b-sub, .b-cb { position: relative; z-index: 2; }
+.b-cb { display: flex; align-items: center; width: max-content; height: 48rpx; margin: 18rpx 0 0 auto; font-size: 20rpx; color: #FDF8EE; background: rgba(253,248,238,.16); border: 1rpx solid rgba(253,248,238,.4); border-radius: 26rpx; padding: 0 22rpx; }
+.b-title { font-size: 44rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; line-height: 1.3; }
+.b-sub { max-width: 92%; font-size: 21rpx; color: rgba(253,248,238,.85); margin-top: 12rpx; line-height: 1.65; }
+.tabs { position: sticky; top: 0; z-index: 20; display: flex; background: var(--card); border-radius: 0 0 28rpx 28rpx; margin: 0 0; padding: 0 20rpx; box-shadow: 0 6rpx 20rpx rgba(60,44,22,.05); }
+.tab { flex: 1; text-align: center; padding: 26rpx 0 20rpx; font-size: 27rpx; color: var(--ink2); border-bottom: 6rpx solid transparent; position: relative; transition: color .2s, transform .2s; }
+.tab:active { transform: scale(.96); }
 .tab.on { color: var(--brand); font-weight: 800; border-bottom: 6rpx solid transparent; }
 .tab.on::after { content: ''; position: absolute; left: 22%; right: 22%; bottom: 6rpx; height: 8rpx; border-radius: 8rpx; background: linear-gradient(90deg, var(--gold), var(--brand)); }
 .tab-body { padding: 26rpx 32rpx 0; }
