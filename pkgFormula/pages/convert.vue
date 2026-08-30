@@ -9,7 +9,7 @@
           <view class="c-unit">{{ unit }}<text class="c-caret">▾</text></view>
         </picker>
       </view>
-      <view class="quick-row"><text class="quick-label">台湾/临床：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view></view>
+      <view class="quick-row"><text class="quick-label">台湾/临床钱：</text><view v-for="q in [1, 3, 5, 10]" :key="q" class="quick-chip" @tap="setQuick(q)">{{ q }} 钱</view><view class="quick-chip" @tap="setUnitQuick(1, 9)">1两</view></view>
       <view class="quick-row"><text class="quick-label han">汉制：</text><view class="quick-chip han-chip" @tap="setUnitQuick(1, 0)">1 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(3, 0)">3 两</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 2)">1 铢</view><view class="quick-chip han-chip" @tap="setUnitQuick(1, 3)">1 分</view></view>
       <view class="quick-row"><text class="quick-label tang">唐制：</text><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 4)">1 斤</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 5)">1 两</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 6)">1 铢</view><view class="quick-chip tang-chip" @tap="setUnitQuick(1, 7)">1 分</view></view>
       <view class="c-out" v-if="result">
@@ -26,7 +26,7 @@
           <view class="o-v serif hl">{{ result.niLabel }} → 临床 {{ result.niQian }}钱（约 {{ result.niQianG }} 克）</view>
         </view>
         <view class="o-note" v-if="cur && cur.note">{{ cur.note }}</view>
-        <view class="o-warning" v-if="unit === '钱'">注意：1钱≈3.75克是近现代/台湾钱制；汉代原方通常按1两=24铢、1两≈15.625克考证，不能把“汉制1钱”直接等同3.75克。</view>
+        <view class="o-warning" v-if="unit === '钱' || unit.indexOf('台制') === 0">注意：台湾/近现代钱制为1两=10钱=37.5克、1钱≈3.75克；汉代原方通常按1两=24铢、1两≈15.625克考证，不能把汉制与台制直接混用。</view>
       </view>
     </view>
 
@@ -112,6 +112,10 @@ const UNITS = [
   { k: '唐制铢', g: 0.573, out: '克', mass: true, note: '按唐制1两约13.75克、24铢折算，约0.57克' },
   { k: '唐制分', g: 1.375, out: '克', mass: true, note: '按唐制1两约13.75克、10分折算，约1.375克；考证值有差异' },
   { k: '钱', g: 3.75, out: '克', mass: true, note: '近现代/台湾钱制：1钱=10分≈3.75克（1两=10钱）' },
+  { k: '台制两', g: 37.5, out: '克', mass: true, note: '台制明确单位：1两=10钱=37.5克；不要与汉制1两≈15.625克混用' },
+  { k: '台制斤', g: 600, out: '克', mass: true, note: '台制明确单位：1斤=16两=600克' },
+  { k: '台制钱', g: 3.75, out: '克', mass: true, note: '台制明确单位：1钱=10分=3.75克' },
+  { k: '台制分', g: 0.375, out: '克', mass: true, note: '台制明确单位：1分≈0.375克；不要与汉制分混用' },
   { k: '升(液体)', g: 200, out: '毫升', mass: false, note: '容量单位：1升≈200毫升，不应标为克' },
   { k: '升(半夏)', g: 130, out: '克', mass: true, note: '半夏一升≈130克；五味子/吴茱萸/蜀椒一升≈50克；葶苈子一升≈60克' },
   { k: '合(液体)', g: 20, out: '毫升', mass: false, note: '容量单位：10合=1升，约20毫升' },
@@ -207,7 +211,7 @@ export default {
       this.result = { g: gR, gUnit: u.out || '克', gLabel: this.metricLabel(u), mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
     metricLabel(u) {
-      if (u.k === '钱') return '台制公制折算'
+      if (u.k === '钱' || u.k.indexOf('台制') === 0) return '台制公制折算'
       if (u.k.indexOf('唐制') === 0) return '唐制公制折算'
       if (u.k === '升(液体)' || u.k === '合(液体)') return '古制容量折算'
       if (u.k === '升(半夏)' || u.k === '合') return '药材专属折算'
