@@ -3,6 +3,8 @@
     <!-- 换算器 -->
     <view class="calc card">
       <view class="c-title serif">⟡ 经方剂量换算器</view>
+      <view class="system-tabs"><view v-for="s in systemNames" :key="s" class="system-tab" :class="{ active: selectedSystem === s }" @tap="switchSystem(s)">{{ s }}</view></view>
+      <view class="system-hint">当前只在“{{ selectedSystem }}”体系内计算；三套体系分开显示，不混用。</view>
       <view class="c-row">
         <input class="c-num" type="digit" v-model="num" placeholder="数量" @input="calc" />
         <picker mode="selector" :range="unitNames" @change="onUnit" class="c-picker">
@@ -16,10 +18,6 @@
         <view class="o-line">
           <text class="o-k">{{ result.gLabel }}</text>
           <view class="o-v serif">{{ result.g }} <text class="o-u">{{ result.gUnit }}</text></view>
-        </view>
-        <view class="o-line" v-if="result.mass">
-          <text class="o-k">台湾钱制</text>
-          <view class="o-v serif">{{ result.qian }} <text class="o-u">钱</text><text class="o-u2">（{{ result.qianG }} 克）</text></view>
         </view>
         <view class="o-line" v-if="result.niQian !== null">
           <text class="o-k">倪师换算</text>
@@ -136,6 +134,7 @@ export default {
       num: '1',
       unit: '钱',
       unitIdx: 8,
+      selectedSystem: '台制',
       result: null,
       table: [
         ['附子大者1枚', '20-30克（中者15克；倪师口述一枚≈3-4钱）'],
@@ -187,15 +186,35 @@ export default {
   },
   computed: {
     theme() { return store.theme },
-    unitNames() { return UNITS.map(u => u.k) },
+    systemNames() { return ['汉制', '台制', '唐制'] },
+    systemUnits() {
+      return UNITS.map((u, i) => ({ u, i })).filter(({ u }) => {
+        if (this.selectedSystem === '汉制') return ['两', '斤', '铢', '分（汉制）'].includes(u.k)
+        if (this.selectedSystem === '台制') return ['钱', '台制两', '台制斤', '台制钱', '台制分'].includes(u.k)
+        return u.k.indexOf('唐制') === 0
+      })
+    },
+    unitNames() { return this.systemUnits.map(({ u }) => u.k) },
     cur() { return UNITS[this.unitIdx] }
   },
   onShow() { applyTheme(); this.calc() },
   methods: {
     onUnit(e) {
-      this.unitIdx = Number(e.detail.value)
-      this.unit = UNITS[this.unitIdx].k
+      const selected = this.systemUnits[Number(e.detail.value)]
+      if (!selected) return
+      this.unitIdx = selected.i
+      this.unit = selected.u.k
       this.calc()
+    },
+    switchSystem(system) {
+      this.selectedSystem = system
+      const defaults = { 汉制: '两', 台制: '钱', 唐制: '唐制两' }
+      const idx = UNITS.findIndex(u => u.k === defaults[system])
+      if (idx >= 0) {
+        this.unitIdx = idx
+        this.unit = UNITS[idx].k
+        this.calc()
+      }
     },
     calc() {
       const n = parseFloat(this.num)
@@ -218,8 +237,14 @@ export default {
       if (u.k.indexOf('枚') === 0 || u.k.indexOf('个') === 0 || u.k === '方寸匕' || u.k === '钱匕') return '实物参考折算'
       return '汉制公制折算'
     },
-    setQuick(q) { this.num = String(q); this.unit = '钱'; this.unitIdx = 8; this.calc() },
-    setUnitQuick(n, idx) { this.num = String(n); this.unitIdx = idx; this.unit = UNITS[idx].k; this.calc() },
+    setQuick(q) { this.num = String(q); this.selectedSystem = '台制'; this.unit = '钱'; this.unitIdx = 8; this.calc() },
+    setUnitQuick(n, idx) {
+      this.num = String(n)
+      this.unitIdx = idx
+      this.unit = UNITS[idx].k
+      this.selectedSystem = this.unit.indexOf('唐制') === 0 ? '唐制' : (['两', '斤', '铢', '分（汉制）'].includes(this.unit) ? '汉制' : '台制')
+      this.calc()
+    },
     async openRef() {
       try {
         const d = await loadData('formulas')
@@ -238,6 +263,10 @@ export default {
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 60rpx; }
 .calc { margin: 26rpx 32rpx 0; padding: 30rpx; }
 .c-title { font-size: 31rpx; font-weight: 800; color: var(--brand); margin-bottom: 24rpx; }
+.system-tabs { display: flex; gap: 12rpx; margin-bottom: 12rpx; }
+.system-tab { flex: 1; text-align: center; padding: 16rpx 8rpx; border-radius: 12rpx; color: var(--ink2); background: var(--zebra-bg); font-size: 26rpx; }
+.system-tab.active { color: #fff; background: var(--brand); font-weight: 800; }
+.system-hint { color: var(--ink2); font-size: 23rpx; margin-bottom: 16rpx; }
 .c-row { display: flex; gap: 18rpx; }
 .c-num { flex: 1; background: var(--zebra-bg); border-radius: 16rpx; height: 88rpx; line-height: 88rpx; padding: 0 28rpx; font-size: 34rpx; font-weight: 800; color: var(--brand); }
 .c-picker { flex-shrink: 0; }
