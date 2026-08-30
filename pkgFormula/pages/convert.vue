@@ -199,8 +199,10 @@ export default {
       const u = UNITS[this.unitIdx]
       const g = n * u.g
       const gR = Math.round(g * 100) / 100
+      // 台湾钱制仅作为对照显示：钱数和克数都从同一个未四舍五入的公制值计算，
+      // 不能先把钱数四舍五入再反算克数，否则汉制1两会显示成15.64克。
       const qian = u.mass ? Math.round(g / 3.75 * 100) / 100 : 0
-      const qianG = u.mass ? Math.round(qian * 3.75 * 100) / 100 : 0
+      const qianG = u.mass ? Math.round(g * 100) / 100 : 0
       const niQian = u.k === '两' ? n : u.k === '钱' ? n : null
       this.result = { g: gR, gUnit: u.out || '克', gLabel: this.metricLabel(u), mass: !!u.mass, qian, qianG, niQian, niQianG: niQian === null ? 0 : Math.round(niQian * 3.75 * 100) / 100, niLabel: n + u.k }
     },
