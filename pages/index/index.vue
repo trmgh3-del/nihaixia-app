@@ -266,7 +266,9 @@ export default {
     stats() { return store.meta ? store.meta.counts : null },
     lastRead() { return store.history.length ? store.history[0] : null },
     dailyQuote() {
-      const doy = Math.floor(Date.now() / 86400000)
+      // 用设备本地日期，不能用 Date.now()/86400000（它按 UTC 过零点，会在本地早上才切换）
+      const d = new Date()
+      const doy = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000)
       return this.quotes[doy % this.quotes.length]
     },
     srcShort() {
@@ -288,9 +290,19 @@ export default {
     const MERS = { 23: '胆', 0: '胆', 1: '肝', 2: '肝', 3: '肺', 4: '肺', 5: '大肠', 6: '大肠', 7: '胃', 8: '胃', 9: '脾', 10: '脾', 11: '心', 12: '心', 13: '小肠', 14: '小肠', 15: '膀胱', 16: '膀胱', 17: '肾', 18: '肾', 19: '心包', 20: '心包', 21: '三焦', 22: '三焦' }
     this.nowMer = MERS[d.getHours()] || '—'
     applyTheme()
+    // 首页可能长期驻留，不重新挂载；每次回到首页都检查本地日期是否已变化
+    this.refreshDaily()
   },
   mounted() {
     this.init()
+    // 页面保持打开跨过本地午夜时，也能自动切换；回到页面时 onShow 还会再次校验
+    this._dailyTimer = setInterval(() => this.refreshDaily(), 30000)
+  },
+  onUnload() {
+    if (this._dailyTimer) {
+      clearInterval(this._dailyTimer)
+      this._dailyTimer = null
+    }
   },
   methods: {
     async init() {
@@ -313,11 +325,18 @@ export default {
         const fm = await loadData('formulas')
         const items = (fm.items || []).filter(x => x.clinical && x.origin)
         this._pool = items
-        if (items.length) {
-          const doy = Math.floor(Date.now() / 86400000)
-          this.daily = items[doy % items.length]
-        }
+        this.refreshDaily(true)
       } catch (e) { console.error(e) }
+    },
+    refreshDaily(force = false) {
+      if (!this._pool || !this._pool.length) return
+      const d = new Date()
+      const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+      if (!force && this._dailyDayKey === key) return
+      // 基于本地年月日计算，保证每天固定一方，并在跨本地午夜后自动更新
+      const dayNumber = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000)
+      this.daily = this._pool[dayNumber % this._pool.length]
+      this._dailyDayKey = key
     },
     goSearch() { uni.navigateTo({ url: '/pages/search/search' }) },
     goFormulas() { uni.navigateTo({ url: '/pkgFormula/pages/list' }) },
