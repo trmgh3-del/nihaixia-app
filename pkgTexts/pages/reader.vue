@@ -8,7 +8,7 @@
         <view class="r-orn"><view /><view class="d" /><view /></view>
         <view class="r-meta" v-if="subLine">{{ subLine }}</view>
       </view>
-      <view class="r-body card">
+      <view class="r-body">
         <md-blocks :blocks="blocks" :base="28" />
         <view v-if="!blocks.length" class="empty">该条目为空</view>
       </view>
@@ -316,8 +316,8 @@ export default {
 .r-path { display: inline-block; font-size: 20rpx; color: var(--gold); border: 1rpx solid var(--gold); border-radius: 8rpx; padding: 4rpx 16rpx; margin-bottom: 16rpx; background: var(--zebra-bg); }
 .r-title { font-size: 44rpx; font-weight: 800; color: var(--ink); line-height: 1.4; letter-spacing: 2rpx; word-break: break-word; }
 .point-page .r-title { color: var(--brand); font-size: 42rpx; }
-.point-page .r-body { border-top: 6rpx solid var(--brand); }
-.point-page .r-meta { background: var(--zebra-bg); border-radius: 12rpx; padding: 12rpx 16rpx; }
+.point-page .r-body { border-top: 4rpx solid var(--brand); }
+.point-page .r-meta { color: var(--brand); }
 .r-orn { display: flex; align-items: center; margin-top: 18rpx; }
 .r-orn view { flex: 1; height: 1rpx; background: var(--line); }
 .r-orn .d { flex: 0 0 12rpx; height: 12rpx; transform: rotate(45deg); background: var(--gold); margin: 0 16rpx; border-radius: 2rpx; }

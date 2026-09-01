@@ -113,9 +113,9 @@ export default {
 .p { margin: 0.5em 0; text-align: justify; word-break: break-word; overflow-wrap: anywhere; }
 .li-v, .kv-v, .q-line { min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
 .p.ind { text-indent: 2em; }
-.kv { display: flex; margin: 0.65em 0; align-items: flex-start; background: var(--zebra-bg); border: 1rpx solid var(--line); border-left: 7rpx solid var(--brand); border-radius: 14rpx; padding: 16rpx 20rpx; box-shadow: 0 3rpx 12rpx rgba(60,44,22,.04); }
-.kv-k { flex: 0 0 108rpx; font-weight: 800; color: var(--brand); margin-right: 16rpx; line-height: 1.8; }
-.kv-v { flex: 1; min-width: 0; line-height: 1.85; }
+.kv { display: flex; margin: 0; align-items: flex-start; background: transparent; border: none; border-bottom: 1rpx solid var(--line); border-radius: 0; padding: 20rpx 0; box-shadow: none; }
+.kv-k { flex: 0 0 112rpx; font-weight: 800; color: var(--brand); margin-right: 18rpx; line-height: 1.85; }
+.kv-v { flex: 1; min-width: 0; line-height: 1.9; }
 .quote { background: linear-gradient(135deg, var(--quote-bg), var(--zebra-bg)); border-left: 6rpx solid var(--gold); border-radius: 4rpx 16rpx 16rpx 4rpx; padding: 18rpx 24rpx; margin: 0.65em 0; }
 .q-line { color: var(--ink2); margin: 4rpx 0; }
 .list { margin: 0.5em 0; }
