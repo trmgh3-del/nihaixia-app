@@ -6,6 +6,8 @@
       <view v-else-if="b.ty === 'h2'" class="h2"><seg :segs="b.segs" /></view>
       <view v-else-if="b.ty === 'h3'" class="h3 serif"><seg :segs="b.segs" /></view>
       <view v-else-if="b.ty === 'h4'" class="h4"><seg :segs="b.segs" /></view>
+      <!-- 短标签/解读标题：独占一行，避免中文短标题被拆行 -->
+      <view v-else-if="b.ty === 'label'" class="md-label"><seg :segs="b.segs" /></view>
       <!-- 段落 -->
       <view v-else-if="b.ty === 'p'" class="p" :class="{ ind: b.ind }"><seg :segs="b.segs" /></view>
       <!-- key: value -->
@@ -110,6 +112,8 @@ export default {
 .h2 { font-size: 1.25em; font-weight: 800; margin: 1.1em 0 0.5em; color: var(--ink); letter-spacing: 2rpx; }
 .h3 { font-size: 1.12em; font-weight: 700; margin: 1em 0 0.4em; color: var(--brand-deep, #7C3A21); line-height: 1.5; }
 .h4 { font-size: 1.02em; font-weight: 700; margin: 0.9em 0 0.3em; color: var(--ink2); line-height: 1.5; }
+.md-label { display: block; width: 100%; box-sizing: border-box; margin: 1em 0 0.35em; padding: 0 0 8rpx 14rpx; border-left: 6rpx solid var(--brand); color: var(--brand); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-label .seg-b { white-space: nowrap; }
 .p { margin: 0.5em 0; text-align: justify; word-break: break-word; overflow-wrap: anywhere; }
 .li-v, .kv-v, .q-line { min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
 .p.ind { text-indent: 2em; }

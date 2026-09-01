@@ -195,8 +195,11 @@ export function parseMd(md) {
       const labelNames = '定位|主治|操作|注意|禁忌|倪师特色|来源|功效|配伍|取穴|针法|灸法|归经|性味|用量|炮制'
       const labels = new RegExp('^(' + labelNames + ')[：:]')
       const labeled = buf.map(line => line.match(labels)).filter(Boolean)
+      const standaloneLabel = joined.match(/^\*\*([^*]{2,30})\*\*[：:]?\s*$/)
       const fields = splitLabeledFields(joined, labelNames)
-      if (fields.length >= 2) {
+      if (standaloneLabel) {
+        blocks.push({ ty: 'label', segs: inlineSegs(joined) })
+      } else if (fields.length >= 2) {
         fields.forEach(field => blocks.push({ ty: 'kv', k: field.k, segs: inlineSegs(field.v) }))
       } else if (labeled.length >= 2 && labeled.length === buf.length) {
         buf.forEach(line => {
