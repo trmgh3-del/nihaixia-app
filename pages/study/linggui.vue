@@ -4,9 +4,9 @@
       <view class="calc-title serif">计算时间设置</view>
       <view class="setting-line"><text>日期</text><picker mode="date" :value="manualDate" start="1900-01-01" end="2100-12-31" @change="manualDate = $event.detail.value; tick()"><view class="setting-value">{{ manualDate || '选择日期' }} ›</view></picker></view>
       <view class="setting-line"><text>时间</text><picker mode="time" :value="manualTime" @change="manualTime = $event.detail.value; tick()"><view class="setting-value">{{ manualTime || '选择时间' }} ›</view></picker></view>
-      <view class="setting-line"><text>时区</text><picker :range="timezoneOptions" @change="timezone = timezoneOptions[$event.detail.value]"><view class="setting-value">{{ timezone }} ›</view></picker></view>
+      <view class="setting-line"><text>计算时区</text><view class="setting-value">中国标准时间（UTC+8）</view></view>
       <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
-      <view class="calc-note">默认使用系统时间。启用真太阳时后按东八区标准经度修正；不同流派的子初换日和真太阳时仍可能存在差异。</view>
+      <view class="calc-note">所有计算统一使用中国标准时间（UTC+8）。启用真太阳时后在标准时间基础上作学习性修正；不同流派的子初换日和真太阳时仍可能存在差异。</view>
       <view class="snapshot-row"><view class="snapshot-btn" @tap="useSystemTime">使用当前时间</view><view class="snapshot-btn" @tap="tick">重新计算</view></view>
     </view>
 
@@ -112,7 +112,7 @@ function hourGanNum(gan) { return ['甲', '己'].includes(gan) ? 9 : ['乙', '�
 function hourZhiNum(zhi) { return ['子', '午'].includes(zhi) ? 9 : ['丑', '未'].includes(zhi) ? 8 : ['寅', '申'].includes(zhi) ? 7 : ['卯', '酉'].includes(zhi) ? 6 : ['辰', '戌'].includes(zhi) ? 5 : 4 }
 
 function calcDayGanZhi(date) {
-  const y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate()
+  const y = date.getUTCFullYear(), m = date.getUTCMonth() + 1, d = date.getUTCDate()
   const a = Math.floor((14 - m) / 12)
   const y2 = y + 4800 - a
   const m2 = m + 12 * a - 3
@@ -182,26 +182,29 @@ export default {
     },
     setRem5(value) { this.rem5Mode = value; this.tick() },
     getCalcDate() {
-      if (!this.manualDate || !this.manualTime) return new Date()
-      const m = this.timezone.match(/UTC([+-]\\d+)/); const offset = m ? Number(m[1]) : 8
-      const [y, mo, day] = this.manualDate.split('-').map(Number); const [h, min] = this.manualTime.split(':').map(Number)
-      const utc = Date.UTC(y, mo - 1, day, h, min) - offset * 3600000
-      const localOffset = new Date().getTimezoneOffset() * 60000
-      let d = new Date(utc + localOffset)
+      // 统一把中国标准时间墙上时刻编码为 UTC，避免运行设备处于其他时区时干支错日、错时。
+      let d
+      if (this.manualDate && this.manualTime) {
+        const [y, mo, day] = this.manualDate.split('-').map(Number); const [h, min] = this.manualTime.split(':').map(Number)
+        d = new Date(Date.UTC(y, mo - 1, day, h, min))
+      } else {
+        const now = new Date(Date.now() + 8 * 3600000)
+        d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()))
+      }
       if (this.useSolarTime) d = new Date(d.getTime() + 4 * 60000)
       return d
     },
     useSystemTime() {
-      const d = new Date(); const p = n => (n < 10 ? '0' + n : n)
-      this.manualDate = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; this.manualTime = `${p(d.getHours())}:${p(d.getMinutes())}`; this.tick()
+      const d = new Date(Date.now() + 8 * 3600000); const p = n => (n < 10 ? '0' + n : n)
+      this.manualDate = `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`; this.manualTime = `${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`; this.tick()
     },
     tick() {
       const d = this.getCalcDate()
       const p = n => (n < 10 ? '0' + n : n)
-      this.liveClock = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
+      const h = d.getUTCHours()
+      this.liveClock = `${p(h)}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`
       const day = calcDayGanZhi(d)
       const isYang = day.ganIdx % 2 === 0
-      const h = d.getHours()
       this.hourIdx = h === 23 || h === 0 ? 0 : Math.floor((h + 1) / 2)
       const hourGZ = calcHourGanZhi(day.ganIdx, h)
       const raw = calcLingGui(day.gan, day.zhi, hourGZ.gan, hourGZ.zhi, isYang)

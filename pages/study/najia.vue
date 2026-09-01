@@ -22,10 +22,10 @@
       <view class="calc-title serif">计算时间设置</view>
       <view class="setting-line"><text>日期</text><picker mode="date" :value="manualDate" start="1900-01-01" end="2100-12-31" @change="manualDate = $event.detail.value; tick()"><view class="setting-value">{{ manualDate || '选择日期' }} ›</view></picker></view>
       <view class="setting-line"><text>时间</text><picker mode="time" :value="manualTime" @change="manualTime = $event.detail.value; tick()"><view class="setting-value">{{ manualTime || '选择时间' }} ›</view></picker></view>
-      <view class="setting-line"><text>时区</text><picker :range="timezoneOptions" @change="timezone = timezoneOptions[$event.detail.value]; tick()"><view class="setting-value">{{ timezone }} ›</view></picker></view>
+      <view class="setting-line"><text>计算时区</text><view class="setting-value">中国标准时间（UTC+8）</view></view>
       <view class="setting-line"><text>子初换日</text><switch :checked="ziChuChange" @change="ziChuChange = $event.detail.value; tick()" color="#9A2E1F" /></view>
       <view class="setting-line"><text>真太阳时</text><switch :checked="useSolarTime" @change="useSolarTime = $event.detail.value; tick()" color="#9A2E1F" /></view>
-      <view class="calc-note">默认使用系统时间；开启子初换日后，23:00 起按次日干支计算。真太阳时按东八区标准经度作学习性修正。</view>
+      <view class="calc-note">所有计算统一使用中国标准时间（UTC+8）；开启子初换日后，23:00 起按次日干支计算。真太阳时为可选的学习性修正，开启后会在标准时间基础上调整。</view>
       <view class="calc-line">日干支：{{ dayGz }}　时干支：{{ hourGz }}</view>
       <view class="calc-line">纳甲依据：{{ dayGan }}日 · {{ hourName }}时 · {{ najiaMeta || '暂无开穴' }}</view>
       <view class="snapshot-row"><view class="snapshot-btn" @tap="copyCalculation">复制计算过程</view></view>
@@ -231,21 +231,27 @@ export default {
     },
     goLinggui() { uni.navigateTo({ url: '/pages/study/linggui' }) },
     getCalcDate() {
-      if (!this.manualDate || !this.manualTime) return new Date()
-      const m = this.timezone.match(/UTC([+-]\\d+)/); const offset = m ? Number(m[1]) : 8
-      const [y, mo, day] = this.manualDate.split('-').map(Number); const [h, min] = this.manualTime.split(':').map(Number)
-      const localOffset = new Date().getTimezoneOffset() * 60000
-      let d = new Date(Date.UTC(y, mo - 1, day, h, min) - offset * 3600000 + localOffset)
+      // 将中国标准时间的墙上时刻编码到 UTC，后续统一使用 UTC getter，避免设备时区影响干支计算。
+      const p = n => (n < 10 ? '0' + n : n)
+      let d
+      if (this.manualDate && this.manualTime) {
+        const [y, mo, day] = this.manualDate.split('-').map(Number)
+        const [h, min] = this.manualTime.split(':').map(Number)
+        d = new Date(Date.UTC(y, mo - 1, day, h, min))
+      } else {
+        const now = new Date(Date.now() + 8 * 3600000)
+        d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()))
+      }
       if (this.useSolarTime) d = new Date(d.getTime() + 4 * 60000)
       return d
     },
     useSystemTime() {
-      const d = new Date(); const p = n => (n < 10 ? '0' + n : n)
-      this.manualDate = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; this.manualTime = `${p(d.getHours())}:${p(d.getMinutes())}`; this.tick()
+      const d = new Date(Date.now() + 8 * 3600000); const p = n => (n < 10 ? '0' + n : n)
+      this.manualDate = `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`; this.manualTime = `${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`; this.tick()
     },
     calcDayGan(date = new Date()) {
       const d = date
-      const y = d.getFullYear(), m = d.getMonth() + 1, day = d.getDate()
+      const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1, day = d.getUTCDate()
       const a = Math.floor((14 - m) / 12)
       const y2 = y + 4800 - a
       const m2 = m + 12 * a - 3
@@ -253,7 +259,7 @@ export default {
       return (jdn + 9) % 10
     },
     calcDayZhi(date = new Date()) {
-      const y = date.getFullYear(), m = date.getMonth() + 1, day = date.getDate()
+      const y = date.getUTCFullYear(), m = date.getUTCMonth() + 1, day = date.getUTCDate()
       const a = Math.floor((14 - m) / 12); const y2 = y + 4800 - a; const m2 = m + 12 * a - 3
       const jdn = day + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045
       return (jdn + 1) % 12
@@ -265,16 +271,17 @@ export default {
     tick() {
       const d = this.getCalcDate()
       const p = n => (n < 10 ? '0' + n : n)
-      this.liveClock = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
-      const dayForGan = this.ziChuChange && d.getHours() >= 23 ? new Date(d.getTime() + 24 * 3600000) : d
+      const h = d.getUTCHours()
+      this.liveClock = `${p(h)}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`
+      const dayForGan = this.ziChuChange && h >= 23 ? new Date(d.getTime() + 24 * 3600000) : d
       this.dayGanIdx = this.calcDayGan(dayForGan)
       const dayZhiIdx = this.calcDayZhi(dayForGan)
       this.dayZhiIdx = dayZhiIdx
       this.dayCycleIndex = Array.from({ length: 60 }, (_, i) => [i % 10, i % 12]).findIndex(x => x[0] === this.dayGanIdx && x[1] === dayZhiIdx)
-      const hourGanIdx = (this.dayGanIdx * 2 + this.getHourIdx(d.getHours())) % 10
+      const hourGanIdx = (this.dayGanIdx * 2 + this.getHourIdx(h)) % 10
       this.dayGz = GAN[this.dayGanIdx] + ZHI[dayZhiIdx]
-      this.hourGz = GAN[hourGanIdx] + ZHI[this.getHourIdx(d.getHours())]
-      this.nowHour = d.getHours()
+      this.hourGz = GAN[hourGanIdx] + ZHI[this.getHourIdx(h)]
+      this.nowHour = h
       this.hourIdx = this.getHourIdx(this.nowHour)
       this.calcNajia()
       this.buildNajiaTable()
