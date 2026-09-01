@@ -45,7 +45,7 @@
       </view>
       <!-- 代码 / 流程图 -->
       <view v-else-if="b.ty === 'code'">
-        <view class="code" :class="{ fold: codeFold(bi) && !openedCode[bi] }"><text>{{ codeText(b) }}</text></view>
+        <view class="code" :class="{ fold: codeFold(bi) && !openedCode[bi] }"><seg :segs="codeSegs(b)" /></view>
         <view v-if="codeFold(bi)" class="code-toggle" @tap="toggleCode(bi)">{{ openedCode[bi] ? '▴ 收起' : '▾ 展开全部 ' + b.text.split('\n').length + ' 行' }}</view>
       </view>
       <view v-else-if="b.ty === 'hr'" class="mdhr"><text class="mdhr-orn">❖</text></view>
@@ -78,6 +78,9 @@ export default {
     codeText(b) {
       return b.text
     },
+    codeSegs(b) {
+      return inlineSegs(b && b.text ? b.text : '')
+    },
     toggleCode(bi) {
       this.openedCode[bi] = !this.openedCode[bi]
     },
@@ -107,7 +110,8 @@ export default {
 .h2 { font-size: 1.25em; font-weight: 800; margin: 1.1em 0 0.5em; color: var(--ink); letter-spacing: 2rpx; }
 .h3 { font-size: 1.12em; font-weight: 700; margin: 1em 0 0.4em; color: var(--brand-deep, #7C3A21); line-height: 1.5; }
 .h4 { font-size: 1.02em; font-weight: 700; margin: 0.9em 0 0.3em; color: var(--ink2); line-height: 1.5; }
-.p { margin: 0.5em 0; text-align: justify; }
+.p { margin: 0.5em 0; text-align: justify; word-break: break-word; overflow-wrap: anywhere; }
+.li-v, .kv-v, .q-line { min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
 .p.ind { text-indent: 2em; }
 .kv { display: flex; margin: 0.45em 0; align-items: flex-start; background: var(--zebra-bg); border-radius: 12rpx; padding: 12rpx 18rpx; }
 .kv-k { flex-shrink: 0; font-weight: 700; color: var(--brand); margin-right: 14rpx; }

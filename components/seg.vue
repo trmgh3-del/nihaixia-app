@@ -1,6 +1,6 @@
 <template>
   <text class="seg-root">
-    <text v-for="(s, i) in segs" :key="i" :class="'seg-' + s.t" :user-select="s.t === 'txt'" @tap="s.t === 'fang' && tapFang(s.v)">{{ s.v }}</text>
+    <text v-for="(s, i) in segs" :key="i" :class="'seg-' + s.t" :user-select="s.t === 'txt' || s.t === 'a'" @tap="s.t === 'fang' ? tapFang(s.v) : s.t === 'a' && tapLink(s.u)" @longpress="s.t === 'a' && copyLink(s.u)">{{ s.v }}</text>
   </text>
 </template>
 
@@ -12,6 +12,26 @@ export default {
   name: 'seg',
   props: { segs: { type: Array, default: () => [{ t: 'txt', v: '' }] } },
   methods: {
+    tapLink(url) {
+      const target = String(url || '').trim()
+      if (!/^https?:\/\//i.test(target)) {
+        uni.showToast({ title: '仅支持打开 http/https 链接', icon: 'none' })
+        return
+      }
+      // H5 用新标签页，App 端交给系统浏览器；不在浏览器中访问 localhost 等本机地址。
+      // #ifdef H5
+      if (typeof window !== 'undefined') window.open(target, '_blank', 'noopener,noreferrer')
+      // #endif
+      // #ifndef H5
+      if (typeof plus !== 'undefined' && plus.runtime) plus.runtime.openURL(target)
+      else uni.setClipboardData({ data: target, success: () => uni.showToast({ title: '链接已复制，请用浏览器打开', icon: 'none' }) })
+      // #endif
+    },
+    copyLink(url) {
+      const target = String(url || '').trim()
+      if (!target) return
+      uni.setClipboardData({ data: target, success: () => uni.showToast({ title: '链接已复制', icon: 'none' }) })
+    },
     async tapFang(name) {
       const clean = String(name || '').replace(/[「」“”\s]/g, '')
       const find = list => { const all = list || []; const exact = all.find(x => x.n === name || x.n === clean); if (exact) return exact; return all.filter(x => clean.includes(x.n) || x.n.includes(clean)).sort((a, b) => b.n.length - a.n.length)[0] }
@@ -36,6 +56,6 @@ export default {
 .seg-i { font-style: italic; }
 .seg-c { font-family: Menlo, Consolas, monospace; background: var(--zebra-bg); padding: 2rpx 8rpx; border-radius: 6rpx; font-size: 0.9em; }
 .seg-d { text-decoration: line-through; color: var(--ink2); }
-.seg-a { color: var(--brand); text-decoration: underline; }
+.seg-a { color: var(--brand); text-decoration: underline; white-space: normal; word-break: break-all; overflow-wrap: anywhere; user-select: text; -webkit-user-select: text; }
 .seg-fang { color: var(--brand); border-bottom: 2rpx solid var(--brand); font-weight: 600; }
 </style>

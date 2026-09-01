@@ -36,8 +36,29 @@ export function inlineSegs(s) {
   }
   if (!segs.length) segs.push({ t: 'txt', v: '' })
   const fangs = getFangNames()
-  if (!fangs.length) return segs
-  return linkify(segs, fangs)
+  const linked = fangs.length ? linkify(segs, fangs) : segs
+  return linkifyUrls(linked)
+}
+
+/* 将裸露的 http/https 地址也变为可点击、可长按复制的链接。 */
+function linkifyUrls(segs) {
+  const out = []
+  const re = /(https?:\/\/[^\s<>)\]》】]+)/gi
+  segs.forEach(seg => {
+    if (seg.t !== 'txt') { out.push(seg); return }
+    let rest = seg.v
+    let m
+    while ((m = re.exec(rest))) {
+      if (m.index > 0) out.push({ t: 'txt', v: rest.slice(0, m.index) })
+      const url = m[0].replace(/[.,;:!?，。；：！？]+$/, '')
+      out.push({ t: 'a', v: url, u: url })
+      if (url.length < m[0].length) out.push({ t: 'txt', v: m[0].slice(url.length) })
+      rest = rest.slice(m.index + m[0].length)
+      re.lastIndex = 0
+    }
+    if (rest) out.push({ t: 'txt', v: rest })
+  })
+  return out.length ? out : segs
 }
 
 /* 把文本段中的方剂名替换为链接段 */
