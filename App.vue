@@ -63,4 +63,7 @@ button::after { border: none; }
 .seg-c { font-family: Menlo, Consolas, monospace; background: var(--zebra-bg); padding: 2rpx 8rpx; border-radius: 6rpx; font-size: .9em; }
 .seg-d { text-decoration: line-through; color: var(--ink2); }
 .seg-a { color: var(--brand); text-decoration: underline; }
+/* 标题统一单行收纳：短标题不再无故换行，过长标题用省略号保持布局稳定 */
+.sec-head { min-width: 0; }
+.sec-head .sec-title, .sec-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 </style>

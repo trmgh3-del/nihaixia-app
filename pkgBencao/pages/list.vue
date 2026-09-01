@@ -132,7 +132,7 @@ export default {
 .h-zz { font-size: 21rpx; color: var(--ink2); margin-top: 6rpx; line-height: 1.5; height: 96rpx; overflow: hidden; }
 .list { padding: 24rpx 32rpx 0; }
 .l-item { display: flex; align-items: center; padding: 28rpx 30rpx; margin-bottom: 20rpx; }
-.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); flex: 1; }
+.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .l-s { font-size: 21rpx; color: var(--ink2); flex: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-left: 20rpx; }
 .l-a { color: var(--ink2); margin-left: 12rpx; }
 .none { text-align: center; color: var(--ink2); padding: 100rpx 0; }

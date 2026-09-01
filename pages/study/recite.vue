@@ -133,7 +133,7 @@ export default {
 .c-stat { margin-left: auto; font-size: 21rpx; color: var(--gold); }
 .rec { padding: 34rpx 36rpx; }
 .r-src { font-size: 19rpx; color: var(--gold); letter-spacing: 2rpx; }
-.r-title { font-size: 34rpx; font-weight: 800; color: var(--brand); margin-top: 10rpx; }
+.r-title { font-size: 34rpx; font-weight: 800; color: var(--brand); margin-top: 10rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .r-text { font-size: 31rpx; line-height: 2.1; color: var(--ink); margin-top: 24rpx; text-align: justify; letter-spacing: 1rpx; }
 .blank { color: var(--brand); background: rgba(154,46,31,.08); border-bottom: 3rpx solid var(--brand); border-radius: 6rpx; margin: 0 4rpx; }
 .blank.show { background: rgba(154,46,31,.12); font-weight: 700; }

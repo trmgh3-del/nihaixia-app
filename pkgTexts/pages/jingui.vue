@@ -62,7 +62,7 @@ export default {
 .l-item { display: flex; align-items: center; padding: 26rpx 30rpx; margin-bottom: 20rpx; }
 .l-no { width: 56rpx; height: 56rpx; border-radius: 16rpx; background: var(--zebra-bg); color: var(--brand); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 24rpx; flex-shrink: 0; }
 .l-main { flex: 1; margin-left: 22rpx; min-width: 0; }
-.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
+.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .l-s { font-size: 22rpx; color: var(--ink2); margin-top: 8rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .l-a { color: var(--ink2); font-size: 30rpx; }
 .none { text-align: center; color: var(--ink2); padding: 100rpx 0; }

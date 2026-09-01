@@ -91,7 +91,7 @@ export default {
 .l-head { display: flex; align-items: center; }
 .l-badge { font-size: 20rpx; color: #fff; background: var(--brand); border-radius: 8rpx; padding: 4rpx 14rpx; margin-right: 16rpx; flex-shrink: 0; }
 .l-badge.soft { background: var(--gold); }
-.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
+.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .l-s { font-size: 23rpx; color: var(--ink2); margin-top: 12rpx; line-height: 1.6; }
 .none { text-align: center; color: var(--ink2); padding: 100rpx 0; }
 </style>

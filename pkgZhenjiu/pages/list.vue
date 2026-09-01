@@ -131,7 +131,7 @@ export default {
 .l-item { padding: 26rpx 30rpx; margin-bottom: 20rpx; }
 .l-head { display: flex; align-items: center; }
 .l-badge { width: 44rpx; height: 44rpx; border-radius: 12rpx; background: #EDE9F4; color: #54427C; font-size: 22rpx; display: flex; align-items: center; justify-content: center; margin-right: 18rpx; flex-shrink: 0; font-weight: 700; }
-.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
+.l-t { font-size: 28rpx; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .l-s { font-size: 22rpx; color: var(--ink2); margin-top: 10rpx; line-height: 1.6; }
 .none { text-align: center; color: var(--ink2); padding: 100rpx 0; }
 </style>
