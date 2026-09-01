@@ -108,21 +108,21 @@ export default {
 .banner { position: relative; background: linear-gradient(140deg, var(--hero1), var(--hero2)); padding: 44rpx 36rpx 56rpx; overflow: hidden; }
 .b-deco { position: absolute; width: 360rpx; height: 360rpx; border-radius: 50%; background: #F6E7C9; opacity: .1; top: -140rpx; right: -80rpx; }
 .b-deco.d2 { width: 180rpx; height: 180rpx; top: auto; bottom: -70rpx; left: -40rpx; opacity: .07; }
-.b-title { position: relative; font-size: 44rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; }
-.b-sub { position: relative; font-size: 22rpx; color: rgba(253,248,238,.85); margin-top: 12rpx; }
+.b-title { position: relative; font-size: 44rpx; font-weight: 800; color: #FDF8EE; letter-spacing: 4rpx; white-space: nowrap; }
+.b-sub { position: relative; font-size: 22rpx; color: rgba(253,248,238,.85); margin-top: 12rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sec { margin: 30rpx 32rpx 0; }
-.sec-head { display: flex; align-items: baseline; margin-bottom: 18rpx; }
-.sec-orn { color: var(--gold); font-size: 22rpx; margin-right: 10rpx; }
-.sec-title { font-size: 32rpx; font-weight: 800; color: var(--ink); letter-spacing: 2rpx; }
-.sec-desc { margin-left: auto; font-size: 21rpx; color: var(--ink2); }
+.sec-head { display: flex; align-items: baseline; margin-bottom: 18rpx; min-width: 0; }
+.sec-orn { color: var(--gold); font-size: 22rpx; margin-right: 10rpx; flex-shrink: 0; }
+.sec-title { font-size: 32rpx; font-weight: 800; color: var(--ink); letter-spacing: 2rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.sec-desc { margin-left: auto; font-size: 21rpx; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .entries { padding: 6rpx 26rpx; }
-.e-item { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid var(--line); }
+.e-item { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid var(--line); min-width: 0; }
 .no-b { border-bottom: none !important; }
 .e-icon { width: 84rpx; height: 84rpx; border-radius: 22rpx; display: flex; align-items: center; justify-content: center; font-size: 34rpx; font-weight: 800; color: var(--ink); flex-shrink: 0; }
 .e-main { flex: 1; margin-left: 24rpx; min-width: 0; }
-.e-label { font-size: 30rpx; font-weight: 700; color: var(--ink); }
+.e-label { font-size: 30rpx; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .e-sub { font-size: 22rpx; color: var(--ink2); margin-top: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .e-count { font-size: 22rpx; color: var(--brand); background: var(--zebra-bg); border-radius: 10rpx; padding: 4rpx 14rpx; margin-right: 12rpx; flex-shrink: 0; }
-.e-arrow { color: var(--ink2); font-size: 32rpx; }
+.e-arrow { color: var(--ink2); font-size: 32rpx; flex-shrink: 0; }
 .foot { margin-top: 50rpx; text-align: center; color: var(--ink2); font-size: 21rpx; opacity: .8; }
 </style>

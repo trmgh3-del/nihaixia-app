@@ -65,11 +65,11 @@ export default {
 .s-ico { margin-right: 14rpx; font-size: 26rpx; }
 .s-input { flex: 1; font-size: 26rpx; color: var(--ink); }
 .tabs { display: flex; flex-wrap: wrap; background: var(--card); padding: 0 24rpx 20rpx; }
-.tab { font-size: 22rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 26rpx; padding: 10rpx 26rpx; margin: 0 12rpx 10rpx 0; }
+.tab { font-size: 22rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 26rpx; padding: 10rpx 26rpx; margin: 0 12rpx 10rpx 0; white-space: nowrap; max-width: 100%; box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; }
 .tab.on { background: var(--brand); color: #fff; font-weight: 700; }
 .list { padding: 20rpx 32rpx 0; }
-.s-item { padding: 26rpx 30rpx; margin-bottom: 18rpx; }
-.s-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
-.s-h2 { font-size: 20rpx; color: var(--ink2); margin-top: 8rpx; }
+.s-item { padding: 26rpx 30rpx; margin-bottom: 18rpx; min-width: 0; }
+.s-t { font-size: 28rpx; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.s-h2 { font-size: 20rpx; color: var(--ink2); margin-top: 8rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .none { text-align: center; color: var(--ink2); padding: 100rpx 0; }
 </style>
