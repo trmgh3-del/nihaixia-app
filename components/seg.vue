@@ -13,7 +13,7 @@ export default {
   props: { segs: { type: Array, default: () => [{ t: 'txt', v: '' }] } },
   methods: {
     tapLink(url) {
-      const target = String(url || '').trim()
+      const target = String(url || '').trim().replace(/，安装$/, '').replace(/[，。；：！？、]+$/, '')
       if (!/^https?:\/\//i.test(target)) {
         uni.showToast({ title: '仅支持打开 http/https 链接', icon: 'none' })
         return
@@ -28,7 +28,7 @@ export default {
       // #endif
     },
     copyLink(url) {
-      const target = String(url || '').trim()
+      const target = String(url || '').trim().replace(/，安装$/, '').replace(/[，。；：！？、]+$/, '')
       if (!target) return
       uni.setClipboardData({ data: target, success: () => uni.showToast({ title: '链接已复制', icon: 'none' }) })
     },

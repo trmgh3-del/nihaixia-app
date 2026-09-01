@@ -30,7 +30,10 @@ export function inlineSegs(s) {
     if (m.index > 0) segs.push({ t: 'txt', v: rest.slice(0, m.index) })
     if (m[2] !== undefined) segs.push({ t: 'b', v: m[2] })
     else if (m[4] !== undefined) segs.push({ t: 'c', v: m[4] })
-    else if (m[6] !== undefined) segs.push({ t: 'a', v: m[6], u: m[7] })
+    else if (m[6] !== undefined) {
+      const url = String(m[7] || '').replace(/，安装$/, '').replace(/[，。；：！？、]+$/, '')
+      segs.push({ t: 'a', v: m[6], u: url })
+    }
     else if (m[9] !== undefined) segs.push({ t: 'd', v: m[9] })
     rest = rest.slice(m.index + m[0].length)
   }
@@ -43,7 +46,7 @@ export function inlineSegs(s) {
 /* 将裸露的 http/https 地址也变为可点击、可长按复制的链接。 */
 function linkifyUrls(segs) {
   const out = []
-  const re = /(https?:\/\/[^\s<>)\]》】]+)/gi
+  const re = /(https?:\/\/[^\s<>)\]》】,，。；：！？、]+)/gi
   segs.forEach(seg => {
     if (seg.t !== 'txt') { out.push(seg); return }
     let rest = seg.v
