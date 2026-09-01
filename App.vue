@@ -58,7 +58,7 @@ button::after { border: none; }
 .card { transition: transform .12s ease, box-shadow .12s ease; }
 .card:active, .press:active { transform: scale(.985); box-shadow: 0 2rpx 10rpx rgba(60,44,22,.1); }
 /* 行内片段 */
-.seg-b { font-weight: 700; color: var(--brand); }
+.seg-b { font-weight: 700; color: var(--brand); white-space: nowrap; display: inline-block; }
 .seg-i { font-style: italic; }
 .seg-c { font-family: Menlo, Consolas, monospace; background: var(--zebra-bg); padding: 2rpx 8rpx; border-radius: 6rpx; font-size: .9em; }
 .seg-d { text-decoration: line-through; color: var(--ink2); }
