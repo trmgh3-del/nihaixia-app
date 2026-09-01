@@ -288,7 +288,8 @@ export default {
     const wk = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()]
     this.dateStr = `${d.getMonth() + 1}月${d.getDate()}日 · 周${wk}`
     const MERS = { 23: '胆', 0: '胆', 1: '肝', 2: '肝', 3: '肺', 4: '肺', 5: '大肠', 6: '大肠', 7: '胃', 8: '胃', 9: '脾', 10: '脾', 11: '心', 12: '心', 13: '小肠', 14: '小肠', 15: '膀胱', 16: '膀胱', 17: '肾', 18: '肾', 19: '心包', 20: '心包', 21: '三焦', 22: '三焦' }
-    this.nowMer = MERS[d.getHours()] || '—'
+    const chinaNow = new Date(Date.now() + 8 * 3600000)
+    this.nowMer = MERS[chinaNow.getUTCHours()] || '—'
     applyTheme()
     // 首页可能长期驻留，不重新挂载；每次回到首页都检查本地日期是否已变化
     this.refreshDaily()

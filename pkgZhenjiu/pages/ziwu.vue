@@ -107,7 +107,9 @@ export default {
   },
   methods: {
     tick() {
-      const h = new Date().getHours()
+      // 子午流注按中国标准时间计算，不随手机系统时区漂移。
+      const chinaNow = new Date(Date.now() + 8 * 3600000)
+      const h = chinaNow.getUTCHours()
       const z = ZIWU.find(x => x.hours.includes(h)) || ZIWU[0]
       this.now = { h: z.h + '时', mer: z.mer, range: z.range, yuan: z.yuan, wx: z.wx }
     },
