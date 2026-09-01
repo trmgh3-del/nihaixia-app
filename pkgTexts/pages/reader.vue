@@ -1,5 +1,5 @@
 <template>
-  <view class="page" :class="theme === 'dark' ? 'tdark' : 'tlight'">
+  <view class="page" :class="[theme === 'dark' ? 'tdark' : 'tlight', isPoint ? 'point-page' : '']">
     <view class="progress" :style="{ width: progress + '%' }" />
     <view class="wrap" v-if="item">
       <view class="r-head">
@@ -92,6 +92,10 @@ export default {
         { img: '/static/icons/note-brand.png', fn: () => self.openNote() },
         { img: '/static/icons/sound-brand.png', fn: () => { if (self.speaking) self.fabOpen = false; self.toggleSpeak() } }
       ]
+    },
+    isPoint() {
+      const it = this.item
+      return !!(it && it.f === 'zhenjiu' && /^pt\\d+/.test(it.id || ''))
     },
     item() {
       const r = store.readerItem
@@ -308,9 +312,12 @@ export default {
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 160rpx; }
 .progress { position: fixed; top: 0; left: 0; height: 5rpx; z-index: 99; background: linear-gradient(90deg, var(--gold), var(--brand)); border-radius: 0 4rpx 4rpx 0; transition: width .15s linear; }
 .wrap { padding: 30rpx 32rpx 0; }
-.r-head { padding: 6rpx 8rpx 26rpx; }
-.r-path { display: inline-block; font-size: 20rpx; color: var(--gold); border: 1rpx solid var(--gold); border-radius: 8rpx; padding: 2rpx 14rpx; margin-bottom: 16rpx; }
-.r-title { font-size: 44rpx; font-weight: 800; color: var(--ink); line-height: 1.4; letter-spacing: 2rpx; }
+.r-head { padding: 10rpx 10rpx 28rpx; }
+.r-path { display: inline-block; font-size: 20rpx; color: var(--gold); border: 1rpx solid var(--gold); border-radius: 8rpx; padding: 4rpx 16rpx; margin-bottom: 16rpx; background: var(--zebra-bg); }
+.r-title { font-size: 44rpx; font-weight: 800; color: var(--ink); line-height: 1.4; letter-spacing: 2rpx; word-break: break-word; }
+.point-page .r-title { color: var(--brand); font-size: 42rpx; }
+.point-page .r-body { border-top: 6rpx solid var(--brand); }
+.point-page .r-meta { background: var(--zebra-bg); border-radius: 12rpx; padding: 12rpx 16rpx; }
 .r-orn { display: flex; align-items: center; margin-top: 18rpx; }
 .r-orn view { flex: 1; height: 1rpx; background: var(--line); }
 .r-orn .d { flex: 0 0 12rpx; height: 12rpx; transform: rotate(45deg); background: var(--gold); margin: 0 16rpx; border-radius: 2rpx; }

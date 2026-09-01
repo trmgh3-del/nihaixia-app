@@ -192,9 +192,13 @@ export function parseMd(md) {
     if (buf.length) {
       const joined = buf.join(' ')
       // 穴位/药物等详情常用“定位：…、主治：…”连续行，拆成学习卡字段，避免整段挤在一起。
-      const labels = /^(定位|主治|操作|注意|禁忌|倪师特色|来源|功效|配伍|取穴|针法|灸法|归经|性味|用量|炮制)[：:]/
+      const labelNames = '定位|主治|操作|注意|禁忌|倪师特色|来源|功效|配伍|取穴|针法|灸法|归经|性味|用量|炮制'
+      const labels = new RegExp('^(' + labelNames + ')[：:]')
       const labeled = buf.map(line => line.match(labels)).filter(Boolean)
-      if (labeled.length >= 2 && labeled.length === buf.length) {
+      const fields = splitLabeledFields(joined, labelNames)
+      if (fields.length >= 2) {
+        fields.forEach(field => blocks.push({ ty: 'kv', k: field.k, segs: inlineSegs(field.v) }))
+      } else if (labeled.length >= 2 && labeled.length === buf.length) {
         buf.forEach(line => {
           const m0 = line.match(/^([^：:]{1,12})[：:]\s*(.*)$/)
           if (m0) blocks.push({ ty: 'kv', k: m0[1], segs: inlineSegs(m0[2]) })
@@ -216,6 +220,18 @@ export function parseMd(md) {
     }
   }
   return blocks
+}
+
+function splitLabeledFields(text, labelNames) {
+  const re = new RegExp('(' + labelNames + ')[：:]', 'g')
+  const hits = []
+  let m
+  while ((m = re.exec(String(text || '')))) hits.push({ k: m[1], at: m.index, start: m.index + m[0].length })
+  if (hits.length < 2 || hits[0].at > 8) return []
+  return hits.map((h, i) => ({
+    k: h.k,
+    v: String(text).slice(h.start, i + 1 < hits.length ? hits[i + 1].at : undefined).replace(/[\\s。；;]+$/, '').trim()
+  })).filter(x => x.v)
 }
 
 function tryInnerTable(inner) {
