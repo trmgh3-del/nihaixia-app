@@ -191,14 +191,25 @@ export function parseMd(md) {
     }
     if (buf.length) {
       const joined = buf.join(' ')
-      // 「**字段**：值」单行 -> kv 块，视觉更佳
-      const kv = joined.match(/^\*\*([^*]{1,12})\*\*[：:]\s*(.*)$/)
-      if (kv && joined.length < 400) blocks.push({ ty: 'kv', k: kv[1], segs: inlineSegs(kv[2]) })
-      else {
-        // 中文长段落：首行缩进两字（古典排版）
-        const plain = joined.replace(/\*\*?/g, '')
-        const ind = plain.length > 50 && /^[\u4e00-\u9fa5「《（]/.test(plain)
-        blocks.push({ ty: 'p', segs: inlineSegs(joined), ind })
+      // 穴位/药物等详情常用“定位：…、主治：…”连续行，拆成学习卡字段，避免整段挤在一起。
+      const labels = /^(定位|主治|操作|注意|禁忌|倪师特色|来源|功效|配伍|取穴|针法|灸法|归经|性味|用量|炮制)[：:]/
+      const labeled = buf.map(line => line.match(labels)).filter(Boolean)
+      if (labeled.length >= 2 && labeled.length === buf.length) {
+        buf.forEach(line => {
+          const m0 = line.match(/^([^：:]{1,12})[：:]\s*(.*)$/)
+          if (m0) blocks.push({ ty: 'kv', k: m0[1], segs: inlineSegs(m0[2]) })
+        })
+      } else {
+        // 「**字段**：值」单行 -> kv 块，视觉更佳
+        const kv = joined.match(/^\*\*([^*]{1,12})\*\*[：:]\s*(.*)$/)
+        if (kv && joined.length < 400) {
+          blocks.push({ ty: 'kv', k: kv[1], segs: inlineSegs(kv[2]) })
+        } else {
+          // 中文长段落：首行缩进两字（古典排版）
+          const plain = joined.replace(/\*\*?/g, '')
+          const ind = plain.length > 50 && /^[\u4e00-\u9fa5「《（]/.test(plain)
+          blocks.push({ ty: 'p', segs: inlineSegs(joined), ind })
+        }
       }
     } else {
       i++
