@@ -23,6 +23,20 @@
     </view>
 
     <view class="blk card fade-in">
+      <view class="b-t serif">从 GitHub 获取 App 更新</view>
+      <view class="b-d">GitHub 源码、版本说明和 APK（如仓库发布）统一从官方仓库获取。检查版本后可打开发布页下载；安装包更新需要系统安装确认，不能由 H5 页面静默替换。</view>
+      <view class="b-acts">
+        <view class="b-btn" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查最新版本' }}</view>
+        <view class="b-btn" @tap="openGithubRepo">打开 GitHub</view>
+        <view class="b-btn" @tap="openSourceZip">下载源码 ZIP</view>
+      </view>
+      <view class="b-tip" v-if="releaseMsg" :class="releaseOk ? 'ok' : 'warn'">{{ releaseMsg }}</view>
+      <view class="b-acts" v-if="releaseUrl">
+        <view class="b-btn main" @tap="openExternal(releaseUrl)">打开发布页下载</view>
+      </view>
+    </view>
+
+    <view class="blk card fade-in">
       <view class="b-t serif">数据包热更新（App）</view>
       <view class="b-d">输入数据包地址（data-update.json），下载校验后立即生效，无需重装。</view>
       <view class="in-row">
@@ -45,7 +59,8 @@ import { loadData, hotPack } from '@/utils/data.js'
 export default {
   data() {
     return { meta: {}, packUrl: '', checking: false, repoMsg: '', repoOk: false,
-      downloading: false, packMsg: '', packOk: false, hotDate: '' }
+      downloading: false, packMsg: '', packOk: false, hotDate: '',
+      releaseChecking: false, releaseMsg: '', releaseOk: false, releaseUrl: '' }
   },
   computed: {
     theme() { return store.theme },
@@ -62,6 +77,50 @@ export default {
     this.packUrl = hotPack.url() || ''
   },
   methods: {
+    openGithubRepo() {
+      this.openExternal('https://github.com/trmgh3-del/nihaixia-app')
+    },
+    openExternal(url) {
+      const target = String(url || '')
+      // #ifdef H5
+      if (typeof window !== 'undefined') window.open(target, '_blank', 'noopener,noreferrer')
+      // #endif
+      // #ifndef H5
+      if (typeof plus !== 'undefined' && plus.runtime) plus.runtime.openURL(target)
+      else uni.setClipboardData({ data: target, success: () => uni.showToast({ title: '链接已复制，请用浏览器打开', icon: 'none' }) })
+      // #endif
+    },
+    openSourceZip() {
+      this.openExternal('https://github.com/trmgh3-del/nihaixia-app/archive/refs/heads/arena/01a03ca9-nihaixia-app.zip')
+    },
+    checkAppRelease() {
+      if (this.releaseChecking) return
+      this.releaseChecking = true
+      this.releaseMsg = ''
+      this.releaseUrl = ''
+      uni.request({
+        url: 'https://api.github.com/repos/trmgh3-del/nihaixia-app/releases/latest',
+        method: 'GET', timeout: 20000,
+        header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
+        success: res => {
+          const r = res.data
+          if (res.statusCode === 200 && r && r.tag_name) {
+            this.releaseUrl = r.html_url || 'https://github.com/trmgh3-del/nihaixia-app/releases'
+            const assets = (r.assets || []).map(a => a.name).filter(Boolean)
+            this.releaseOk = true
+            this.releaseMsg = `最新发布：${r.tag_name}${assets.length ? ' · 可下载：' + assets.join('、') : ' · 请在发布页查看下载文件'}`
+          } else if (res.statusCode === 404) {
+            this.releaseOk = false
+            this.releaseMsg = '仓库暂未发布 Release，请打开 GitHub 仓库下载源码或查看后续版本。'
+          } else {
+            this.releaseOk = false
+            this.releaseMsg = 'GitHub 发布接口返回异常（HTTP ' + res.statusCode + '）'
+          }
+        },
+        fail: () => { this.releaseOk = false; this.releaseMsg = '无法访问 GitHub，请检查网络或直接打开仓库' },
+        complete: () => { this.releaseChecking = false }
+      })
+    },
     checkRepo() {
       if (this.checking) return
       this.checking = true
