@@ -23,7 +23,7 @@
       <view class="tab" :class="{ on: tab === 'hist' }" @tap="tab = 'hist'">阅读足迹</view>
     </view>
 
-    <view class="list card fade-in">
+    <scroll-view class="list card fade-in" scroll-y :show-scrollbar="false">
       <view v-if="!(tab === 'fav' ? favorites : history).length" class="empty">
         <text class="e-orn">❈</text>
         <text>{{ tab === 'fav' ? '暂无收藏，阅读时点右上角 ☆ 收藏' : '暂无阅读记录' }}</text>
@@ -36,7 +36,7 @@
         <text class="l-x" v-if="tab === 'fav'" @tap.stop="unfav(h)">✕</text>
         <text class="l-time" v-else>{{ fmtTime(h.ts) }}</text>
       </view>
-    </view>
+    </scroll-view>
 
     <!-- 设置 -->
     <view class="sec-title serif"><image class="ico" src="/static/icons/settings-brand.png" style="vertical-align:-6rpx;margin-right:10rpx" />偏好设置</view>
@@ -181,7 +181,7 @@ export default {
 .tabs { display: flex; margin: 30rpx 32rpx 0; }
 .tab { padding: 16rpx 34rpx; font-size: 27rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 32rpx 32rpx 0 0; margin-right: 8rpx; }
 .tab.on { background: var(--card); color: var(--brand); font-weight: 700; }
-.list { margin: 0 32rpx; padding: 8rpx 28rpx; }
+.list { margin: 0 32rpx; padding: 8rpx 28rpx; max-height: 72vh; box-sizing: border-box; overflow-y: auto; }
 .empty { padding: 60rpx 0; text-align: center; color: var(--ink2); font-size: 24rpx; display: flex; flex-direction: column; align-items: center; }
 .e-orn { font-size: 60rpx; margin-bottom: 16rpx; }
 .l-item { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid var(--line); }

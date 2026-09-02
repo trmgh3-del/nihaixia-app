@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style>
-.seg-root { line-height: inherit; }
+.seg-root { line-height: inherit; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
 .seg-txt { color: inherit; }
 .seg-b { font-weight: 700; color: var(--brand); white-space: nowrap; display: inline-block; }
 .seg-i { font-style: italic; }
