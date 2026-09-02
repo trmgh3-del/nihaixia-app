@@ -115,8 +115,8 @@ export default {
               uni.showModal({ title: '发现 App 新版本', content: `${r.tag_name} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(this.releaseAsset) } })
             }
           } else if (res.statusCode === 404) {
-            this.releaseOk = false
-            this.releaseMsg = '仓库暂未发布 Release，暂时没有可自动安装的 APK 更新包。'
+            // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
+            this.checkRepositoryApk(silent)
           } else {
             this.releaseOk = false
             this.releaseMsg = 'GitHub 发布接口返回异常（HTTP ' + res.statusCode + '）'
@@ -150,6 +150,32 @@ export default {
         else uni.showToast({ title: '请打开发布页安装', icon: 'none' })
       }, fail: () => uni.showToast({ title: '下载失败，请检查网络', icon: 'none' }), complete: () => uni.hideLoading() })
       // #endif
+    },
+    checkRepositoryApk(silent = false) {
+      uni.request({
+        url: 'https://api.github.com/repos/trmgh3-del/nihaixia-app/contents/release?ref=main',
+        method: 'GET', timeout: 20000,
+        header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
+        success: res => {
+          const files = Array.isArray(res.data) ? res.data : []
+          const file = files.find(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
+          if (!file) {
+            this.releaseOk = false
+            this.releaseMsg = '仓库暂未发布 Release，release/ 目录也没有 APK 更新包。'
+            return
+          }
+          const download = `https://raw.githubusercontent.com/trmgh3-del/nihaixia-app/main/release/${encodeURIComponent(file.name)}`
+          this.releaseAsset = { name: file.name, browser_download_url: download }
+          this.releaseUrl = file.html_url || download
+          this.releaseOk = true
+          this.releaseMsg = `发现仓库 APK：${file.name} · 来源：release/ 目录`
+          const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
+          if (silent && version && this.isNewerApp(version)) {
+            uni.showModal({ title: '发现 App 新版本', content: `${version} 已放入 GitHub release/ 目录，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(this.releaseAsset) } })
+          }
+        },
+        fail: () => { this.releaseOk = false; this.releaseMsg = '无法检查 GitHub release/ 目录，请检查网络' }
+      })
     },
     checkRepo() {
       if (this.checking) return
