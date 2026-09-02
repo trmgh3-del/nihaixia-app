@@ -26,14 +26,14 @@
       <view class="b-t serif">从 GitHub 获取 App 更新</view>
       <view class="b-d">进入本页会自动检查 GitHub 最新 Release；发现新版 APK 后提示确认，App 端可下载并调用系统安装器，H5 端打开发布页。安装包更新需要系统安装确认，不能静默替换。</view>
       <view class="b-acts">
-        <view class="b-btn" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查最新版本' }}</view>
-        <view class="b-btn" @tap="openGithubRepo">打开 GitHub</view>
-        <view class="b-btn" @tap="openSourceZip">下载源码 ZIP</view>
+        <view class="b-btn main" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查并下载安装更新' }}</view>
       </view>
       <view class="b-tip" v-if="releaseMsg" :class="releaseOk ? 'ok' : 'warn'">{{ releaseMsg }}</view>
-      <view class="b-acts" v-if="releaseUrl">
-        <view class="b-btn main" @tap="openExternal(releaseUrl)">打开发布页下载</view>
-        <view class="b-btn" v-if="releaseAsset" @tap="downloadRelease(releaseAsset)">下载 APK</view>
+      <view class="b-acts" v-if="releaseUrl && !releaseAsset">
+        <view class="b-btn main" @tap="openExternal(releaseUrl)">打开下载页</view>
+      </view>
+      <view class="b-acts" v-if="releaseAsset">
+        <view class="b-btn main" @tap="downloadRelease(releaseAsset)">下载并安装 APK</view>
       </view>
     </view>
 
@@ -83,9 +83,6 @@ export default {
     }
   },
   methods: {
-    openGithubRepo() {
-      this.openExternal('https://github.com/trmgh3-del/nihaixia-app')
-    },
     openExternal(url) {
       const target = String(url || '')
       // #ifdef H5
@@ -95,9 +92,6 @@ export default {
       if (typeof plus !== 'undefined' && plus.runtime) plus.runtime.openURL(target)
       else uni.setClipboardData({ data: target, success: () => uni.showToast({ title: '链接已复制，请用浏览器打开', icon: 'none' }) })
       // #endif
-    },
-    openSourceZip() {
-      this.openExternal('https://github.com/trmgh3-del/nihaixia-app/archive/refs/heads/arena/01a03ca9-nihaixia-app.zip')
     },
     checkAppRelease(silent = false) {
       if (this.releaseChecking) return
@@ -122,7 +116,7 @@ export default {
             }
           } else if (res.statusCode === 404) {
             this.releaseOk = false
-            this.releaseMsg = '仓库暂未发布 Release，请打开 GitHub 仓库下载源码或查看后续版本。'
+            this.releaseMsg = '仓库暂未发布 Release，暂时没有可自动安装的 APK 更新包。'
           } else {
             this.releaseOk = false
             this.releaseMsg = 'GitHub 发布接口返回异常（HTTP ' + res.statusCode + '）'

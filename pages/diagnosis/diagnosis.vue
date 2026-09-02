@@ -29,7 +29,7 @@
           <view v-for="(it, i) in gongshiItems" :key="it.id" class="acc-item" :class="{ 'no-b': i === gongshiItems.length - 1, open: opened['L' + it.id] }" :id="'acc-' + it.id">
             <view class="acc-head" @tap="toggle('L' + it.id)">
               <text class="acc-t">{{ it.t }}</text>
-              <text class="acc-a" :class="{ open: opened['L' + it.id] }">›</text>
+              <text class="acc-a" :class="{ open: opened['L' + it.id] }">{{ opened['L' + it.id] ? '−' : '+' }}</text>
             </view>
             <view v-if="opened['L' + it.id]" class="acc-body">
               <md-blocks :blocks="blocksOf(it)" :base="26" />
@@ -46,7 +46,7 @@
           <view v-for="(it, i) in expItems" :key="it.id" class="acc-item" :class="{ 'no-b': i === expItems.length - 1, open: opened['E' + it.id] }" :id="'acc-' + it.id">
             <view class="acc-head" @tap="toggle('E' + it.id)">
               <text class="acc-t">{{ it.t }}</text>
-              <text class="acc-a" :class="{ open: opened['E' + it.id] }">›</text>
+              <text class="acc-a" :class="{ open: opened['E' + it.id] }">{{ opened['E' + it.id] ? '−' : '+' }}</text>
             </view>
             <view v-if="opened['E' + it.id]" class="acc-body">
               <md-blocks :blocks="blocksOf(it)" :base="26" />
@@ -102,7 +102,7 @@
         <view class="acc card">
           <view v-for="(it, i) in maisheItems" :key="it.id" class="acc-item" :class="{ 'no-b': i === maisheItems.length - 1, open: opened['ms' + it.id] }" :id="'acc-' + it.id">
             <view class="acc-head" @tap="toggle('ms' + it.id)">
-              <text class="acc-t">{{ it.t }}</text><text class="acc-a" :class="{ open: opened['ms' + it.id] }">›</text>
+              <text class="acc-t">{{ it.t }}</text><text class="acc-a" :class="{ open: opened['ms' + it.id] }">{{ opened['ms' + it.id] ? '−' : '+' }}</text>
             </view>
             <view v-if="opened['ms' + it.id]" class="acc-body"><md-blocks :blocks="blocksOf(it)" :base="26" /></view>
           </view>
@@ -464,12 +464,12 @@ export default {
 .acc-item.no-b { border-bottom: none; }
 .acc-item.open { background: var(--zebra-bg); }
 .acc-item.open .acc-t { color: var(--brand); }
-.acc-head { display: flex; align-items: center; min-width: 0; padding: 26rpx 4rpx; }
-.acc-main { flex: 1; min-width: 0; overflow: hidden; }
-.acc-t { display: block; min-width: 0; font-size: 28rpx; color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.acc-sub { display: block; min-width: 0; font-size: 21rpx; color: var(--ink2); margin-top: 4rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.acc-a { color: var(--ink2); font-size: 34rpx; transform: rotate(90deg); transition: transform .2s; }
-.acc-a.open { transform: rotate(-90deg); }
+.acc-head { display: flex; align-items: flex-start; min-width: 0; padding: 26rpx 4rpx; }
+.acc-main { flex: 1; min-width: 0; overflow: visible; }
+.acc-t { display: block; min-width: 0; font-size: 28rpx; color: var(--ink); font-weight: 600; white-space: normal; overflow: visible; word-break: break-word; overflow-wrap: anywhere; line-height: 1.55; }
+.acc-sub { display: block; min-width: 0; font-size: 21rpx; color: var(--ink2); margin-top: 6rpx; white-space: normal; overflow: visible; word-break: break-word; overflow-wrap: anywhere; line-height: 1.55; }
+.acc-a { flex: 0 0 46rpx; width: 46rpx; height: 46rpx; line-height: 42rpx; box-sizing: border-box; margin-left: 14rpx; color: var(--brand); font-size: 30rpx; font-weight: 700; text-align: center; border: 2rpx solid var(--line); border-radius: 50%; background: var(--card); transition: color .2s, background .2s, transform .2s; }
+.acc-a.open { color: #fff; background: var(--brand); border-color: var(--brand); transform: none; }
 .acc-body { padding: 4rpx 0 30rpx; border-top: 1rpx dashed var(--line); margin-top: -6rpx; padding-top: 22rpx; min-width: 0; max-width: 100%; overflow: hidden; box-sizing: border-box; }
 
 /* 自查 */
