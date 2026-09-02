@@ -335,6 +335,17 @@ export default {
       this.tab = 'gongshi'
       const tryJump = () => {
         if (!this._diagLoaded) return false
+        // 从“医典 → 辨证论治 → 诊断经验汇编”进入时，定位到经验汇编分组，
+        // 不能把 exp 当作六经名称，否则会回到总览而看不到目标内容。
+        if (name === 'exp') {
+          this.seg = '速查'
+          this.opened = {}
+          const exp = this.expItems
+          if (!exp.length) return false
+          exp.forEach(x => { this.opened['E' + x.id] = true })
+          this.$nextTick(() => this.scrollToItem(exp[0]))
+          return true
+        }
         const k = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴'].includes(name) ? name : ''
         this.seg = k
         this.opened = {}
