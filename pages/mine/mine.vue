@@ -181,7 +181,9 @@ export default {
 .tabs { display: flex; margin: 30rpx 32rpx 0; }
 .tab { padding: 16rpx 34rpx; font-size: 27rpx; color: var(--ink2); background: var(--zebra-bg); border-radius: 32rpx 32rpx 0 0; margin-right: 8rpx; }
 .tab.on { background: var(--card); color: var(--brand); font-weight: 700; }
-.list { margin: 0 32rpx; padding: 8rpx 28rpx; max-height: 72vh; box-sizing: border-box; overflow-y: auto; }
+.list { margin: 0 32rpx; padding: 8rpx 28rpx; width: calc(100% - 64rpx); height: 420rpx; max-height: 46vh; box-sizing: border-box; overflow-y: auto; }
+.l-item { max-width: 100%; box-sizing: border-box; min-width: 0; }
+.l-main { min-width: 0; max-width: 100%; overflow: hidden; }
 .empty { padding: 60rpx 0; text-align: center; color: var(--ink2); font-size: 24rpx; display: flex; flex-direction: column; align-items: center; }
 .e-orn { font-size: 60rpx; margin-bottom: 16rpx; }
 .l-item { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid var(--line); }

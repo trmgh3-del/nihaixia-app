@@ -121,7 +121,7 @@ export default {
 .kv-k { flex: 0 0 112rpx; font-weight: 800; color: var(--brand); margin-right: 18rpx; line-height: 1.85; }
 .kv-v { flex: 1; min-width: 0; line-height: 1.9; }
 .quote { background: linear-gradient(135deg, var(--quote-bg), var(--zebra-bg)); border-left: 6rpx solid var(--gold); border-radius: 4rpx 16rpx 16rpx 4rpx; padding: 18rpx 24rpx; margin: 0.65em 0; min-width: 0; max-width: 100%; box-sizing: border-box; overflow: hidden; }
-.q-line { color: var(--ink2); margin: 4rpx 0; min-width: 0; max-width: 100%; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
+.q-line { color: var(--ink2); margin: 4rpx 0; min-width: 0; width: 100%; max-width: 100%; box-sizing: border-box; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
 .list { margin: 0.5em 0; }
 .li { display: flex; margin: 10rpx 0; align-items: flex-start; }
 .dot { font-size: 0.5em; margin: 16rpx 14rpx 0 0; flex-shrink: 0; }

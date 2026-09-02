@@ -1,7 +1,7 @@
 <template>
-  <text class="seg-root">
+  <view class="seg-root">
     <text v-for="(s, i) in segs" :key="i" :class="'seg-' + s.t" :user-select="s.t === 'txt' || s.t === 'a'" @tap="s.t === 'fang' ? tapFang(s.v) : s.t === 'a' && tapLink(s.u)" @longpress="s.t === 'a' && copyLink(s.u)">{{ s.v }}</text>
-  </text>
+  </view>
 </template>
 
 <script>
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style>
-.seg-root { line-height: inherit; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
+.seg-root { display: block; width: 100%; max-width: 100%; box-sizing: border-box; line-height: inherit; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
 .seg-txt { color: inherit; }
 .seg-b { font-weight: 700; color: var(--brand); white-space: nowrap; display: inline-block; }
 .seg-i { font-style: italic; }
