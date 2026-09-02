@@ -29,6 +29,11 @@
         <view class="b-btn main" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查并下载安装更新' }}</view>
       </view>
       <view class="b-tip" v-if="releaseMsg" :class="releaseOk ? 'ok' : 'warn'">{{ releaseMsg }}</view>
+      <view class="download-box" v-if="apkDownloading">
+        <view class="download-line"><text>正在下载 APK</text><text>{{ downloadProgress }}%</text></view>
+        <view class="download-track"><view class="download-fill" :style="{ width: downloadProgress + '%' }"></view></view>
+        <view class="download-note">请保持网络连接，下载完成后将弹出系统安装确认。</view>
+      </view>
       <view class="b-acts" v-if="releaseUrl && !releaseAsset">
         <view class="b-btn main" @tap="openExternal(releaseUrl)">打开下载页</view>
       </view>
@@ -61,7 +66,8 @@ export default {
   data() {
     return { meta: {}, packUrl: '', checking: false, repoMsg: '', repoOk: false,
       downloading: false, packMsg: '', packOk: false, hotDate: '',
-      releaseChecking: false, releaseMsg: '', releaseOk: false, releaseUrl: '', releaseAsset: null }
+      releaseChecking: false, releaseMsg: '', releaseOk: false, releaseUrl: '', releaseAsset: null,
+      apkDownloading: false, downloadProgress: 0 }
   },
   computed: {
     theme() { return store.theme },
@@ -111,8 +117,8 @@ export default {
             this.releaseAsset = assetsRaw.find(a => /\.apk$/i.test(a.name || '')) || null
             this.releaseOk = true
             this.releaseMsg = `最新发布：${r.tag_name}${assets.length ? ' · 可下载：' + assets.join('、') : ' · 请在发布页查看下载文件'}`
-            if (silent && this.releaseAsset && this.isNewerApp(r.tag_name)) {
-              uni.showModal({ title: '发现 App 新版本', content: `${r.tag_name} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(this.releaseAsset) } })
+            if (this.releaseAsset && this.isNewerApp(r.tag_name)) {
+              this.offerInstall(this.releaseAsset, r.tag_name)
             }
           } else if (res.statusCode === 404) {
             // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
@@ -136,19 +142,25 @@ export default {
       }
       return false
     },
-    downloadRelease(asset) {
-      if (!asset || !asset.browser_download_url) return
+    offerInstall(asset, version) {
+      uni.showModal({ title: '发现 App 新版本', content: `${version} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(asset, true) } })
+    },
+    downloadRelease(asset, confirmed = false) {
+      if (!asset || !asset.browser_download_url || this.apkDownloading) return
+      if (!confirmed) { this.offerInstall(asset, asset.name || '新版本'); return }
       // H5 不能安装 APK；App 端下载后交给系统安装器，仍需用户确认。
       // #ifdef H5
       this.openExternal(asset.browser_download_url)
       // #endif
       // #ifndef H5
-      uni.showLoading({ title: '下载更新中' })
-      uni.downloadFile({ url: asset.browser_download_url, success: res => {
+      this.apkDownloading = true
+      this.downloadProgress = 0
+      const task = uni.downloadFile({ url: asset.browser_download_url, success: res => {
         if (res.statusCode !== 200 || !res.tempFilePath) { uni.showToast({ title: '下载失败', icon: 'none' }); return }
         if (typeof plus !== 'undefined' && plus.runtime) plus.runtime.install(res.tempFilePath, {}, () => {}, () => uni.showToast({ title: '安装失败', icon: 'none' }))
-        else uni.showToast({ title: '请打开发布页安装', icon: 'none' })
-      }, fail: () => uni.showToast({ title: '下载失败，请检查网络', icon: 'none' }), complete: () => uni.hideLoading() })
+        else uni.showToast({ title: '请打开下载页安装', icon: 'none' })
+      }, fail: () => uni.showToast({ title: '下载失败，请检查网络', icon: 'none' }), complete: () => { this.apkDownloading = false } })
+      if (task && task.onProgressUpdate) task.onProgressUpdate(e => { this.downloadProgress = Math.max(0, Math.min(100, e.progress || 0)) })
       // #endif
     },
     checkRepositoryApk(silent = false, dirIndex = 0) {
@@ -173,9 +185,7 @@ export default {
           this.releaseOk = true
           this.releaseMsg = `发现仓库 APK：${file.name} · 来源：${dir}/ 目录`
           const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
-          if (silent && version && this.isNewerApp(version)) {
-            uni.showModal({ title: '发现 App 新版本', content: `${version} 已放入 GitHub ${dir}/ 目录，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(this.releaseAsset) } })
-          }
+          if (version && this.isNewerApp(version)) this.offerInstall(this.releaseAsset, version)
         },
         fail: () => { this.checkRepositoryApk(silent, dirIndex + 1) }
       })
@@ -273,5 +283,10 @@ export default {
 .b-tip { margin-top: 16rpx; font-size: 21rpx; border-radius: 10rpx; padding: 12rpx 18rpx; line-height: 1.7; }
 .b-tip.ok { color: #3F6B37; background: #E8F0E4; }
 .b-tip.warn { color: #A2651B; background: #FCF3DC; }
+.download-box { margin-top: 18rpx; padding: 18rpx 20rpx; border: 1rpx solid var(--line); border-radius: 14rpx; background: var(--zebra-bg); }
+.download-line { display: flex; justify-content: space-between; color: var(--brand); font-size: 23rpx; font-weight: 700; }
+.download-track { height: 14rpx; margin-top: 12rpx; background: var(--line); border-radius: 10rpx; overflow: hidden; }
+.download-fill { height: 100%; border-radius: 10rpx; background: linear-gradient(90deg, var(--gold), var(--brand)); transition: width .2s ease; }
+.download-note { margin-top: 10rpx; color: var(--ink2); font-size: 19rpx; }
 .b-note { margin-top: 14rpx; font-size: 19rpx; color: var(--ink2); line-height: 1.7; }
 </style>
