@@ -24,7 +24,7 @@
 
     <view class="blk card fade-in">
       <view class="b-t serif">从 GitHub 获取 App 更新</view>
-      <view class="b-d">GitHub 源码、版本说明和 APK（如仓库发布）统一从官方仓库获取。检查版本后可打开发布页下载；安装包更新需要系统安装确认，不能由 H5 页面静默替换。</view>
+      <view class="b-d">进入本页会自动检查 GitHub 最新 Release；发现新版 APK 后提示确认，App 端可下载并调用系统安装器，H5 端打开发布页。安装包更新需要系统安装确认，不能静默替换。</view>
       <view class="b-acts">
         <view class="b-btn" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查最新版本' }}</view>
         <view class="b-btn" @tap="openGithubRepo">打开 GitHub</view>
@@ -33,6 +33,7 @@
       <view class="b-tip" v-if="releaseMsg" :class="releaseOk ? 'ok' : 'warn'">{{ releaseMsg }}</view>
       <view class="b-acts" v-if="releaseUrl">
         <view class="b-btn main" @tap="openExternal(releaseUrl)">打开发布页下载</view>
+        <view class="b-btn" v-if="releaseAsset" @tap="downloadRelease(releaseAsset)">下载 APK</view>
       </view>
     </view>
 
@@ -60,7 +61,7 @@ export default {
   data() {
     return { meta: {}, packUrl: '', checking: false, repoMsg: '', repoOk: false,
       downloading: false, packMsg: '', packOk: false, hotDate: '',
-      releaseChecking: false, releaseMsg: '', releaseOk: false, releaseUrl: '' }
+      releaseChecking: false, releaseMsg: '', releaseOk: false, releaseUrl: '', releaseAsset: null }
   },
   computed: {
     theme() { return store.theme },
@@ -75,6 +76,11 @@ export default {
     loadData('meta').then(m => { this.meta = m }).catch(() => {})
     this.hotDate = hotPack.date() || ''
     this.packUrl = hotPack.url() || ''
+    // 进入更新页自动检查；避免每次切页都请求，六小时内只检查一次。
+    if (!this._autoReleaseCheckedAt || Date.now() - this._autoReleaseCheckedAt > 6 * 3600000) {
+      this._autoReleaseCheckedAt = Date.now()
+      this.checkAppRelease(true)
+    }
   },
   methods: {
     openGithubRepo() {
@@ -93,7 +99,7 @@ export default {
     openSourceZip() {
       this.openExternal('https://github.com/trmgh3-del/nihaixia-app/archive/refs/heads/arena/01a03ca9-nihaixia-app.zip')
     },
-    checkAppRelease() {
+    checkAppRelease(silent = false) {
       if (this.releaseChecking) return
       this.releaseChecking = true
       this.releaseMsg = ''
@@ -106,9 +112,14 @@ export default {
           const r = res.data
           if (res.statusCode === 200 && r && r.tag_name) {
             this.releaseUrl = r.html_url || 'https://github.com/trmgh3-del/nihaixia-app/releases'
-            const assets = (r.assets || []).map(a => a.name).filter(Boolean)
+            const assetsRaw = (r.assets || []).filter(a => a && a.browser_download_url)
+            const assets = assetsRaw.map(a => a.name).filter(Boolean)
+            this.releaseAsset = assetsRaw.find(a => /\.apk$/i.test(a.name || '')) || null
             this.releaseOk = true
             this.releaseMsg = `最新发布：${r.tag_name}${assets.length ? ' · 可下载：' + assets.join('、') : ' · 请在发布页查看下载文件'}`
+            if (silent && this.releaseAsset && this.isNewerApp(r.tag_name)) {
+              uni.showModal({ title: '发现 App 新版本', content: `${r.tag_name} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(this.releaseAsset) } })
+            }
           } else if (res.statusCode === 404) {
             this.releaseOk = false
             this.releaseMsg = '仓库暂未发布 Release，请打开 GitHub 仓库下载源码或查看后续版本。'
@@ -120,6 +131,31 @@ export default {
         fail: () => { this.releaseOk = false; this.releaseMsg = '无法访问 GitHub，请检查网络或直接打开仓库' },
         complete: () => { this.releaseChecking = false }
       })
+    },
+    isNewerApp(tag) {
+      const current = String(uni.getSystemInfoSync().appVersion || '1.0.0').replace(/^v/i, '').split('.').map(Number)
+      const latest = String(tag || '').match(/\d+(?:\.\d+)+/)
+      if (!latest) return false
+      const next = latest[0].split('.').map(Number)
+      for (let i = 0; i < Math.max(current.length, next.length); i++) {
+        if ((next[i] || 0) !== (current[i] || 0)) return (next[i] || 0) > (current[i] || 0)
+      }
+      return false
+    },
+    downloadRelease(asset) {
+      if (!asset || !asset.browser_download_url) return
+      // H5 不能安装 APK；App 端下载后交给系统安装器，仍需用户确认。
+      // #ifdef H5
+      this.openExternal(asset.browser_download_url)
+      // #endif
+      // #ifndef H5
+      uni.showLoading({ title: '下载更新中' })
+      uni.downloadFile({ url: asset.browser_download_url, success: res => {
+        if (res.statusCode !== 200 || !res.tempFilePath) { uni.showToast({ title: '下载失败', icon: 'none' }); return }
+        if (typeof plus !== 'undefined' && plus.runtime) plus.runtime.install(res.tempFilePath, {}, () => {}, () => uni.showToast({ title: '安装失败', icon: 'none' }))
+        else uni.showToast({ title: '请打开发布页安装', icon: 'none' })
+      }, fail: () => uni.showToast({ title: '下载失败，请检查网络', icon: 'none' }), complete: () => uni.hideLoading() })
+      // #endif
     },
     checkRepo() {
       if (this.checking) return
