@@ -459,7 +459,7 @@ export default {
 .acc-sub { display: block; font-size: 21rpx; color: var(--ink2); margin-top: 4rpx; }
 .acc-a { color: var(--ink2); font-size: 34rpx; transform: rotate(90deg); transition: transform .2s; }
 .acc-a.open { transform: rotate(-90deg); }
-.acc-body { padding: 4rpx 0 30rpx; border-top: 1rpx dashed var(--line); margin-top: -6rpx; padding-top: 22rpx; }
+.acc-body { padding: 4rpx 0 30rpx; border-top: 1rpx dashed var(--line); margin-top: -6rpx; padding-top: 22rpx; min-width: 0; max-width: 100%; overflow: hidden; box-sizing: border-box; }
 
 /* 自查 */
 .sz-entry { display: flex; align-items: center; padding: 22rpx 28rpx; margin-bottom: 16rpx; background: linear-gradient(135deg, #FBEAE3, var(--card)); }

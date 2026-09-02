@@ -50,7 +50,9 @@ export default {
 </script>
 
 <style>
-.seg-root { display: block; width: 100%; max-width: 100%; box-sizing: border-box; line-height: inherit; white-space: normal; word-break: break-all; overflow-wrap: anywhere; }
+.seg-root { display: block; width: 100%; max-width: 100%; box-sizing: border-box; line-height: inherit; white-space: normal !important; word-break: break-all !important; overflow-wrap: anywhere; }
+.seg-root text { white-space: normal !important; word-break: break-all !important; overflow-wrap: anywhere; }
+.seg-txt { display: inline; }
 .seg-txt { color: inherit; }
 .seg-b { font-weight: 700; color: var(--brand); white-space: nowrap; display: inline-block; }
 .seg-i { font-style: italic; }
