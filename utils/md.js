@@ -28,8 +28,12 @@ export function inlineSegs(s) {
     const m = rest.match(re)
     if (!m) { segs.push({ t: 'txt', v: rest }); break }
     if (m.index > 0) segs.push({ t: 'txt', v: rest.slice(0, m.index) })
-    if (m[2] !== undefined) segs.push({ t: 'b', v: m[2] })
-    else if (m[4] !== undefined) segs.push({ t: 'c', v: m[4] })
+    if (m[2] !== undefined) {
+      // 支持 **基于 [项目](URL) 二次开发** 这类嵌套 Markdown：
+      // 先解析内部链接，避免链接标记被当作大段粗体纯文本渲染并撑出屏幕。
+      const inner = inlineSegs(m[2])
+      inner.forEach(s => segs.push(s.t === 'a' ? s : { ...s, t: 'b' }))
+    } else if (m[4] !== undefined) segs.push({ t: 'c', v: m[4] })
     else if (m[6] !== undefined) {
       const url = String(m[7] || '').replace(/，安装$/, '').replace(/[，。；：！？、]+$/, '')
       segs.push({ t: 'a', v: m[6], u: url })
