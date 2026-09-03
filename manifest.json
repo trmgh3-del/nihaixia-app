@@ -2,8 +2,8 @@
   "name": "倪师经方",
   "appid": "",
   "description": "倪海厦视角经方中医知识库：伤寒论·金匮要略·黄帝内经·神农本草经·针灸·1257例医案·六经辨证·天纪易理，离线全库 + AI问诊",
-  "versionName": "1.0.0",
-  "versionCode": "100",
+  "versionName": "1.0.2",
+  "versionCode": 102,
   "transformPx": false,
   "app-plus": {
     "usingComponents": true,
