@@ -90,47 +90,60 @@ export default {
       this.releaseMsg = ''
       this.releaseUrl = ''
       
-      const REPO = 'trmgh3-del/nihaixia-app'
-      const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
-      const KNOWN_VERSION_KEY = 'nihaixia_known_version'
+      const CONFIG = {
+        gitee: { user: 'your-username', repo: 'nihaixia-app', branch: 'master' },
+        github: { user: 'trmgh3-del', repo: 'nihaixia-app', branch: 'main' }
+      }
       
-      // 获取本地记录的已知版本
+      const sources = []
+      if (CONFIG.gitee.user !== 'your-username') {
+        const giteeBase = `https://gitee.com/${CONFIG.gitee.user}/${CONFIG.gitee.repo}/raw/${CONFIG.gitee.branch}`
+        sources.push({ name: 'Gitee', versionUrl: `${giteeBase}/releases/version.json`, apkUrl: `${giteeBase}/releases/latest.apk` })
+      }
+      const githubBase = `https://cdn.jsdelivr.net/gh/${CONFIG.github.user}/${CONFIG.github.repo}@${CONFIG.github.branch}`
+      sources.push({ name: 'GitHub', versionUrl: `${githubBase}/releases/version.json`, apkUrl: `${githubBase}/releases/latest.apk` })
+      
       let knownVersion = ''
-      try { knownVersion = uni.getStorageSync(KNOWN_VERSION_KEY) || '' } catch (e) {}
+      try { knownVersion = uni.getStorageSync('nihaixia_known_version') || '' } catch (e) {}
       
-      // 从 version.json 获取最新版本号
-      uni.request({
-        url: `${CDN}/releases/version.json`,
-        method: 'GET', timeout: 15000,
-        success: res => {
-          if (res.statusCode === 200 && res.data && res.data.version) {
-            const latestVersion = res.data.version
-            const apkUrl = `${CDN}/releases/latest.apk`
-            const current = String(uni.getSystemInfoSync().appVersion || '1.0.0')
-            
-            this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
-            this.releaseUrl = `https://github.com/${REPO}/releases`
-            this.releaseOk = true
-            this.releaseMsg = `最新版本：${latestVersion}`
-            
-            // 判断是否需要更新
-            if (this.isNewerApp(latestVersion) && this.isNewerThan(latestVersion, knownVersion)) {
-              this.offerInstall(this.releaseAsset, latestVersion)
-            } else if (!silent) {
-              uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
-            }
-          } else {
-            this.releaseOk = false
-            this.releaseMsg = '暂无可用更新'
-          }
-          this.releaseChecking = false
-        },
-        fail: () => {
+      let sourceIndex = 0
+      const tryNextSource = () => {
+        if (sourceIndex >= sources.length) {
           this.releaseOk = false
-          this.releaseMsg = '检查失败，请稍后重试'
+          this.releaseMsg = '暂无可用更新'
           this.releaseChecking = false
+          return
         }
-      })
+        
+        const source = sources[sourceIndex]
+        sourceIndex++
+        
+        uni.request({
+          url: source.versionUrl,
+          method: 'GET', timeout: 15000,
+          success: res => {
+            if (res.statusCode === 200 && res.data && res.data.version) {
+              const latestVersion = res.data.version
+              this.releaseAsset = { name: 'latest.apk', browser_download_url: source.apkUrl }
+              this.releaseUrl = `https://gitee.com/${CONFIG.gitee.user}/${CONFIG.gitee.repo}/releases`
+              this.releaseOk = true
+              this.releaseMsg = `最新版本：${latestVersion}（${source.name}）`
+              
+              if (this.isNewerApp(latestVersion) && this.isNewerThan(latestVersion, knownVersion)) {
+                this.offerInstall(this.releaseAsset, latestVersion)
+              } else if (!silent) {
+                uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
+              }
+              this.releaseChecking = false
+            } else {
+              tryNextSource()
+            }
+          },
+          fail: () => tryNextSource()
+        })
+      }
+      
+      tryNextSource()
     },
     isNewerThan(tag, base) {
       if (!base) return true
