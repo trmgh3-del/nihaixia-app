@@ -55,7 +55,7 @@ export function checkAppUpdate() {
   const current = (uni.getSystemInfoSync && uni.getSystemInfoSync().appVersion) || '1.0.0'
   const finish = (asset, version) => {
     if (asset && version && newer(version, current)) promptUpdate(asset, version)
-    else uni.showModal({ title: '版本检查', content: '当前已是最新版本。', showCancel: false, confirmText: '知道了' })
+    else uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
   }
   request(`${API}/releases/latest`, res => {
     const r = res.data
