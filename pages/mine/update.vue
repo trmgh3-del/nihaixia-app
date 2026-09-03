@@ -22,23 +22,13 @@
       <view class="b-tip" v-if="repoMsg" :class="repoOk ? 'ok' : 'warn'">{{ repoMsg }}</view>
     </view>
 
-    <view class="blk card fade-in">
-      <view class="b-t serif">从 GitHub 获取 App 更新</view>
-      <view class="b-d">进入本页会自动检查 GitHub 最新 Release；发现新版 APK 后提示确认，App 端可下载并调用系统安装器，H5 端打开发布页。安装包更新需要系统安装确认，不能静默替换。</view>
-      <view class="b-acts">
-        <view class="b-btn main" @tap="checkAppRelease">{{ releaseChecking ? '检查中…' : '⟳ 检查并下载安装更新' }}</view>
-      </view>
-      <view class="b-tip" v-if="releaseMsg" :class="releaseOk ? 'ok' : 'warn'">{{ releaseMsg }}</view>
+    <view class="blk card fade-in update-note">
+      <view class="b-t serif">App 版本更新</view>
+      <view class="b-d">App 每次启动时自动检查一次版本。发现新版本后会弹窗确认，并在确认后下载、安装；版本相同时提示“当前已是最新版本”。</view>
       <view class="download-box" v-if="apkDownloading">
         <view class="download-line"><text>正在下载 APK</text><text>{{ downloadProgress }}%</text></view>
         <view class="download-track"><view class="download-fill" :style="{ width: downloadProgress + '%' }"></view></view>
         <view class="download-note">请保持网络连接，下载完成后将弹出系统安装确认。</view>
-      </view>
-      <view class="b-acts" v-if="releaseUrl && !releaseAsset">
-        <view class="b-btn main" @tap="openExternal(releaseUrl)">打开下载页</view>
-      </view>
-      <view class="b-acts" v-if="releaseAsset">
-        <view class="b-btn main" @tap="downloadRelease(releaseAsset)">下载并安装 APK</view>
       </view>
     </view>
 
@@ -82,11 +72,6 @@ export default {
     loadData('meta').then(m => { this.meta = m }).catch(() => {})
     this.hotDate = hotPack.date() || ''
     this.packUrl = hotPack.url() || ''
-    // 进入更新页自动检查；避免每次切页都请求，六小时内只检查一次。
-    if (!this._autoReleaseCheckedAt || Date.now() - this._autoReleaseCheckedAt > 6 * 3600000) {
-      this._autoReleaseCheckedAt = Date.now()
-      this.checkAppRelease(true)
-    }
   },
   methods: {
     openExternal(url) {
