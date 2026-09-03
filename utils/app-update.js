@@ -1,7 +1,5 @@
 /* App 启动版本检查：每次进程启动只检查一次，避免重复请求、重复弹窗和重复下载。 */
 const REPO = 'trmgh3-del/nihaixia-app'
-const API = `https://api.github.com/repos/${REPO}`
-// 使用 jsdelivr CDN 避免 GitHub API 限流
 const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
 
 function newer(tag, current) {
@@ -47,64 +45,58 @@ function promptUpdate(asset, version) {
   })
 }
 
-function request(url, success, fail) {
-  uni.request({ url, method: 'GET', timeout: 20000, header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' }, success, fail })
-}
-
-// 从 version.json 获取版本信息（优先使用 CDN）
-function checkByVersionJson(callback) {
-  const url = `${CDN}/releases/version.json`
+// 从 version.json 获取版本号
+function getVersionFromJson(callback) {
   uni.request({
-    url, method: 'GET', timeout: 15000,
+    url: `${CDN}/releases/version.json`,
+    method: 'GET', timeout: 15000,
     success: res => {
-      if (res.statusCode === 200 && res.data && res.data.version && res.data.apk) {
-        const { version, apk } = res.data
-        const apkUrl = `${CDN}/releases/${encodeURIComponent(apk)}`
-        callback({ name: apk, url: apkUrl }, version)
+      if (res.statusCode === 200 && res.data && res.data.version) {
+        callback(res.data.version)
       } else {
-        callback(null, null)
+        callback(null)
       }
     },
-    fail: () => callback(null, null)
+    fail: () => callback(null)
   })
-}
-
-// 从 GitHub API 扫描目录获取最新 APK
-function checkByScanDir(callback) {
-  const dirs = ['releases', 'release']
-  const scan = i => {
-    if (i >= dirs.length) { callback(null, null); return }
-    const dir = dirs[i]
-    request(`${API}/contents/${dir}?ref=main`, result => {
-      const files = Array.isArray(result.data) ? result.data : []
-      // 优先找 latest.apk，否则找版本号最大的
-      let file = files.find(x => x && x.type === 'file' && x.name === 'latest.apk')
-      if (!file) {
-        const apks = files.filter(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
-        file = apks.sort((a, b) => (b.name || '').localeCompare(a.name || ''))[0]
-      }
-      if (file) {
-        const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0] || '未知'
-        callback({ name: file.name, url: `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}` }, version)
-      } else scan(i + 1)
-    }, () => scan(i + 1))
-  }
-  scan(0)
 }
 
 export function checkAppUpdate(silent = false) {
   if (typeof globalThis !== 'undefined' && globalThis.__NX_UPDATE_CHECKED__) return
   if (typeof globalThis !== 'undefined') globalThis.__NX_UPDATE_CHECKED__ = true
   const current = (uni.getSystemInfoSync && uni.getSystemInfoSync().appVersion) || '1.0.0'
-  const finish = (asset, version) => {
-    if (asset && version && newer(version, current)) promptUpdate(asset, version)
-    else if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
-  }
-
-  // 优先从 version.json 获取（CDN，无限流）
-  checkByVersionJson((asset, version) => {
-    if (asset && version) { finish(asset, version); return }
-    // version.json 失败，尝试扫描目录
-    checkByScanDir(finish)
+  
+  const apkUrl = `${CDN}/releases/latest.apk`
+  
+  // 先从 version.json 获取版本号，获取不到则用文件检查
+  getVersionFromJson(version => {
+    if (version) {
+      // 有版本号，直接判断
+      const asset = { name: 'latest.apk', url: apkUrl }
+      if (newer(version, current)) {
+        promptUpdate(asset, version)
+      } else if (!silent) {
+        uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
+      }
+    } else {
+      // 没有 version.json，尝试直接下载 APK 检查是否存在
+      uni.request({
+        url: apkUrl,
+        method: 'HEAD',
+        timeout: 10000,
+        success: res => {
+          if (res.statusCode === 200) {
+            // APK 存在，但不知道版本号，提示用户有新版本
+            const asset = { name: 'latest.apk', url: apkUrl }
+            promptUpdate(asset, '最新版')
+          } else if (!silent) {
+            uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
+          }
+        },
+        fail: () => {
+          if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
+        }
+      })
+    }
   })
 }

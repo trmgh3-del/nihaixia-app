@@ -92,19 +92,19 @@ export default {
       
       const REPO = 'trmgh3-del/nihaixia-app'
       const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
+      const apkUrl = `${CDN}/releases/latest.apk`
       
-      // 优先从 version.json 获取（CDN，无限流）
+      // 先从 version.json 获取版本号
       uni.request({
         url: `${CDN}/releases/version.json`,
         method: 'GET', timeout: 15000,
         success: res => {
-          if (res.statusCode === 200 && res.data && res.data.version && res.data.apk) {
-            const { version, apk } = res.data
-            const apkUrl = `${CDN}/releases/${encodeURIComponent(apk)}`
-            this.releaseAsset = { name: apk, browser_download_url: apkUrl }
+          if (res.statusCode === 200 && res.data && res.data.version) {
+            const version = res.data.version
+            this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
             this.releaseUrl = `https://github.com/${REPO}/releases`
             this.releaseOk = true
-            this.releaseMsg = `最新版本：${version} · 文件：${apk}`
+            this.releaseMsg = `最新版本：${version}`
             if (this.isNewerApp(version)) {
               this.offerInstall(this.releaseAsset, version)
             } else if (!silent) {
@@ -112,56 +112,38 @@ export default {
             }
             this.releaseChecking = false
           } else {
-            this.checkAppReleaseByScan(silent)
+            // 没有 version.json，检查 APK 是否存在
+            this.checkApkExists(silent, apkUrl)
           }
         },
-        fail: () => { this.checkAppReleaseByScan(silent) }
+        fail: () => { this.checkApkExists(silent, apkUrl) }
       })
     },
-    checkAppReleaseByScan(silent = false) {
+    checkApkExists(silent, apkUrl) {
       const REPO = 'trmgh3-del/nihaixia-app'
-      const dirs = ['releases', 'release']
-      const scan = (dirIndex) => {
-        if (dirIndex >= dirs.length) {
-          this.releaseOk = false
-          this.releaseMsg = '未找到 APK 更新包'
+      uni.request({
+        url: apkUrl,
+        method: 'HEAD',
+        timeout: 10000,
+        success: res => {
+          if (res.statusCode === 200) {
+            this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
+            this.releaseUrl = `https://github.com/${REPO}/releases`
+            this.releaseOk = true
+            this.releaseMsg = '发现新版本 APK'
+            this.offerInstall(this.releaseAsset, '最新版')
+          } else {
+            this.releaseOk = false
+            this.releaseMsg = '暂无可用更新'
+          }
           this.releaseChecking = false
-          return
+        },
+        fail: () => {
+          this.releaseOk = false
+          this.releaseMsg = '暂无可用更新'
+          this.releaseChecking = false
         }
-        const dir = dirs[dirIndex]
-        uni.request({
-          url: `https://api.github.com/repos/${REPO}/contents/${dir}?ref=main`,
-          method: 'GET', timeout: 20000,
-          header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
-          success: res => {
-            const files = Array.isArray(res.data) ? res.data : []
-            // 优先找 latest.apk，否则找版本号最大的
-            let file = files.find(x => x && x.type === 'file' && x.name === 'latest.apk')
-            if (!file) {
-              const apks = files.filter(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
-              file = apks.sort((a, b) => (b.name || '').localeCompare(a.name || ''))[0]
-            }
-            if (file) {
-              const download = `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}`
-              this.releaseAsset = { name: file.name, browser_download_url: download }
-              this.releaseUrl = `https://github.com/${REPO}/tree/main/${dir}`
-              this.releaseOk = true
-              this.releaseMsg = `发现 APK：${file.name}`
-              const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
-              if (version && this.isNewerApp(version)) {
-                this.offerInstall(this.releaseAsset, version)
-              } else if (!silent) {
-                uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
-              }
-              this.releaseChecking = false
-            } else {
-              scan(dirIndex + 1)
-            }
-          },
-          fail: () => { scan(dirIndex + 1) }
-        })
-      }
-      scan(0)
+      })
     }
     },
     isNewerApp(tag) {
