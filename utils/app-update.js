@@ -1,6 +1,7 @@
 /* App 启动版本检查：每次进程启动只检查一次，避免重复请求、重复弹窗和重复下载。 */
 const REPO = 'trmgh3-del/nihaixia-app'
 const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
+const KNOWN_VERSION_KEY = 'nihaixia_known_version'
 
 function newer(tag, current) {
   const a = String(current || '0.0.0').replace(/^v/i, '').split('.').map(Number)
@@ -41,23 +42,14 @@ function promptUpdate(asset, version) {
     title: '发现新版本',
     content: `${version} 已发布，是否下载并安装？`,
     confirmText: '下载更新', cancelText: '暂不更新',
-    success: r => { if (r.confirm) install(asset) }
-  })
-}
-
-// 从 version.json 获取版本号
-function getVersionFromJson(callback) {
-  uni.request({
-    url: `${CDN}/releases/version.json`,
-    method: 'GET', timeout: 15000,
-    success: res => {
-      if (res.statusCode === 200 && res.data && res.data.version) {
-        callback(res.data.version)
+    success: r => {
+      if (r.confirm) {
+        install(asset)
       } else {
-        callback(null)
+        // 用户选择暂不更新，记录版本号，下次不再提示
+        try { uni.setStorageSync(KNOWN_VERSION_KEY, version) } catch (e) {}
       }
-    },
-    fail: () => callback(null)
+    }
   })
 }
 
@@ -66,37 +58,32 @@ export function checkAppUpdate(silent = false) {
   if (typeof globalThis !== 'undefined') globalThis.__NX_UPDATE_CHECKED__ = true
   const current = (uni.getSystemInfoSync && uni.getSystemInfoSync().appVersion) || '1.0.0'
   
-  const apkUrl = `${CDN}/releases/latest.apk`
+  // 获取本地记录的已知版本
+  let knownVersion = ''
+  try { knownVersion = uni.getStorageSync(KNOWN_VERSION_KEY) || '' } catch (e) {}
   
-  // 先从 version.json 获取版本号，获取不到则用文件检查
-  getVersionFromJson(version => {
-    if (version) {
-      // 有版本号，直接判断
-      const asset = { name: 'latest.apk', url: apkUrl }
-      if (newer(version, current)) {
-        promptUpdate(asset, version)
+  // 从 version.json 获取最新版本号
+  uni.request({
+    url: `${CDN}/releases/version.json`,
+    method: 'GET', timeout: 15000,
+    success: res => {
+      if (res.statusCode === 200 && res.data && res.data.version) {
+        const latestVersion = res.data.version
+        const apkUrl = `${CDN}/releases/latest.apk`
+        const asset = { name: 'latest.apk', url: apkUrl }
+        
+        // 判断是否需要更新：版本比当前新 且 比已知版本新
+        if (newer(latestVersion, current) && newer(latestVersion, knownVersion)) {
+          promptUpdate(asset, latestVersion)
+        } else if (!silent) {
+          uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
+        }
       } else if (!silent) {
         uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
       }
-    } else {
-      // 没有 version.json，尝试直接下载 APK 检查是否存在
-      uni.request({
-        url: apkUrl,
-        method: 'HEAD',
-        timeout: 10000,
-        success: res => {
-          if (res.statusCode === 200) {
-            // APK 存在，但不知道版本号，提示用户有新版本
-            const asset = { name: 'latest.apk', url: apkUrl }
-            promptUpdate(asset, '最新版')
-          } else if (!silent) {
-            uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
-          }
-        },
-        fail: () => {
-          if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
-        }
-      })
+    },
+    fail: () => {
+      if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
     }
   })
 }

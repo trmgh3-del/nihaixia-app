@@ -92,46 +92,33 @@ export default {
       
       const REPO = 'trmgh3-del/nihaixia-app'
       const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
-      const apkUrl = `${CDN}/releases/latest.apk`
+      const KNOWN_VERSION_KEY = 'nihaixia_known_version'
       
-      // 先从 version.json 获取版本号
+      // 获取本地记录的已知版本
+      let knownVersion = ''
+      try { knownVersion = uni.getStorageSync(KNOWN_VERSION_KEY) || '' } catch (e) {}
+      
+      // 从 version.json 获取最新版本号
       uni.request({
         url: `${CDN}/releases/version.json`,
         method: 'GET', timeout: 15000,
         success: res => {
           if (res.statusCode === 200 && res.data && res.data.version) {
-            const version = res.data.version
+            const latestVersion = res.data.version
+            const apkUrl = `${CDN}/releases/latest.apk`
+            const current = String(uni.getSystemInfoSync().appVersion || '1.0.0')
+            
             this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
             this.releaseUrl = `https://github.com/${REPO}/releases`
             this.releaseOk = true
-            this.releaseMsg = `最新版本：${version}`
-            if (this.isNewerApp(version)) {
-              this.offerInstall(this.releaseAsset, version)
+            this.releaseMsg = `最新版本：${latestVersion}`
+            
+            // 判断是否需要更新
+            if (this.isNewerApp(latestVersion) && this.isNewerThan(latestVersion, knownVersion)) {
+              this.offerInstall(this.releaseAsset, latestVersion)
             } else if (!silent) {
               uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
             }
-            this.releaseChecking = false
-          } else {
-            // 没有 version.json，检查 APK 是否存在
-            this.checkApkExists(silent, apkUrl)
-          }
-        },
-        fail: () => { this.checkApkExists(silent, apkUrl) }
-      })
-    },
-    checkApkExists(silent, apkUrl) {
-      const REPO = 'trmgh3-del/nihaixia-app'
-      uni.request({
-        url: apkUrl,
-        method: 'HEAD',
-        timeout: 10000,
-        success: res => {
-          if (res.statusCode === 200) {
-            this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
-            this.releaseUrl = `https://github.com/${REPO}/releases`
-            this.releaseOk = true
-            this.releaseMsg = '发现新版本 APK'
-            this.offerInstall(this.releaseAsset, '最新版')
           } else {
             this.releaseOk = false
             this.releaseMsg = '暂无可用更新'
@@ -140,11 +127,38 @@ export default {
         },
         fail: () => {
           this.releaseOk = false
-          this.releaseMsg = '暂无可用更新'
+          this.releaseMsg = '检查失败，请稍后重试'
           this.releaseChecking = false
         }
       })
-    }
+    },
+    isNewerThan(tag, base) {
+      if (!base) return true
+      const a = String(base || '0.0.0').replace(/^v/i, '').split('.').map(Number)
+      const m = String(tag || '').match(/\d+(?:\.\d+)+/)
+      if (!m) return false
+      const b = m[0].split('.').map(Number)
+      for (let i = 0; i < Math.max(a.length, b.length); i++) {
+        if ((b[i] || 0) !== (a[i] || 0)) return (b[i] || 0) > (a[i] || 0)
+      }
+      return false
+    },
+    offerInstall(asset, version) {
+      const KNOWN_VERSION_KEY = 'nihaixia_known_version'
+      uni.showModal({ 
+        title: '发现 App 新版本', 
+        content: `${version} 已发布，是否下载并安装？`, 
+        confirmText: '下载更新', 
+        cancelText: '稍后', 
+        success: x => { 
+          if (x.confirm) {
+            this.downloadRelease(asset, true)
+          } else {
+            // 用户选择稍后，记录版本号
+            try { uni.setStorageSync(KNOWN_VERSION_KEY, version) } catch (e) {}
+          }
+        } 
+      })
     },
     isNewerApp(tag) {
       const current = String(uni.getSystemInfoSync().appVersion || '1.0.0').replace(/^v/i, '').split('.').map(Number)
@@ -156,9 +170,7 @@ export default {
       }
       return false
     },
-    offerInstall(asset, version) {
-      uni.showModal({ title: '发现 App 新版本', content: `${version} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(asset, true) } })
-    },
+
     downloadRelease(asset, confirmed = false) {
       if (!asset || !asset.browser_download_url || this.apkDownloading) return
       if (!confirmed) { this.offerInstall(asset, asset.name || '新版本'); return }
