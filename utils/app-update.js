@@ -49,13 +49,13 @@ function request(url, success, fail) {
   uni.request({ url, method: 'GET', timeout: 20000, header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' }, success, fail })
 }
 
-export function checkAppUpdate() {
+export function checkAppUpdate(silent = false) {
   if (typeof globalThis !== 'undefined' && globalThis.__NX_UPDATE_CHECKED__) return
   if (typeof globalThis !== 'undefined') globalThis.__NX_UPDATE_CHECKED__ = true
   const current = (uni.getSystemInfoSync && uni.getSystemInfoSync().appVersion) || '1.0.0'
   const finish = (asset, version) => {
     if (asset && version && newer(version, current)) promptUpdate(asset, version)
-    else uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
+    else if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
   }
   request(`${API}/releases/latest`, res => {
     const r = res.data

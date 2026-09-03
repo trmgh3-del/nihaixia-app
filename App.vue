@@ -7,7 +7,7 @@ export default {
   onLaunch() {
     initSettings()
     // 每次 App 进程启动只检查一次，避免重复检查和重复弹窗。
-    setTimeout(() => checkAppUpdate(), 1500)
+    setTimeout(() => checkAppUpdate(true), 1500)
     // 预载方名词典（正文方剂名互链）
     loadData('formulas').then(d => {
       if (d && d.items) setFangNames([...new Set(d.items.map(x => x.n))])

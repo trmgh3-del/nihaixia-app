@@ -24,7 +24,7 @@
 
     <view class="blk card fade-in update-note">
       <view class="b-t serif">App 版本更新</view>
-      <view class="b-d">App 每次启动时自动检查一次版本。发现新版本后会弹窗确认，并在确认后下载、安装；版本相同时提示“当前已是最新版本”。</view>
+      <view class="b-d">App 每次启动时自动检查一次版本。发现新版本后会弹窗确认，并在确认后下载、安装；手动检查时版本相同会提示“已是最新版”。</view>
       <view class="download-box" v-if="apkDownloading">
         <view class="download-line"><text>正在下载 APK</text><text>{{ downloadProgress }}%</text></view>
         <view class="download-track"><view class="download-fill" :style="{ width: downloadProgress + '%' }"></view></view>
@@ -104,6 +104,8 @@ export default {
             this.releaseMsg = `最新发布：${r.tag_name}${assets.length ? ' · 可下载：' + assets.join('、') : ' · 请在发布页查看下载文件'}`
             if (this.releaseAsset && this.isNewerApp(r.tag_name)) {
               this.offerInstall(this.releaseAsset, r.tag_name)
+            } else if (!silent) {
+              uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
             }
           } else if (res.statusCode === 404) {
             // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
@@ -171,6 +173,7 @@ export default {
           this.releaseMsg = `发现仓库 APK：${file.name} · 来源：${dir}/ 目录`
           const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
           if (version && this.isNewerApp(version)) this.offerInstall(this.releaseAsset, version)
+          else if (!silent) uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
         },
         fail: () => { this.checkRepositoryApk(silent, dirIndex + 1) }
       })
