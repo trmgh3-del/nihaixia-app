@@ -107,7 +107,7 @@ export default {
             } else if (!silent) {
               uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
             }
-          } else if (res.statusCode === 404) {
+          } else if (res.statusCode === 404 || res.statusCode === 403) {
             // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
             this.checkRepositoryApk(silent)
           } else {
@@ -115,7 +115,7 @@ export default {
             this.releaseMsg = 'GitHub 发布接口返回异常（HTTP ' + res.statusCode + '）'
           }
         },
-        fail: () => { this.releaseOk = false; this.releaseMsg = '无法访问 GitHub，请检查网络或直接打开仓库' },
+        fail: () => { this.checkRepositoryApk(silent) },
         complete: () => { this.releaseChecking = false }
       })
     },

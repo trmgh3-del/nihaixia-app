@@ -74,5 +74,10 @@ export function checkAppUpdate(silent = false) {
       }, () => scan(i + 1))
     }
     scan(0)
-  }, () => uni.showToast({ title: '版本检查失败，请稍后重试', icon: 'none' }))
+  }, () => {
+    // API 网络失败时，直接尝试从 raw 地址获取已知的 APK
+    const knownApk = 'releases/nihaixia-app-v1.0.0.apk'
+    const version = '1.0.0'
+    finish({ name: knownApk.split('/').pop(), url: `https://raw.githubusercontent.com/${REPO}/main/${knownApk}` }, version)
+  })
 }
