@@ -111,7 +111,7 @@ export default {
             this.releaseOk = true
             this.releaseMsg = `最新版本：${version}`
             
-            if (this.isNewerApp(version) && this.isNewerThan(version, knownVersion)) {
+            if (this.isNewerApp(version)) {
               this.offerInstall(this.releaseAsset, version)
             } else if (!silent) {
               uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
