@@ -24,7 +24,7 @@
 
     <view class="blk card fade-in update-note">
       <view class="b-t serif">App 版本更新</view>
-      <view class="b-d">App 每次启动时自动检查一次版本。发现新版本后会弹窗确认，并在确认后下载、安装；版本相同时提示“当前已是最新版本”。</view>
+      <view class="b-d">App 每次启动时自动检查一次版本。发现新版本后会弹窗确认，并在确认后下载、安装；手动检查时版本相同会提示“已是最新版”。</view>
       <view class="download-box" v-if="apkDownloading">
         <view class="download-line"><text>正在下载 APK</text><text>{{ downloadProgress }}%</text></view>
         <view class="download-track"><view class="download-fill" :style="{ width: downloadProgress + '%' }"></view></view>
@@ -89,32 +89,88 @@ export default {
       this.releaseChecking = true
       this.releaseMsg = ''
       this.releaseUrl = ''
-      uni.request({
-        url: 'https://api.github.com/repos/trmgh3-del/nihaixia-app/releases/latest',
-        method: 'GET', timeout: 20000,
-        header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
-        success: res => {
-          const r = res.data
-          if (res.statusCode === 200 && r && r.tag_name) {
-            this.releaseUrl = r.html_url || 'https://github.com/trmgh3-del/nihaixia-app/releases'
-            const assetsRaw = (r.assets || []).filter(a => a && a.browser_download_url)
-            const assets = assetsRaw.map(a => a.name).filter(Boolean)
-            this.releaseAsset = assetsRaw.find(a => /\.apk$/i.test(a.name || '')) || null
-            this.releaseOk = true
-            this.releaseMsg = `最新发布：${r.tag_name}${assets.length ? ' · 可下载：' + assets.join('、') : ' · 请在发布页查看下载文件'}`
-            if (this.releaseAsset && this.isNewerApp(r.tag_name)) {
-              this.offerInstall(this.releaseAsset, r.tag_name)
+      
+      const CONFIG = {
+        gitee: { user: 'your-username', repo: 'nihaixia-app', branch: 'master' },
+        github: { user: 'trmgh3-del', repo: 'nihaixia-app', branch: 'main' }
+      }
+      
+      const sources = []
+      if (CONFIG.gitee.user !== 'your-username') {
+        const giteeBase = `https://gitee.com/${CONFIG.gitee.user}/${CONFIG.gitee.repo}/raw/${CONFIG.gitee.branch}`
+        sources.push({ name: 'Gitee', versionUrl: `${giteeBase}/releases/version.json`, apkUrl: `${giteeBase}/releases/latest.apk` })
+      }
+      const githubBase = `https://cdn.jsdelivr.net/gh/${CONFIG.github.user}/${CONFIG.github.repo}@${CONFIG.github.branch}`
+      sources.push({ name: 'GitHub', versionUrl: `${githubBase}/releases/version.json`, apkUrl: `${githubBase}/releases/latest.apk` })
+      
+      let knownVersion = ''
+      try { knownVersion = uni.getStorageSync('nihaixia_known_version') || '' } catch (e) {}
+      
+      let sourceIndex = 0
+      const tryNextSource = () => {
+        if (sourceIndex >= sources.length) {
+          this.releaseOk = false
+          this.releaseMsg = '暂无可用更新'
+          this.releaseChecking = false
+          return
+        }
+        
+        const source = sources[sourceIndex]
+        sourceIndex++
+        
+        uni.request({
+          url: source.versionUrl,
+          method: 'GET', timeout: 15000,
+          success: res => {
+            if (res.statusCode === 200 && res.data && res.data.version) {
+              const latestVersion = res.data.version
+              this.releaseAsset = { name: 'latest.apk', browser_download_url: source.apkUrl }
+              this.releaseUrl = `https://gitee.com/${CONFIG.gitee.user}/${CONFIG.gitee.repo}/releases`
+              this.releaseOk = true
+              this.releaseMsg = `最新版本：${latestVersion}（${source.name}）`
+              
+              if (this.isNewerApp(latestVersion) && this.isNewerThan(latestVersion, knownVersion)) {
+                this.offerInstall(this.releaseAsset, latestVersion)
+              } else if (!silent) {
+                uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
+              }
+              this.releaseChecking = false
+            } else {
+              tryNextSource()
             }
-          } else if (res.statusCode === 404) {
-            // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
-            this.checkRepositoryApk(silent)
+          },
+          fail: () => tryNextSource()
+        })
+      }
+      
+      tryNextSource()
+    },
+    isNewerThan(tag, base) {
+      if (!base) return true
+      const a = String(base || '0.0.0').replace(/^v/i, '').split('.').map(Number)
+      const m = String(tag || '').match(/\d+(?:\.\d+)+/)
+      if (!m) return false
+      const b = m[0].split('.').map(Number)
+      for (let i = 0; i < Math.max(a.length, b.length); i++) {
+        if ((b[i] || 0) !== (a[i] || 0)) return (b[i] || 0) > (a[i] || 0)
+      }
+      return false
+    },
+    offerInstall(asset, version) {
+      const KNOWN_VERSION_KEY = 'nihaixia_known_version'
+      uni.showModal({ 
+        title: '发现 App 新版本', 
+        content: `${version} 已发布，是否下载并安装？`, 
+        confirmText: '下载更新', 
+        cancelText: '稍后', 
+        success: x => { 
+          if (x.confirm) {
+            this.downloadRelease(asset, true)
           } else {
-            this.releaseOk = false
-            this.releaseMsg = 'GitHub 发布接口返回异常（HTTP ' + res.statusCode + '）'
+            // 用户选择稍后，记录版本号
+            try { uni.setStorageSync(KNOWN_VERSION_KEY, version) } catch (e) {}
           }
-        },
-        fail: () => { this.releaseOk = false; this.releaseMsg = '无法访问 GitHub，请检查网络或直接打开仓库' },
-        complete: () => { this.releaseChecking = false }
+        } 
       })
     },
     isNewerApp(tag) {
@@ -127,9 +183,7 @@ export default {
       }
       return false
     },
-    offerInstall(asset, version) {
-      uni.showModal({ title: '发现 App 新版本', content: `${version} 已发布，是否下载并安装？`, confirmText: '下载更新', cancelText: '稍后', success: x => { if (x.confirm) this.downloadRelease(asset, true) } })
-    },
+
     downloadRelease(asset, confirmed = false) {
       if (!asset || !asset.browser_download_url || this.apkDownloading) return
       if (!confirmed) { this.offerInstall(asset, asset.name || '新版本'); return }
@@ -148,33 +202,7 @@ export default {
       if (task && task.onProgressUpdate) task.onProgressUpdate(e => { this.downloadProgress = Math.max(0, Math.min(100, e.progress || 0)) })
       // #endif
     },
-    checkRepositoryApk(silent = false, dirIndex = 0) {
-      const dirs = ['releases', 'release']
-      if (dirIndex >= dirs.length) {
-        this.releaseOk = false
-        this.releaseMsg = '仓库暂未发布 Release，releases/ 和 release/ 目录也没有 APK 更新包。'
-        return
-      }
-      const dir = dirs[dirIndex]
-      uni.request({
-        url: `https://api.github.com/repos/trmgh3-del/nihaixia-app/contents/${dir}?ref=main`,
-        method: 'GET', timeout: 20000,
-        header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
-        success: res => {
-          const files = Array.isArray(res.data) ? res.data : []
-          const file = files.find(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
-          if (!file) { this.checkRepositoryApk(silent, dirIndex + 1); return }
-          const download = `https://raw.githubusercontent.com/trmgh3-del/nihaixia-app/main/${dir}/${encodeURIComponent(file.name)}`
-          this.releaseAsset = { name: file.name, browser_download_url: download }
-          this.releaseUrl = file.html_url || download
-          this.releaseOk = true
-          this.releaseMsg = `发现仓库 APK：${file.name} · 来源：${dir}/ 目录`
-          const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
-          if (version && this.isNewerApp(version)) this.offerInstall(this.releaseAsset, version)
-        },
-        fail: () => { this.checkRepositoryApk(silent, dirIndex + 1) }
-      })
-    },
+
     checkRepo() {
       if (this.checking) return
       this.checking = true
