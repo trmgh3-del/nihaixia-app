@@ -1,0 +1,177 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/library/library",
+      "style": { "navigationBarTitleText": "医典全书" }
+    },
+    {
+      "path": "pages/diagnosis/diagnosis",
+      "style": { "navigationBarTitleText": "辨证中心" }
+    },
+    {
+      "path": "pages/ai/chat",
+      "style": { "navigationStyle": "custom", "enablePullDownRefresh": false }
+    },
+    {
+      "path": "pages/ai/config",
+      "style": { "navigationBarTitleText": "接口配置" }
+    },
+    {
+      "path": "pages/mine/mine",
+      "style": { "navigationBarTitleText": "我的" }
+    },
+    {
+      "path": "pages/search/search",
+      "style": { "navigationBarTitleText": "全局搜索" }
+    },
+    {
+      "path": "pages/diagnosis/chuanbian",
+      "style": { "navigationBarTitleText": "六经传变" }
+    },
+    {
+      "path": "pages/diagnosis/wizard",
+      "style": { "navigationBarTitleText": "感冒问诊向导" }
+    },
+    {
+      "path": "pages/diagnosis/sizhen",
+      "style": { "navigationBarTitleText": "四诊合参" }
+    },
+    {
+      "path": "pages/diagnosis/report",
+      "style": { "navigationBarTitleText": "历史辨证报告" }
+    },
+    {
+      "path": "pages/health/health",
+      "style": { "navigationBarTitleText": "健康自测" }
+    },
+    {
+      "path": "pages/study/study",
+      "style": { "navigationBarTitleText": "学习中心" }
+    },
+    {
+      "path": "pages/study/flash",
+      "style": { "navigationBarTitleText": "闪卡背诵" }
+    },
+    {
+      "path": "pages/study/recite",
+      "style": { "navigationBarTitleText": "条文背诵" }
+    },
+    {
+      "path": "pages/study/compat",
+      "style": { "navigationBarTitleText": "十八反·十九畏" }
+    },
+    {
+      "path": "pages/study/decoct",
+      "style": { "navigationBarTitleText": "煎药指南" }
+    },
+    {
+      "path": "pages/study/report",
+      "style": { "navigationBarTitleText": "学习报告" }
+    },
+    {
+      "path": "pages/study/notes",
+      "style": { "navigationBarTitleText": "我的笔记" }
+    },
+    {
+      "path": "pages/study/najia",
+      "style": { "navigationBarTitleText": "纳甲法开穴" }
+    },
+    {
+      "path": "pages/study/linggui",
+      "style": { "navigationBarTitleText": "灵龟八法" }
+    },
+    {
+      "path": "pages/mine/backup",
+      "style": { "navigationBarTitleText": "备份与恢复" }
+    },
+    {
+      "path": "pages/mine/update",
+      "style": { "navigationBarTitleText": "内容更新" }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pkgTexts",
+      "pages": [
+        { "path": "pages/shanghan", "style": { "navigationBarTitleText": "伤寒论" } },
+        { "path": "pages/jingui", "style": { "navigationBarTitleText": "金匮要略" } },
+        { "path": "pages/neijing", "style": { "navigationBarTitleText": "黄帝内经" } },
+        { "path": "pages/reader", "style": { "navigationBarTitleText": "阅读" } }
+      ]
+    },
+    {
+      "root": "pkgBencao",
+      "pages": [
+        { "path": "pages/list", "style": { "navigationBarTitleText": "神农本草经" } },
+        { "path": "pages/herb", "style": { "navigationBarTitleText": "本草详注" } }
+      ]
+    },
+    {
+      "root": "pkgZhenjiu",
+      "pages": [
+        { "path": "pages/list", "style": { "navigationBarTitleText": "针灸大成" } },
+        { "path": "pages/ziwu", "style": { "navigationBarTitleText": "子午流注" } },
+        { "path": "pages/treat", "style": { "navigationBarTitleText": "症状查穴" } }
+      ]
+    },
+    {
+      "root": "pkgFormula",
+      "pages": [
+        { "path": "pages/list", "style": { "navigationBarTitleText": "经方库" } },
+        { "path": "pages/detail", "style": { "navigationBarTitleText": "方剂详解" } },
+        { "path": "pages/articles", "style": { "navigationBarTitleText": "剂量与换算" } },
+        { "path": "pages/convert", "style": { "navigationBarTitleText": "剂量换算器" } }
+      ]
+    },
+    {
+      "root": "pkgCase",
+      "pages": [
+        { "path": "pages/main", "style": { "navigationBarTitleText": "医案库" } },
+        { "path": "pages/row", "style": { "navigationBarTitleText": "医案详单" } }
+      ]
+    },
+    {
+      "root": "pkgArticle",
+      "pages": [
+        { "path": "pages/list", "style": { "navigationBarTitleText": "讲义文库" } },
+        { "path": "pages/skill", "style": { "navigationBarTitleText": "SKILL 速查总库" } }
+      ]
+    },
+    {
+      "root": "pkgTianji",
+      "pages": [
+        { "path": "pages/list", "style": { "navigationBarTitleText": "天纪 · 易理" } }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#8A8172",
+    "selectedColor": "#9A2E1F",
+    "backgroundColor": "#FDFBF5",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "static/tabbar/home.png", "selectedIconPath": "static/tabbar/home-on.png" },
+      { "pagePath": "pages/library/library", "text": "医典", "iconPath": "static/tabbar/book.png", "selectedIconPath": "static/tabbar/book-on.png" },
+      { "pagePath": "pages/diagnosis/diagnosis", "text": "辨证", "iconPath": "static/tabbar/yinyang.png", "selectedIconPath": "static/tabbar/yinyang-on.png" },
+      { "pagePath": "pages/ai/chat", "text": "AI问诊", "iconPath": "static/tabbar/ai.png", "selectedIconPath": "static/tabbar/ai-on.png" },
+      { "pagePath": "pages/mine/mine", "text": "我的", "iconPath": "static/tabbar/user.png", "selectedIconPath": "static/tabbar/user-on.png" }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "倪师经方",
+    "navigationBarBackgroundColor": "#F6F1E7",
+    "backgroundColor": "#F6F1E7"
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^seg$": "@/components/seg.vue",
+      "^md-blocks$": "@/components/md-blocks.vue"
+    }
+  }
+}
