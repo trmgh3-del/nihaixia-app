@@ -19,20 +19,57 @@ function install(url) {
   if (typeof window !== 'undefined') window.open(url, '_blank', 'noopener,noreferrer')
   // #endif
   // #ifndef H5
-  uni.showLoading({ title: '下载更新中' })
-  uni.downloadFile({
+  // 显示下载进度弹窗
+  let progress = 0
+  const modal = uni.showModal({
+    title: '下载更新中',
+    content: '准备下载...',
+    showCancel: false,
+    confirmText: '后台下载'
+  })
+  
+  const task = uni.downloadFile({
     url,
     success: res => {
       if (res.statusCode !== 200 || !res.tempFilePath) {
-        uni.showToast({ title: '下载失败', icon: 'none' }); return
+        uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
+        return
       }
-      if (typeof plus !== 'undefined' && plus.runtime) {
-        plus.runtime.install(res.tempFilePath, {}, () => {}, () => uni.showToast({ title: '安装失败', icon: 'none' }))
-      } else uni.showToast({ title: '请手动安装', icon: 'none' })
+      uni.showModal({
+        title: '下载完成',
+        content: '是否立即安装？',
+        confirmText: '安装',
+        cancelText: '稍后',
+        success: r => {
+          if (r.confirm) {
+            if (typeof plus !== 'undefined' && plus.runtime) {
+              plus.runtime.install(res.tempFilePath, {}, 
+                () => uni.showToast({ title: '安装成功', icon: 'success' }),
+                () => uni.showToast({ title: '安装失败', icon: 'none' })
+              )
+            } else {
+              uni.showToast({ title: '请手动安装', icon: 'none' })
+            }
+          }
+        }
+      })
     },
-    fail: () => uni.showToast({ title: '下载失败，请检查网络', icon: 'none' }),
-    complete: () => uni.hideLoading()
+    fail: () => uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
   })
+  
+  // 监听下载进度
+  if (task && task.onProgressUpdate) {
+    task.onProgressUpdate(res => {
+      progress = res.progress
+      // 更新进度显示
+      uni.showModal({
+        title: '下载更新中',
+        content: `下载进度：${progress}%`,
+        showCancel: false,
+        confirmText: '后台下载'
+      })
+    })
+  }
   // #endif
 }
 
