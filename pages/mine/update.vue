@@ -96,23 +96,38 @@ export default {
       const REPO = 'trmgh3-del/nihaixia-app'
       const GITHUB_RAW = `https://raw.githubusercontent.com/${REPO}/main`
       
-      let knownVersion = ''
-      try { knownVersion = uni.getStorageSync('nihaixia_known_version') || '' } catch (e) {}
+      const current = String(uni.getSystemInfoSync().appVersion || '1.0.0')
+      console.log('[手动检查] 当前版本:', current)
       
       uni.request({
         url: `${GITHUB_RAW}/releases/version.json`,
         method: 'GET', timeout: 15000,
         success: res => {
+          console.log('[手动检查] version.json 响应:', res.statusCode, res.data)
           if (res.statusCode === 200 && res.data && res.data.version) {
             const version = res.data.version
-            const apkUrl = `${GITHUB_RAW}/releases/latest.apk`
+            const isNewer = this.isNewerApp(version)
+            console.log('[手动检查] 最新版本:', version, '是否更新:', isNewer)
             
-            this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
             this.releaseOk = true
             this.releaseMsg = `最新版本：${version}`
             
-            if (this.isNewerApp(version)) {
-              this.offerInstall(this.releaseAsset, version)
+            if (isNewer) {
+              console.log('[手动检查] 显示更新弹窗')
+              uni.showModal({
+                title: '发现新版本',
+                content: `${version} 已发布，是否下载？`,
+                confirmText: '下载更新',
+                cancelText: '暂不更新',
+                success: r => {
+                  console.log('[手动检查] 用户选择:', r.confirm ? '下载' : '暂不')
+                  if (r.confirm) {
+                    const apkUrl = `${GITHUB_RAW}/releases/latest.apk`
+                    console.log('[手动检查] 下载地址:', apkUrl)
+                    this.downloadApk(apkUrl)
+                  }
+                }
+              })
             } else if (!silent) {
               uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
             }
@@ -122,14 +137,53 @@ export default {
           }
           this.releaseChecking = false
         },
-        fail: () => {
+        fail: (e) => {
+          console.log('[手动检查] 请求失败:', e)
           this.releaseOk = false
           this.releaseMsg = '检查失败，请稍后重试'
           this.releaseChecking = false
         }
       })
     },
-    isNewerThan(tag, base) {
+    downloadApk(url) {
+      uni.showLoading({ title: '下载中...' })
+      const task = uni.downloadFile({
+        url,
+        success: res => {
+          uni.hideLoading()
+          console.log('[下载] 结果:', res.statusCode, res.tempFilePath)
+          if (res.statusCode === 200 && res.tempFilePath) {
+            uni.showModal({
+              title: '下载完成',
+              content: '是否立即安装？',
+              confirmText: '安装',
+              cancelText: '稍后',
+              success: r => {
+                if (r.confirm && typeof plus !== 'undefined' && plus.runtime) {
+                  plus.runtime.install(res.tempFilePath, {}, 
+                    () => uni.showToast({ title: '安装成功', icon: 'success' }),
+                    (e) => { console.log('[安装] 失败:', e); uni.showToast({ title: '安装失败', icon: 'none' }) }
+                  )
+                }
+              }
+            })
+          } else {
+            uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
+          }
+        },
+        fail: (e) => {
+          uni.hideLoading()
+          console.log('[下载] 失败:', e)
+          uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
+        }
+      })
+      if (task && task.onProgressUpdate) {
+        task.onProgressUpdate(res => {
+          console.log('[下载] 进度:', res.progress + '%')
+        })
+      }
+    },
+    isNewerThan(tag, base) {    isNewerThan(tag, base) {
       if (!base) return true
       const a = String(base || '0.0.0').replace(/^v/i, '').split('.').map(Number)
       const m = String(tag || '').match(/\d+(?:\.\d+)+/)
