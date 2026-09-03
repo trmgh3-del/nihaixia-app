@@ -1,6 +1,6 @@
 /* App 启动版本检查：每次进程启动只检查一次 */
 const REPO = 'trmgh3-del/nihaixia-app'
-const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
+const GITHUB_RAW = `https://raw.githubusercontent.com/${REPO}/main`
 const KNOWN_VERSION_KEY = 'nihaixia_known_version'
 
 function newer(tag, current) {
@@ -19,18 +19,11 @@ function install(url) {
   if (typeof window !== 'undefined') window.open(url, '_blank', 'noopener,noreferrer')
   // #endif
   // #ifndef H5
-  // 显示下载进度弹窗
-  let progress = 0
-  const modal = uni.showModal({
-    title: '下载更新中',
-    content: '准备下载...',
-    showCancel: false,
-    confirmText: '后台下载'
-  })
-  
+  uni.showLoading({ title: '下载更新中' })
   const task = uni.downloadFile({
     url,
     success: res => {
+      uni.hideLoading()
       if (res.statusCode !== 200 || !res.tempFilePath) {
         uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
         return
@@ -54,22 +47,11 @@ function install(url) {
         }
       })
     },
-    fail: () => uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
+    fail: () => {
+      uni.hideLoading()
+      uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
+    }
   })
-  
-  // 监听下载进度
-  if (task && task.onProgressUpdate) {
-    task.onProgressUpdate(res => {
-      progress = res.progress
-      // 更新进度显示
-      uni.showModal({
-        title: '下载更新中',
-        content: `下载进度：${progress}%`,
-        showCancel: false,
-        confirmText: '后台下载'
-      })
-    })
-  }
   // #endif
 }
 
@@ -82,7 +64,7 @@ export function checkAppUpdate(silent = false) {
   try { knownVersion = uni.getStorageSync(KNOWN_VERSION_KEY) || '' } catch (e) {}
   
   uni.request({
-    url: `${CDN}/releases/version.json`,
+    url: `${GITHUB_RAW}/releases/version.json`,
     method: 'GET', timeout: 15000,
     success: res => {
       if (res.statusCode === 200 && res.data && res.data.version) {
@@ -93,7 +75,7 @@ export function checkAppUpdate(silent = false) {
             content: `${version} 已发布，是否下载？`,
             confirmText: '下载更新', cancelText: '暂不更新',
             success: r => {
-              if (r.confirm) install(`${CDN}/releases/latest.apk`)
+              if (r.confirm) install(`${GITHUB_RAW}/releases/latest.apk`)
               else try { uni.setStorageSync(KNOWN_VERSION_KEY, version) } catch (e) {}
             }
           })

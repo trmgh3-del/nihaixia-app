@@ -94,18 +94,18 @@ export default {
       this.releaseMsg = ''
       
       const REPO = 'trmgh3-del/nihaixia-app'
-      const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
+      const GITHUB_RAW = `https://raw.githubusercontent.com/${REPO}/main`
       
       let knownVersion = ''
       try { knownVersion = uni.getStorageSync('nihaixia_known_version') || '' } catch (e) {}
       
       uni.request({
-        url: `${CDN}/releases/version.json`,
+        url: `${GITHUB_RAW}/releases/version.json`,
         method: 'GET', timeout: 15000,
         success: res => {
           if (res.statusCode === 200 && res.data && res.data.version) {
             const version = res.data.version
-            const apkUrl = `${CDN}/releases/latest.apk`
+            const apkUrl = `${GITHUB_RAW}/releases/latest.apk`
             
             this.releaseAsset = { name: 'latest.apk', browser_download_url: apkUrl }
             this.releaseOk = true
