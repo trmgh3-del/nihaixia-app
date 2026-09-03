@@ -1,6 +1,8 @@
 /* App 启动版本检查：每次进程启动只检查一次，避免重复请求、重复弹窗和重复下载。 */
 const REPO = 'trmgh3-del/nihaixia-app'
 const API = `https://api.github.com/repos/${REPO}`
+// 使用 jsdelivr CDN 避免 GitHub API 限流
+const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
 
 function newer(tag, current) {
   const a = String(current || '0.0.0').replace(/^v/i, '').split('.').map(Number)
@@ -49,6 +51,25 @@ function request(url, success, fail) {
   uni.request({ url, method: 'GET', timeout: 20000, header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' }, success, fail })
 }
 
+// 从 version.json 获取版本信息（优先使用 CDN）
+function checkByVersionJson(finish) {
+  const url = `${CDN}/releases/version.json`
+  uni.request({
+    url, method: 'GET', timeout: 15000,
+    success: res => {
+      if (res.statusCode === 200 && res.data && res.data.version && res.data.apk) {
+        const { version, apk } = res.data
+        const apkUrl = `${CDN}/releases/${encodeURIComponent(apk)}`
+        finish({ name: apk, url: apkUrl }, version)
+      } else {
+        // version.json 无效，返回 null让调用方继续尝试其他方式
+        finish(null, null)
+      }
+    },
+    fail: () => finish(null, null)
+  })
+}
+
 export function checkAppUpdate(silent = false) {
   if (typeof globalThis !== 'undefined' && globalThis.__NX_UPDATE_CHECKED__) return
   if (typeof globalThis !== 'undefined') globalThis.__NX_UPDATE_CHECKED__ = true
@@ -57,27 +78,30 @@ export function checkAppUpdate(silent = false) {
     if (asset && version && newer(version, current)) promptUpdate(asset, version)
     else if (!silent) uni.showToast({ title: '当前已是最新版本', icon: 'none', duration: 2200 })
   }
-  request(`${API}/releases/latest`, res => {
-    const r = res.data
-    const apk = r && r.tag_name && (r.assets || []).find(a => a && /\.apk$/i.test(a.name || '') && a.browser_download_url)
-    if (res.statusCode === 200 && apk) { finish({ name: apk.name, url: apk.browser_download_url }, r.tag_name); return }
-    const dirs = ['releases', 'release']
-    const scan = i => {
-      if (i >= dirs.length) { finish(null, null); return }
-      const dir = dirs[i]
-      request(`${API}/contents/${dir}?ref=main`, result => {
-        const file = Array.isArray(result.data) && result.data.find(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
-        if (file) {
-          const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
-          finish({ name: file.name, url: `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}` }, version)
-        } else scan(i + 1)
-      }, () => scan(i + 1))
-    }
-    scan(0)
-  }, () => {
-    // API 网络失败时，直接尝试从 raw 地址获取已知的 APK
-    const knownApk = 'releases/nihaixia-app-v1.0.1.apk'
-    const version = '1.0.1'
-    finish({ name: knownApk.split('/').pop(), url: `https://raw.githubusercontent.com/${REPO}/main/${knownApk}` }, version)
+
+  // 优先从 version.json 获取（CDN，无限流）
+  checkByVersionJson((asset, version) => {
+    if (asset && version) { finish(asset, version); return }
+
+    // version.json 失败，尝试 GitHub API
+    request(`${API}/releases/latest`, res => {
+      const r = res.data
+      const apk = r && r.tag_name && (r.assets || []).find(a => a && /\.apk$/i.test(a.name || '') && a.browser_download_url)
+      if (res.statusCode === 200 && apk) { finish({ name: apk.name, url: apk.browser_download_url }, r.tag_name); return }
+      // API 无 Release 或被限流，扫描仓库目录
+      const dirs = ['releases', 'release']
+      const scan = i => {
+        if (i >= dirs.length) { finish(null, null); return }
+        const dir = dirs[i]
+        request(`${API}/contents/${dir}?ref=main`, result => {
+          const file = Array.isArray(result.data) && result.data.find(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
+          if (file) {
+            const ver = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
+            finish({ name: file.name, url: `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}` }, ver)
+          } else scan(i + 1)
+        }, () => scan(i + 1))
+      }
+      scan(0)
+    }, () => finish(null, null))
   })
 }

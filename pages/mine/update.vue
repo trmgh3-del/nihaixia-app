@@ -89,14 +89,46 @@ export default {
       this.releaseChecking = true
       this.releaseMsg = ''
       this.releaseUrl = ''
+      
+      const REPO = 'trmgh3-del/nihaixia-app'
+      const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main`
+      
+      // 优先从 version.json 获取（CDN，无限流）
       uni.request({
-        url: 'https://api.github.com/repos/trmgh3-del/nihaixia-app/releases/latest',
+        url: `${CDN}/releases/version.json`,
+        method: 'GET', timeout: 15000,
+        success: res => {
+          if (res.statusCode === 200 && res.data && res.data.version && res.data.apk) {
+            const { version, apk } = res.data
+            const apkUrl = `${CDN}/releases/${encodeURIComponent(apk)}`
+            this.releaseAsset = { name: apk, browser_download_url: apkUrl }
+            this.releaseUrl = `https://github.com/${REPO}/releases`
+            this.releaseOk = true
+            this.releaseMsg = `最新版本：${version} · 文件：${apk}`
+            if (this.isNewerApp(version)) {
+              this.offerInstall(this.releaseAsset, version)
+            } else if (!silent) {
+              uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
+            }
+            this.releaseChecking = false
+          } else {
+            // version.json 失败，降级到 GitHub API
+            this.checkAppReleaseByApi(silent)
+          }
+        },
+        fail: () => { this.checkAppReleaseByApi(silent) }
+      })
+    },
+    checkAppReleaseByApi(silent = false) {
+      const REPO = 'trmgh3-del/nihaixia-app'
+      uni.request({
+        url: `https://api.github.com/repos/${REPO}/releases/latest`,
         method: 'GET', timeout: 20000,
         header: { Accept: 'application/vnd.github+json', 'User-Agent': 'nihaixia-app' },
         success: res => {
           const r = res.data
           if (res.statusCode === 200 && r && r.tag_name) {
-            this.releaseUrl = r.html_url || 'https://github.com/trmgh3-del/nihaixia-app/releases'
+            this.releaseUrl = r.html_url || `https://github.com/${REPO}/releases`
             const assetsRaw = (r.assets || []).filter(a => a && a.browser_download_url)
             const assets = assetsRaw.map(a => a.name).filter(Boolean)
             this.releaseAsset = assetsRaw.find(a => /\.apk$/i.test(a.name || '')) || null
@@ -108,7 +140,6 @@ export default {
               uni.showToast({ title: '已是最新版', icon: 'none', duration: 2200 })
             }
           } else if (res.statusCode === 404 || res.statusCode === 403) {
-            // APK 也可能直接放在仓库 release/ 目录，而不是 GitHub Release 附件。
             this.checkRepositoryApk(silent)
           } else {
             this.releaseOk = false
