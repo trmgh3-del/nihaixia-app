@@ -52,7 +52,7 @@ function request(url, success, fail) {
 }
 
 // 从 version.json 获取版本信息（优先使用 CDN）
-function checkByVersionJson(finish) {
+function checkByVersionJson(callback) {
   const url = `${CDN}/releases/version.json`
   uni.request({
     url, method: 'GET', timeout: 15000,
@@ -60,14 +60,36 @@ function checkByVersionJson(finish) {
       if (res.statusCode === 200 && res.data && res.data.version && res.data.apk) {
         const { version, apk } = res.data
         const apkUrl = `${CDN}/releases/${encodeURIComponent(apk)}`
-        finish({ name: apk, url: apkUrl }, version)
+        callback({ name: apk, url: apkUrl }, version)
       } else {
-        // version.json 无效，返回 null让调用方继续尝试其他方式
-        finish(null, null)
+        callback(null, null)
       }
     },
-    fail: () => finish(null, null)
+    fail: () => callback(null, null)
   })
+}
+
+// 从 GitHub API 扫描目录获取最新 APK
+function checkByScanDir(callback) {
+  const dirs = ['releases', 'release']
+  const scan = i => {
+    if (i >= dirs.length) { callback(null, null); return }
+    const dir = dirs[i]
+    request(`${API}/contents/${dir}?ref=main`, result => {
+      const files = Array.isArray(result.data) ? result.data : []
+      // 优先找 latest.apk，否则找版本号最大的
+      let file = files.find(x => x && x.type === 'file' && x.name === 'latest.apk')
+      if (!file) {
+        const apks = files.filter(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
+        file = apks.sort((a, b) => (b.name || '').localeCompare(a.name || ''))[0]
+      }
+      if (file) {
+        const version = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0] || '未知'
+        callback({ name: file.name, url: `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}` }, version)
+      } else scan(i + 1)
+    }, () => scan(i + 1))
+  }
+  scan(0)
 }
 
 export function checkAppUpdate(silent = false) {
@@ -82,26 +104,7 @@ export function checkAppUpdate(silent = false) {
   // 优先从 version.json 获取（CDN，无限流）
   checkByVersionJson((asset, version) => {
     if (asset && version) { finish(asset, version); return }
-
-    // version.json 失败，尝试 GitHub API
-    request(`${API}/releases/latest`, res => {
-      const r = res.data
-      const apk = r && r.tag_name && (r.assets || []).find(a => a && /\.apk$/i.test(a.name || '') && a.browser_download_url)
-      if (res.statusCode === 200 && apk) { finish({ name: apk.name, url: apk.browser_download_url }, r.tag_name); return }
-      // API 无 Release 或被限流，扫描仓库目录
-      const dirs = ['releases', 'release']
-      const scan = i => {
-        if (i >= dirs.length) { finish(null, null); return }
-        const dir = dirs[i]
-        request(`${API}/contents/${dir}?ref=main`, result => {
-          const file = Array.isArray(result.data) && result.data.find(x => x && x.type === 'file' && /\.apk$/i.test(x.name || ''))
-          if (file) {
-            const ver = (file.name.match(/v?\d+(?:\.\d+)+/i) || [])[0]
-            finish({ name: file.name, url: `https://raw.githubusercontent.com/${REPO}/main/${dir}/${encodeURIComponent(file.name)}` }, ver)
-          } else scan(i + 1)
-        }, () => scan(i + 1))
-      }
-      scan(0)
-    }, () => finish(null, null))
+    // version.json 失败，尝试扫描目录
+    checkByScanDir(finish)
   })
 }
