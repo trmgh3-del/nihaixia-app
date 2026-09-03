@@ -3,6 +3,16 @@ const REPO = 'trmgh3-del/nihaixia-app'
 const GITHUB_RAW = `https://raw.githubusercontent.com/${REPO}/main`
 const KNOWN_VERSION_KEY = 'nihaixia_known_version'
 
+// 获取 App 版本号（优先使用 manifest 中的版本）
+function getAppVersion() {
+  // #ifdef APP-PLUS
+  try {
+    return plus.runtime.version || '1.0.0'
+  } catch (e) {}
+  // #endif
+  return '1.0.0'
+}
+
 function newer(tag, current) {
   const a = String(current || '0.0.0').replace(/^v/i, '').split('.').map(Number)
   const m = String(tag || '').match(/\d+(?:\.\d+)+/)
@@ -18,7 +28,7 @@ export function checkAppUpdate(silent = false) {
   if (typeof globalThis !== 'undefined' && globalThis.__NX_UPDATE_CHECKED__) return
   if (typeof globalThis !== 'undefined') globalThis.__NX_UPDATE_CHECKED__ = true
   
-  const current = (uni.getSystemInfoSync && uni.getSystemInfoSync().appVersion) || '1.0.0'
+  const current = getAppVersion()
   let knownVersion = ''
   try { knownVersion = uni.getStorageSync(KNOWN_VERSION_KEY) || '' } catch (e) {}
   
@@ -45,7 +55,6 @@ export function checkAppUpdate(silent = false) {
             success: r => {
               console.log('[更新检查] 用户选择:', r.confirm ? '下载' : '暂不')
               if (r.confirm) {
-                // 开始下载
                 uni.showLoading({ title: '下载中...' })
                 const apkUrl = `${GITHUB_RAW}/releases/latest.apk`
                 console.log('[更新检查] 下载地址:', apkUrl)
@@ -79,7 +88,6 @@ export function checkAppUpdate(silent = false) {
                     uni.showModal({ title: '下载失败', content: '请检查网络后重试', showCancel: false })
                   }
                 })
-                // 监听下载进度
                 if (task && task.onProgressUpdate) {
                   task.onProgressUpdate(res => {
                     console.log('[更新检查] 下载进度:', res.progress + '%')

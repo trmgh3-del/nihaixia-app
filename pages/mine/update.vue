@@ -96,8 +96,11 @@ export default {
       const REPO = 'trmgh3-del/nihaixia-app'
       const GITHUB_RAW = `https://raw.githubusercontent.com/${REPO}/main`
       
-      const current = String(uni.getSystemInfoSync().appVersion || '1.0.0')
-      console.log('[手动检查] 当前版本:', current)
+      let currentVersion = '1.0.0'
+      // #ifdef APP-PLUS
+      try { currentVersion = plus.runtime.version || '1.0.0' } catch (e) {}
+      // #endif
+      console.log('[手动检查] 当前版本:', currentVersion)
       
       uni.request({
         url: `${GITHUB_RAW}/releases/version.json`,
@@ -212,7 +215,11 @@ export default {
       })
     },
     isNewerApp(tag) {
-      const current = String(uni.getSystemInfoSync().appVersion || '1.0.0').replace(/^v/i, '').split('.').map(Number)
+      let currentVersion = '1.0.0'
+      // #ifdef APP-PLUS
+      try { currentVersion = plus.runtime.version || '1.0.0' } catch (e) {}
+      // #endif
+      const current = String(currentVersion).replace(/^v/i, '').split('.').map(Number)
       const latest = String(tag || '').match(/\d+(?:\.\d+)+/)
       if (!latest) return false
       const next = latest[0].split('.').map(Number)
