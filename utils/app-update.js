@@ -76,8 +76,8 @@ export function checkAppUpdate(silent = false) {
     scan(0)
   }, () => {
     // API 网络失败时，直接尝试从 raw 地址获取已知的 APK
-    const knownApk = 'releases/nihaixia-app-v1.0.0.apk'
-    const version = '1.0.0'
+    const knownApk = 'releases/nihaixia-app-v1.0.1.apk'
+    const version = '1.0.1'
     finish({ name: knownApk.split('/').pop(), url: `https://raw.githubusercontent.com/${REPO}/main/${knownApk}` }, version)
   })
 }
