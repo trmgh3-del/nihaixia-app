@@ -183,7 +183,7 @@ export default {
         })
       }
     },
-    isNewerThan(tag, base) {    isNewerThan(tag, base) {
+    isNewerThan(tag, base) {
       if (!base) return true
       const a = String(base || '0.0.0').replace(/^v/i, '').split('.').map(Number)
       const m = String(tag || '').match(/\d+(?:\.\d+)+/)
